@@ -2,15 +2,95 @@
 
 A new Flutter project.
 
-## Getting Started
+## Clientes de lavandería
+### Campos requeridos:
+- ID
+- Nombres
+- Apellidos
+- Correo
+- Teléfono
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
 
-This project is a starting point for a Flutter application.
+## Items para servicios
+### Campos requeridos:
+- ID
+- Nombre
+- Descripción
+- Importe
+- Tipo de unidad (Kg, Unidad)
+- Estatus (Activo, Inactivo)
+- Tiempo de entrega (en días, entero)
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
 
-A few resources to get you started if this is your first Flutter project:
+## Estatus de urgencia
+### Campos requeridos:
+- ID
+- Nombre
+- Descripción
+- Estatus (Activo, Inactivo)
+- Porcentaje de recargo (entero, 0-100)
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Orden de servicio
+### Campos requeridos:
+- ID del cliente
+- ID de la orden de servicio
+- Folio
+- Fecha en la que se estuvo lista la ropa
+- Fecha de recogida
+- Lista de items (Ligados a la orden de servicio)
+- Descripción (opcional)
+- Estatus (Pendiente, Completado)
+- Total (Importe total de los items de servicio)
+- Método de pago (Efectivo, Tarjeta, Transferencia)
+- Pago (opcional)
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Items de orden de servicio
+### Campos requeridos:
+- ID
+- ID de la orden de servicio
+- ID del item
+- Cantidad
+- Importe
+- Fecha de entrega
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
+
+## Configuración de la empresa
+### Campos requeridos:
+- ID
+- Nombre de la empresa
+- Dirección
+- Teléfono
+- Correo electrónico
+- Página web
+- Logo (opcional, ruta de la imagen)
+- Color
+- Hora de apertura
+- Hora de cierre
+- Fecha de creación
+- Fecha de actualización (opcional)
+- Fecha de eliminación (opcional)
+
+## Direcciones
+### Campos requeridos:
+- ID
+- Nombre de la calle
+- Número exterior
+- Número interior (opcional)
+- Colonia
+- Código postal
+- Ciudad
+- Estado
+
+

@@ -185,4 +185,4 @@ app.*.symbols
 *.g.dart
 *.freezed.dart
 # Generated files injectable
-**/lib/**/injectable.config.dart
+**/lib/**/injector.config.dart
