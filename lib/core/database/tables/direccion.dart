@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'configuracion_empresa.dart';
 
 @DataClassName('DireccionEntry')
-class Direcciones extends Table {
+class Direccion extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get empresaId => integer().references(ConfiguracionEmpresa, #id)();
   TextColumn get calle => text()();

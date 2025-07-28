@@ -26,7 +26,7 @@ sealed class OrdenServicioModel with _$OrdenServicioModel{
 
   factory OrdenServicioModel.fromEntry(
     OrdenServicioEntry entry, {
-    List<ItemOrdenEntry> itemEntries = const [],
+    List<ItemServicioOrdenEntry> itemEntries = const [],
   }) =>
       OrdenServicioModel(
         id: entry.id,
@@ -63,7 +63,7 @@ sealed class ItemOrdenModel with _$ItemOrdenModel{
     DateTime? fechaEliminacion,
   }) = _ItemOrdenModel;
 
-  factory ItemOrdenModel.fromEntry(ItemOrdenEntry entry) => ItemOrdenModel(
+  factory ItemOrdenModel.fromEntry(ItemServicioOrdenEntry entry) => ItemOrdenModel(
     id: entry.id,
     ordenId: entry.ordenId,
     itemId: entry.itemId,

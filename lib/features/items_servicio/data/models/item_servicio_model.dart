@@ -9,9 +9,7 @@ sealed class ItemServicioModel with _$ItemServicioModel {
   const factory ItemServicioModel({
     required int id,
     required String nombre,
-    required String descripcion,
-    required double importe,
-    required String tipoUnidad,
+    required String estatus,
     required DateTime fechaCreacion,
     DateTime? fechaActualizacion,
     DateTime? fechaEliminacion,
@@ -20,9 +18,7 @@ sealed class ItemServicioModel with _$ItemServicioModel {
   factory ItemServicioModel.fromEntry(ItemServicioEntry entry) => ItemServicioModel(
     id: entry.id,
     nombre: entry.nombre,
-    descripcion: entry.descripcion,
-    importe: entry.importe,
-    tipoUnidad: entry.tipoUnidad,
+    estatus: entry.estatus,
     fechaCreacion: entry.fechaCreacion,
     fechaActualizacion: entry.fechaActualizacion,
     fechaEliminacion: entry.fechaEliminacion,

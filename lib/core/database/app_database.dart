@@ -12,22 +12,26 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [
-    Clientes,
-    ItemsServicio,
-    OrdenesServicio,
-    ItemsOrden,
+    Cliente,
+    ItemServicio,
+    OrdenServicio,
+    ItemServicioOrden,
     ConfiguracionEmpresa,
-    Direcciones,
+    Direccion,
     EstatusUrgencia,
+    CategoriaServicio,
+    CategoriaItemServicio,
   ],
   daos: [
     ClientesDao,
-    ItemsServicioDao,
+    ItemServicioDao,
     OrdenServicioDao,
-    ItemsOrdenServicioDao,
+    ItemServicioOrdenDao,
     ConfiguracionEmpresaDao,
-    DireccionesDao,
+    DireccionDao,
     EstatusUrgenciaDao,
+    CategoriaServicioDao,
+    CategoriaItemServicioDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

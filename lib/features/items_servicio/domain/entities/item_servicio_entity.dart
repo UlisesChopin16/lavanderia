@@ -8,7 +8,6 @@ sealed class ItemServicioEntity with _$ItemServicioEntity {
     required int id,
     required String nombre,
     required String descripcion,
-    required double importe,
     required String tipoUnidad,
     required DateTime fechaCreacion,
     DateTime? fechaActualizacion,

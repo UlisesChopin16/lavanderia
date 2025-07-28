@@ -1,20 +1,20 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/direcciones.dart';
+import 'package:lavanderia/core/database/tables/direccion.dart';
 import '../app_database.dart';
 
 part 'direccion_dao.g.dart';
 
-@DriftAccessor(tables: [Direcciones])
-class DireccionesDao extends DatabaseAccessor<AppDatabase>
-    with _$DireccionesDaoMixin {
-  DireccionesDao(super.db);
+@DriftAccessor(tables: [Direccion])
+class DireccionDao extends DatabaseAccessor<AppDatabase>
+    with _$DireccionDaoMixin {
+  DireccionDao(super.db);
 
-  Future<List<DireccionEntry>> getAll() => select(direcciones).get();
+  Future<List<DireccionEntry>> getAll() => select(direccion).get();
 
-  Stream<List<DireccionEntry>> watchAll() => select(direcciones).watch();
+  Stream<List<DireccionEntry>> watchAll() => select(direccion).watch();
 
   Future<DireccionEntry?> getById(int id) => (select(
-    direcciones,
+    direccion,
   )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
   Future<int> insertDireccion(Insertable<DireccionEntry> row) {
@@ -25,7 +25,7 @@ class DireccionesDao extends DatabaseAccessor<AppDatabase>
       fechaActualizacion: Value(now),
     );
 
-    return into(direcciones).insert(direccionWithDate);
+    return into(direccion).insert(direccionWithDate);
   }
 
   Future<bool> updateDireccion(Insertable<DireccionEntry> row) {
@@ -34,20 +34,20 @@ class DireccionesDao extends DatabaseAccessor<AppDatabase>
     final casted = row as DireccionEntry;
     final direccionWithDate = casted.copyWith(fechaActualizacion: Value(now));
 
-    return update(direcciones).replace(direccionWithDate);
+    return update(direccion).replace(direccionWithDate);
   }
 
   Future<bool> deleteDireccion(int id) async {
     final now = DateTime.now();
-    final direccion = await getById(id);
-    if (direccion == null) {
+    final direccionData = await getById(id);
+    if (direccionData == null) {
       return Future.value(false); // No record found to delete
     }
 
-    final updateDireccion = direccion.copyWith(
+    final updateDireccion = direccionData.copyWith(
       fechaEliminacion: Value(now),
     );
 
-    return update(direcciones).replace(updateDireccion);
+    return update(direccion).replace(updateDireccion);
   }
 }
