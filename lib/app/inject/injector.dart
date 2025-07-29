@@ -23,7 +23,7 @@ abstract class DatabaseModule {
   @lazySingleton
   ConfiguracionEmpresaDao configuracionEmpresaDao(AppDatabase db) => db.configuracionEmpresaDao;
   @lazySingleton
-  EstatusUrgenciaDao estatusUrgenciaDao(AppDatabase db) => db.estatusUrgenciaDao;
+  SizesRopaDao sizesRopaDao(AppDatabase db) => db.sizesRopaDao;
   @lazySingleton
   ItemServicioDao itemServicioDao(AppDatabase db) => db.itemServicioDao;
   @lazySingleton

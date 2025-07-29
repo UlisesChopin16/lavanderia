@@ -10,6 +10,7 @@ class ConfiguracionEmpresa extends Table {
   TextColumn get paginaWeb => text()();
   TextColumn get logo => text().nullable()();        // Guardar ruta de la imagen
   TextColumn get color => text()();
+  TextColumn get password => text()(); // Contraseña para acceso administrativo
   DateTimeColumn get fechaCreacion => dateTime()();
   DateTimeColumn get fechaActualizacion => dateTime().nullable()();
   DateTimeColumn get fechaEliminacion => dateTime().nullable()();
