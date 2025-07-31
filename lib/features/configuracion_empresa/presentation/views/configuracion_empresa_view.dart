@@ -19,19 +19,40 @@ class _ConfiguracionEmpresaViewState extends ConsumerState<ConfiguracionEmpresaV
           'Configuración Empresa',
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Configuración de la empresa'),
-            ElevatedButton(
-              onPressed: () {
-                // Acción al presionar el botón
-              },
-              child: const Text('Guardar Cambios'),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight;
+          final width = constraints.maxWidth * 0.3;
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    Container(
+                      color: Colors.red,
+                      height: height,
+                      width: width,
+                    ),
+                    Container(
+                      color: Colors.blue,
+                      height: height,
+                      width: width,
+                    ),
+                    Container(
+                      color: Colors.green,
+                      height: height,
+                      width: width,
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

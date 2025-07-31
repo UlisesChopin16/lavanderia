@@ -1,0 +1,1 @@
+typedef AsyncCallbackError = Future<void> Function(Object error, String message);
