@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:lavanderia/core/error/exception_manager.dart';
 import 'package:lavanderia/core/types/callbacks_types.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-extension SafeCallExt<T> on T? {
+extension SafeCallExt<T> on AutoDisposeNotifier<T> {
   Future<void> safeCall({
     AsyncCallback? actionBefore,
     AsyncCallback? actionAfter,
     AsyncCallback? action,
-    AsyncCallbackError? onError,
+    AsyncCallbackError? actionOnError,
   }) async {
-    if (this == null) return;
     try {
       await actionBefore?.call();
       await action?.call();
@@ -18,7 +18,7 @@ extension SafeCallExt<T> on T? {
         exception: e,
         stackTrace: s,
       );
-      await onError?.call(e, message);
+      await actionOnError?.call(e, message);
     } finally {
       await actionAfter?.call();
     }

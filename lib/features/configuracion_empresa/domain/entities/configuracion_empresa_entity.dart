@@ -12,7 +12,7 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
     @Default('') String telefono,
     @Default('') String correo,
     @Default('') String paginaWeb,
-    @Default('') String? logo,
+    @Default('') String logo,
     @Default('') String color,
     DateTime? fechaCreacion,
     DateTime? fechaActualizacion,
