@@ -8,12 +8,12 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
   const factory ConfiguracionEmpresaEntity({
     @Default(-1) int id,
     @Default('') String nombre,
-    @Default(DireccionEntity()) DireccionEntity direccion,
     @Default('') String telefono,
     @Default('') String correo,
     @Default('') String paginaWeb,
     @Default('') String logo,
     @Default('') String color,
+    @Default(DireccionEntity()) DireccionEntity direccion,
     DateTime? fechaCreacion,
     DateTime? fechaActualizacion,
     DateTime? fechaEliminacion,

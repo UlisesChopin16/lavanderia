@@ -9,13 +9,13 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   // static const Color errorColor = Color(0xFFB00020);
 
   final Color primaryColor;
-  final Color secondaryColor;
-  final Color neutralColor;
+  // final Color secondaryColor;
+  // final Color neutralColor;
 
   const ThemeApp({
     this.primaryColor = const Color(0xFF1B4C98),
-    this.secondaryColor = const Color(0xFF009FE3),
-    this.neutralColor = const Color(0xFFB8B8B8),
+    // this.secondaryColor = const Color(0xFF009FE3),
+    // this.neutralColor = const Color(0xFFB8B8B8),
   });
 
   @override
@@ -26,8 +26,8 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   }) {
     return ThemeApp(
       primaryColor: primaryColor ?? this.primaryColor,
-      secondaryColor: secondaryColor ?? this.secondaryColor,
-      neutralColor: neutralColor ?? this.neutralColor,
+      // secondaryColor: secondaryColor ?? this.secondaryColor,
+      // neutralColor: neutralColor ?? this.neutralColor,
     );
   }
 
@@ -38,8 +38,8 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
     }
     return ThemeApp(
       primaryColor: Color.lerp(primaryColor, other.primaryColor, t)!,
-      secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t)!,
-      neutralColor: Color.lerp(neutralColor, other.neutralColor, t)!,
+      // secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t)!,
+      // neutralColor: Color.lerp(neutralColor, other.neutralColor, t)!,
     );
   }
 
@@ -154,16 +154,20 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   DynamicScheme _scheme(bool isDark) {
     final base = CorePalette.of(primaryColor.toARGB32());
     final primary = base.primary;
-    final tertiary = CorePalette.of(secondaryColor.toARGB32()).primary;
-    final neutral = CorePalette.of(neutralColor.toARGB32()).neutral;
+    final secondary = base.secondary;
+    final tertiary = base.tertiary;
+    final neutral = base.neutral;
+    final neutralVariant = base.neutralVariant;
+    // final tertiary = CorePalette.of(secondaryColor.toARGB32()).primary;
+    // final neutral = CorePalette.of(neutralColor.toARGB32()).neutral;
 
     return DynamicScheme(
       isDark: isDark,
       neutralPalette: neutral,
       primaryPalette: primary,
-      secondaryPalette: base.secondary,
+      secondaryPalette: secondary,
       tertiaryPalette: tertiary,
-      neutralVariantPalette: base.neutralVariant,
+      neutralVariantPalette: neutralVariant,
       sourceColorArgb: primaryColor.toARGB32(),
       variant: Variant.vibrant,
     );

@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/utils/files_system.dart';
+import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/entities/configuracion_empresa_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,12 +12,16 @@ part 'configuracion_empresa_view_model.g.dart';
 
 @freezed
 sealed class ConfiguracionEModel with _$ConfiguracionEModel {
+  const ConfiguracionEModel._();
   const factory ConfiguracionEModel({
     @Default(false) bool isLoading,
     @Default('') String errorMessage,
     @Default(ConfiguracionEmpresaEntity()) ConfiguracionEmpresaEntity configuracionEmpresa,
   }) = _ConfiguracionEModel;
+  
+  DireccionEntity get direccion => configuracionEmpresa.direccion;
 }
+
 
 @riverpod
 class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
@@ -89,9 +94,10 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           );
           if (result != null && result.files.isNotEmpty) {
             final file = result.files.first;
-            final fileBytes = file.bytes;
+            final fileBytes = await file.xFile.readAsBytes();
+            Printer.e(file);
             final path = await FilesSystem.writeFile(
-              bytes: fileBytes!,
+              bytes: fileBytes,
               extension: file.extension!,
               pathBefore: state.configuracionEmpresa.logo,
             );
@@ -104,4 +110,12 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           }
         },
       );
+
+  void setDireccion(DireccionEntity direccion) {
+    state = state.copyWith(
+      configuracionEmpresa: state.configuracionEmpresa.copyWith(
+        direccion: direccion,
+      ),
+    );
+  }
 }
