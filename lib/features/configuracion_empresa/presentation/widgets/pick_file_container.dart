@@ -108,7 +108,7 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
                 duration: const Duration(milliseconds: 200),
                 child: Container(
                   color: Colors.black.withOpacity(
-                    0.7,
+                    0.8,
                   ),
                   height: height,
                   width: width,
