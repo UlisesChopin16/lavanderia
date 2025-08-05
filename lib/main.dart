@@ -1,26 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/configuracion_empresa_view.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/features/home/presentation/views/home_view.dart';
+import 'package:lavanderia/features/home/presentation/views/view_model/home_view_model.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     const theme = ThemeApp();
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: theme.toThemeData(isDark: false),
+//       darkTheme: theme.toThemeData(isDark: true),
+//       debugShowCheckedModeBanner: false,
+//       themeMode: ThemeMode.dark,
+//       home: const ConfiguracionEmpresaView(),
+//     );
+//   }
+// }
+
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
-    const theme = ThemeApp();
+    final color = ref.watch(
+      configuracionEmpresaViewModelProvider.select(
+        (value) => value.configuracionEmpresa.colorParsed,
+      ),
+    );
+    final themeMode = ref.watch(
+      homeViewModelProvider.select(
+        (value) => value.themeMode,
+      ),
+    );
+    // final mode = ref
+    final theme = ThemeApp(primaryColor: color);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: theme.toThemeData(isDark: false),
       darkTheme: theme.toThemeData(isDark: true),
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      home: const ConfiguracionEmpresaView(),
+      themeMode: themeMode,
+      home: const HomeView(),
     );
   }
 }

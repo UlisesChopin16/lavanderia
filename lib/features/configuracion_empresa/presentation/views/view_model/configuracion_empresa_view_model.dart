@@ -16,12 +16,12 @@ sealed class ConfiguracionEModel with _$ConfiguracionEModel {
   const factory ConfiguracionEModel({
     @Default(false) bool isLoading,
     @Default('') String errorMessage,
+    @Default(false) bool visiblePassword,
     @Default(ConfiguracionEmpresaEntity()) ConfiguracionEmpresaEntity configuracionEmpresa,
   }) = _ConfiguracionEModel;
-  
+
   DireccionEntity get direccion => configuracionEmpresa.direccion;
 }
-
 
 @riverpod
 class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
@@ -63,7 +63,8 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
   }
 
   void setColor(Color color) {
-    final colorHex = '#${color.toARGB32()}';
+    final colorHex = color.toARGB32();
+    Printer.e('Color Hex: $colorHex');
     // final color = Color(int.parse(colorHex.replaceFirst('#', '0xff')));
     state = state.copyWith(
       configuracionEmpresa: state.configuracionEmpresa.copyWith(
@@ -110,6 +111,20 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           }
         },
       );
+  
+  void setPassword(String password) {
+    state = state.copyWith(
+      configuracionEmpresa: state.configuracionEmpresa.copyWith(
+        password: password,
+      ),
+    );
+  }
+
+  void toggleVisiblePassword() {
+    state = state.copyWith(
+      visiblePassword: !state.visiblePassword,
+    );
+  }
 
   void setDireccion(DireccionEntity direccion) {
     state = state.copyWith(

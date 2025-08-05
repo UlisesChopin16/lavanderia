@@ -24,28 +24,37 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
   bool isHovered = false;
   bool childDesappear = false;
 
-  static const child = Center(
-    child: Column(
-      spacing: 10,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.upload_file,
-          size: 80,
-        ),
-        Text(
-          'Subir Logo',
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
-    ),
-  );
+  Widget get child {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final titleMedium = Theme.of(context).textTheme.titleMedium;
+
+    return Center(
+      child: Column(
+        spacing: 10,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.upload_file,
+            color: primaryColor,
+            size: 80,
+          ),
+          Text(
+            'Subir Logo',
+            style: titleMedium?.copyWith(color: primaryColor),
+          ),
+        ],
+      ),
+    );
+  }
 
   final radius = BorderRadius.circular(15);
 
   @override
   Widget build(BuildContext context) {
-    final surfaceContainer = Theme.of(context).colorScheme.surfaceBright;
+    final surfaceBrightness = Theme.of(context).colorScheme.surfaceBright;
+    final surfaceContainer = Theme.of(context).colorScheme.surfaceContainer;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorContainer = isDark ? surfaceBrightness : surfaceContainer;
     final configuracionNotifier = ref.read(configuracionEmpresaViewModelProvider.notifier);
     final logo = ref.watch(
       configuracionEmpresaViewModelProvider.select(
@@ -75,13 +84,13 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: surfaceContainer,
+                color: colorContainer,
                 borderRadius: radius,
                 image: DecorationImage(
                   image: FileImage(
                     File(logo),
                   ),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
               height: height,
@@ -99,7 +108,7 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
                 duration: const Duration(milliseconds: 200),
                 child: Container(
                   color: Colors.black.withOpacity(
-                    0.8,
+                    0.7,
                   ),
                   height: height,
                   width: width,

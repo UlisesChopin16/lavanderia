@@ -13,7 +13,7 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   // final Color neutralColor;
 
   const ThemeApp({
-    this.primaryColor = const Color(0xFF1B4C98),
+    required this.primaryColor,
     // this.secondaryColor = const Color(0xFF009FE3),
     // this.neutralColor = const Color(0xFFB8B8B8),
   });
@@ -21,8 +21,8 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   @override
   ThemeApp copyWith({
     Color? primaryColor,
-    Color? secondaryColor,
-    Color? neutralColor,
+    // Color? secondaryColor,
+    // Color? neutralColor,
   }) {
     return ThemeApp(
       primaryColor: primaryColor ?? this.primaryColor,
