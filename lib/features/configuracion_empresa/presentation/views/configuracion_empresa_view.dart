@@ -65,88 +65,84 @@ class _ConfiguracionEmpresaViewState extends ConsumerState<ConfiguracionEmpresaV
                           icon: IconsManager.selectedEmpresaIcon,
                         ),
                         IntrinsicHeight(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          child: Wrap(
                             spacing: 15,
+                            runSpacing: 15,
                             children: [
-                              const Flexible(
-                                child: Column(
-                                  children: [
-                                    PickFileContainer(
-                                      height: height,
-                                      width: widthField,
-                                    ),
-                                    RadioColors(
-                                      width: widthField,
-                                    ),
-                                  ],
-                                ),
+                              const Column(
+                                children: [
+                                  PickFileContainer(
+                                    height: height,
+                                    width: widthField,
+                                  ),
+                                  RadioColors(
+                                    width: widthField,
+                                  ),
+                                ],
                               ),
-                              Flexible(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  spacing: 15,
-                                  children: [
-                                    TextFormField(
-                                      initialValue: configuracionEmpresa.nombre,
-                                      decoration: const InputDecoration(
-                                        constraints: BoxConstraints(maxWidth: widthField),
-                                        labelText: 'Nombre de la Empresa',
-                                        hintText: 'Ingrese el nombre de la empresa',
-                                      ),
-                                      onChanged: configuracionNotifier.setNombre,
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                spacing: 15,
+                                children: [
+                                  TextFormField(
+                                    initialValue: configuracionEmpresa.nombre,
+                                    decoration: const InputDecoration(
+                                      constraints: BoxConstraints(maxWidth: widthField),
+                                      labelText: 'Nombre de la Empresa',
+                                      hintText: 'Ingrese el nombre de la empresa',
                                     ),
-                                    TextFormField(
-                                      initialValue: configuracionEmpresa.telefono,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(12),
-                                        phoneMask,
-                                      ],
-                                      decoration: const InputDecoration(
-                                        constraints: BoxConstraints(maxWidth: widthField),
-                                        labelText: 'Teléfono',
-                                        hintText: 'Ingrese el teléfono de la empresa',
-                                      ),
-                                      keyboardType: TextInputType.number,
+                                    onChanged: configuracionNotifier.setNombre,
+                                  ),
+                                  TextFormField(
+                                    initialValue: configuracionEmpresa.telefono,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(12),
+                                      phoneMask,
+                                    ],
+                                    decoration: const InputDecoration(
+                                      constraints: BoxConstraints(maxWidth: widthField),
+                                      labelText: 'Teléfono',
+                                      hintText: 'Ingrese el teléfono de la empresa',
                                     ),
-                                    TextFormField(
-                                      initialValue: configuracionEmpresa.correo,
-                                      decoration: const InputDecoration(
-                                        constraints: BoxConstraints(maxWidth: widthField),
-                                        labelText: 'Correo Electrónico',
-                                        hintText: 'Ingrese el correo electrónico de la empresa',
-                                      ),
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  TextFormField(
+                                    initialValue: configuracionEmpresa.correo,
+                                    decoration: const InputDecoration(
+                                      constraints: BoxConstraints(maxWidth: widthField),
+                                      labelText: 'Correo Electrónico',
+                                      hintText: 'Ingrese el correo electrónico de la empresa',
                                     ),
-                                    TextFormField(
-                                      initialValue: configuracionEmpresa.paginaWeb,
-                                      decoration: const InputDecoration(
-                                        constraints: BoxConstraints(maxWidth: widthField),
-                                        labelText: 'Página Web',
-                                        hintText: 'Ingrese la página web de la empresa',
-                                      ),
+                                  ),
+                                  TextFormField(
+                                    initialValue: configuracionEmpresa.paginaWeb,
+                                    decoration: const InputDecoration(
+                                      constraints: BoxConstraints(maxWidth: widthField),
+                                      labelText: 'Página Web',
+                                      hintText: 'Ingrese la página web de la empresa',
                                     ),
-                                    TextFormField(
-                                      initialValue: configuracionEmpresa.password,
-                                      obscureText: !visiblePassword,
-                                      onChanged: configuracionNotifier.setPassword,
-                                      decoration: InputDecoration(
-                                        constraints: const BoxConstraints(maxWidth: widthField),
-                                        labelText: 'Contraseña',
-                                        hintText: 'Ingrese la contraseña de la empresa',
-                                        suffixIcon: IconButton(
-                                          isSelected: visiblePassword,
-                                          icon: Icon(
-                                            visiblePassword
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                          ),
-                                          onPressed: configuracionNotifier.toggleVisiblePassword,
+                                  ),
+                                  TextFormField(
+                                    initialValue: configuracionEmpresa.password,
+                                    obscureText: !visiblePassword,
+                                    onChanged: configuracionNotifier.setPassword,
+                                    decoration: InputDecoration(
+                                      constraints: const BoxConstraints(maxWidth: widthField),
+                                      labelText: 'Contraseña',
+                                      hintText: 'Ingrese la contraseña de la empresa',
+                                      suffixIcon: IconButton(
+                                        isSelected: visiblePassword,
+                                        icon: Icon(
+                                          visiblePassword
+                                              ? Icons.visibility
+                                              : Icons.visibility_off,
                                         ),
+                                        onPressed: configuracionNotifier.toggleVisiblePassword,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

@@ -65,13 +65,13 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
     return MouseRegion(
       onEnter: (_) {
         setState(() {
-          childDesappear = false;
+          childDesappear = true;
           isHovered = true;
         });
       },
       onExit: (_) {
         setState(() {
-          childDesappear = true;
+          childDesappear = false;
           isHovered = false;
         });
       },
@@ -86,17 +86,19 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
               decoration: BoxDecoration(
                 color: colorContainer,
                 borderRadius: radius,
-                image: DecorationImage(
-                  image: FileImage(
-                    File(logo),
-                  ),
-                  fit: BoxFit.contain,
-                ),
+                image: logo.isEmpty
+                    ? null
+                    : DecorationImage(
+                        image: FileImage(
+                          File(logo),
+                        ),
+                        fit: BoxFit.contain,
+                      ),
               ),
               height: height,
               width: width,
               child: logo.isEmpty
-                  ? childDesappear
+                  ? !childDesappear
                       ? child
                       : null
                   : null,
