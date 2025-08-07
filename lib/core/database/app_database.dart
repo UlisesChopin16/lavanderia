@@ -1,12 +1,13 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'dart:io';
+// import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'tables/tables.dart';
-
 import 'daos/daos.dart';
+import 'tables/tables.dart';
 
 part 'app_database.g.dart';
 
@@ -36,6 +37,16 @@ part 'app_database.g.dart';
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
+  // AppDatabase.defaults()
+  //     : super(
+  //         driftDatabase(
+  //           name: 'app_db',
+  //           native: const DriftNativeOptions(
+  //             shareAcrossIsolates: true,
+
+  //           ),
+  //         ),
+  //       );
 
   @override
   int get schemaVersion => 1;

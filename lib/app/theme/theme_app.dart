@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'color_row_theme.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
+
+import 'color_row_theme.dart';
 
 class ThemeApp extends ThemeExtension<ThemeApp> {
   // static const Color primaryColor = Color(0xFF1B4C98); //Azul
@@ -120,6 +121,23 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
           surfaceTintColor: !isDark
               ? WidgetStateProperty.all(Colors.white)
               : WidgetStateProperty.all(colorScheme.surfaceContainer),
+        ),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        indicatorColor: colorScheme.primary.withOpacity(0.2),
+        unselectedIconTheme: IconThemeData(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        unselectedLabelTextStyle: TextStyle(
+          color: colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w400,
+        ),
+        selectedIconTheme: IconThemeData(
+          color: colorScheme.primary,
+        ),
+        selectedLabelTextStyle: TextStyle(
+          color: colorScheme.primary,
+          fontWeight: FontWeight.w500,
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(

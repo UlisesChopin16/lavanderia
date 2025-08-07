@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
-import 'package:lavanderia/features/home/presentation/views/home_view.dart';
 import 'package:lavanderia/features/home/presentation/views/view_model/home_view_model.dart';
 
 void main() {
@@ -49,13 +50,21 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
     // final mode = ref
     final theme = ThemeApp(primaryColor: color);
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: theme.toThemeData(isDark: false),
       darkTheme: theme.toThemeData(isDark: true),
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
-      home: const HomeView(),
+      routerConfig: GoRouter(
+        initialLocation: AppRoutes.home,
+        debugLogDiagnostics: true,
+        routes: AppRoutes.routes,
+        // refreshListenable: 
+        //   ref.watch(homeViewModelProvider),
+      )
+
+      // home: const HomeView(),
     );
   }
 }

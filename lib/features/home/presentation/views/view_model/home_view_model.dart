@@ -8,7 +8,7 @@ part 'home_view_model.g.dart';
 @freezed
 sealed class HomeModel with _$HomeModel {
   const factory HomeModel({
-    @Default(0) int currentIndex,
+    @Default(1) int currentIndex,
     @Default(ThemeMode.light) ThemeMode themeMode,
   }) = _HomeModel;
 }
