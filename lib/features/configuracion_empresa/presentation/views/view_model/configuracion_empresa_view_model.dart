@@ -2,7 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/utils/files_system.dart';
-import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/entities/configuracion_empresa_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -64,7 +63,6 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
 
   void setColor(Color color) {
     final colorHex = color.toARGB32();
-    Printer.e('Color Hex: $colorHex');
     // final color = Color(int.parse(colorHex.replaceFirst('#', '0xff')));
     state = state.copyWith(
       configuracionEmpresa: state.configuracionEmpresa.copyWith(
@@ -96,7 +94,6 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           if (result != null && result.files.isNotEmpty) {
             final file = result.files.first;
             final fileBytes = await file.xFile.readAsBytes();
-            Printer.e(file);
             final path = await FilesSystem.writeFile(
               bytes: fileBytes,
               extension: file.extension!,

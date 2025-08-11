@@ -4,31 +4,18 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 import 'color_row_theme.dart';
 
 class ThemeApp extends ThemeExtension<ThemeApp> {
-  // static const Color primaryColor = Color(0xFF1B4C98); //Azul
-  // static const Color primaryColorLight = Color(0xFFF5F5F5); //Gris
-  // static const Color secondaryColor = Color(0xFF009FE3); //Azul
-  // static const Color errorColor = Color(0xFFB00020);
-
   final Color primaryColor;
-  // final Color secondaryColor;
-  // final Color neutralColor;
 
   const ThemeApp({
     required this.primaryColor,
-    // this.secondaryColor = const Color(0xFF009FE3),
-    // this.neutralColor = const Color(0xFFB8B8B8),
   });
 
   @override
   ThemeApp copyWith({
     Color? primaryColor,
-    // Color? secondaryColor,
-    // Color? neutralColor,
   }) {
     return ThemeApp(
       primaryColor: primaryColor ?? this.primaryColor,
-      // secondaryColor: secondaryColor ?? this.secondaryColor,
-      // neutralColor: neutralColor ?? this.neutralColor,
     );
   }
 
@@ -46,7 +33,7 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
 
   // falta agregar el esquema de colores
   ThemeData toThemeData({required bool isDark}) {
-    final colorScheme = _scheme(isDark).toColorScheme();
+    final colorScheme = _scheme(isDark, primaryColor).toColorScheme();
     return _base(colorScheme).copyWith(brightness: colorScheme.brightness);
   }
 
@@ -155,22 +142,11 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
         ),
         elevation: 15,
       ),
-      // tabBarTheme: TabBarTheme(
-      //   labelColor: Colors.white,
-      //   labelStyle: const TextStyle(
-      //     fontWeight: FontWeight.bold,
-      //     fontSize: 14,
-      //   ),
-      //   dividerColor: colorScheme.primary,
-      //   unselectedLabelColor: Colors.white,
-      //   indicatorSize: TabBarIndicatorSize.tab,
-      //   indicatorColor: Colors.white,
-      // ),
     );
   }
 
-  DynamicScheme _scheme(bool isDark) {
-    final base = CorePalette.of(primaryColor.toARGB32());
+  static DynamicScheme _scheme(bool isDark, Color colorData) {
+    final base = CorePalette.of(colorData.toARGB32());
     final primary = base.primary;
     final secondary = base.secondary;
     final tertiary = base.tertiary;
@@ -186,192 +162,11 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
       secondaryPalette: secondary,
       tertiaryPalette: tertiary,
       neutralVariantPalette: neutralVariant,
-      sourceColorArgb: primaryColor.toARGB32(),
+      sourceColorArgb: colorData.toARGB32(),
       variant: Variant.vibrant,
     );
   }
 
-  // static const Color primaryColor = Color(0xFF1B4C98); //Azul
-  // static const Color primaryColorLight = Color(0xFFF5F5F5); //Gris
-  // static const Color primaryColorDark = Color(0xFFB8B8B8); //Gris
-
-  // static const Color secondaryColor = Color(0xFF009FE3); //Azul
-  // static const Color secondaryColorDark = Color(0xFF103073); //Azul
-
-  // static const Color accentColor = Color(0xFFC5C4C4);
-
-  // static ThemeData getTheme() => ThemeData(
-  //       fontFamily: "Kanit",
-  //       //useMaterial3: true,
-  //       useMaterial3: true,
-  //       colorScheme: const ColorScheme.dark(
-  //         /* primary: primaryColor,
-  //         // primaryVariant: primaryColorDark,
-  //         secondary: secondaryColor,
-  //         // secondaryVariant: secondaryColorDark,
-  //         brightness: Brightness.light, */
-  //         primary: primaryColor,
-  //         // primaryVariant: primaryColorDark,
-  //         secondary: secondaryColor,
-  //         onSurface: secondaryColor,
-  //         onError: secondaryColor,
-  //         onPrimary: Colors.white,
-  //         onSecondary: secondaryColor,
-  //         brightness: Brightness.light,
-  //       ),
-  //       primaryColor: primaryColor,
-  //       dividerColor: primaryColor,
-  //       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 1),
-  //       cardTheme: const CardTheme(
-  //         elevation: 3,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(15)),
-  //         ),
-  //       ),
-  //       switchTheme: SwitchThemeData(
-  //         thumbColor: WidgetStateProperty.resolveWith(
-  //           (states) {
-  //             if (states.contains(WidgetState.disabled)) {
-  //               return Colors.grey;
-  //             }
-  //             return Colors.white;
-  //           },
-  //         ),
-  //         trackColor: WidgetStateProperty.resolveWith(
-  //           (states) {
-  //             if (states.contains(WidgetState.disabled)) {
-  //               return Colors.grey[800];
-  //             }
-  //             return primaryColor;
-  //           },
-  //         ),
-  //       ),
-  //       radioTheme: RadioThemeData(
-  //         fillColor: WidgetStateProperty.all(primaryColor),
-  //       ),
-  //       // inputDecorationTheme: inputDecorationGradient(),
-
-  //       elevatedButtonTheme: ElevatedButtonThemeData(
-  //         style: ElevatedButton.styleFrom(
-  //           elevation: 3,
-  //           backgroundColor: primaryColor,
-  //           foregroundColor: Colors.white,
-  //           iconColor: Colors.white,
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           textStyle: const TextStyle(
-  //             fontSize: 14,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-  //         ),
-  //       ),
-
-  //       // inputDecorationTheme: InputDecorationTheme(
-  //       //   border: OutlineInputBorder(
-  //       //     borderRadius: BorderRadius.circular(10),
-  //       //   ),
-  //       // ),
-  //       dropdownMenuTheme: DropdownMenuThemeData(
-  //         inputDecorationTheme: inputDecorationTheme,
-  //         textStyle: const TextStyle(
-  //           color: primaryColor,
-  //           fontSize: 14,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //         menuStyle: MenuStyle(
-  //           maximumSize: WidgetStateProperty.all(const Size(420, 300)),
-  //           backgroundColor: WidgetStateProperty.all(Colors.white),
-  //           elevation: WidgetStateProperty.all(10),
-  //           alignment: Alignment.bottomLeft,
-  //           visualDensity: VisualDensity.adaptivePlatformDensity,
-  //           shape: WidgetStateProperty.all(
-  //             RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       inputDecorationTheme: inputDecorationTheme,
-  //       textButtonTheme: TextButtonThemeData(
-  //         style: TextButton.styleFrom(
-  //           foregroundColor: primaryColorDark,
-  //         ),
-  //       ),
-  //       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-  //         backgroundColor: primaryColor,
-  //         foregroundColor: Colors.white,
-  //       ),
-  //       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-  //         unselectedItemColor: Colors.grey,
-  //       ),
-  //       chipTheme: const ChipThemeData(
-  //         showCheckmark: false,
-  //         backgroundColor: Color.fromARGB(255, 189, 189, 189),
-  //         selectedColor: secondaryColor,
-  //         labelStyle: TextStyle(color: Colors.white),
-  //       ),
-  //     );
-
-  // // * Drop menu style
-  // static const textDisableSelectDropDownStyle = TextStyle(
-  //   fontSize: 14,
-  //   color: Colors.black54,
-  //   overflow: TextOverflow.ellipsis,
-  // );
-
-  static const textUnSelectDropDownStyle = TextStyle(
-    fontSize: 14,
-    color: Colors.black,
-    overflow: TextOverflow.ellipsis,
-  );
-
-  // static const textSelectDropDownStyle = TextStyle(
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.bold,
-  //   overflow: TextOverflow.ellipsis,
-  // );
-
-  // /* + */
-  // static final buttonStyle = ButtonStyleData(
-  //   height: 50,
-  //   width: 200,
-  //   padding: const EdgeInsets.only(left: 14, right: 14),
-  //   decoration: BoxDecoration(
-  //     color: Colors.white,
-  //     borderRadius: BorderRadius.circular(14),
-  //     border: Border.all(color: Colors.black26),
-  //   ),
-  //   elevation: 1,
-  // );
-
-  // static const iconDropMenuStyle = IconStyleData(
-  //   icon: Icon(
-  //     Icons.arrow_forward_ios_outlined,
-  //   ),
-  //   iconSize: 20,
-  // );
-
-  // static final dropdownStyle = DropdownStyleData(
-  //   maxHeight: 500,
-  //   width: 300,
-  //   padding: null,
-  //   decoration: BoxDecoration(
-  //     borderRadius: BorderRadius.circular(10),
-  //   ),
-  //   elevation: 8,
-  //   offset: const Offset(-20, 0),
-  //   scrollbarTheme: ScrollbarThemeData(
-  //     radius: const Radius.circular(40),
-  //     thickness: WidgetStateProperty.all<double>(6),
-  //   ),
-  // );
-
-  // static const menuItemStyle = MenuItemStyleData(
-  //   height: 40,
-  //   padding: EdgeInsets.only(left: 14, right: 14),
-  // );
 
   static ({InputDecoration inputDecoration, TextStyle style}) disableInputsProfile({
     required String labelText,
@@ -403,108 +198,13 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
     );
   }
 
-  // static const inputDecorationTheme = InputDecorationTheme(
-  //   filled: true,
-  //   constraints: BoxConstraints(maxHeight: 50 //CAMBIAR/
-  //       ),
-  //   contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-  //   fillColor: Colors.white,
-  //   labelStyle: TextStyle(
-  //     color: primaryColor,
-  //   ),
-  //   enabledBorder: OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       color: primaryColor,
-  //     ),
-  //   ),
-  //   disabledBorder: OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       color: primaryColorDark,
-  //     ),
-  //   ),
-  //   focusedBorder: OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       color: primaryColor,
-  //     ),
-  //   ),
-  // );
-
-  // static InputDecorationTheme outlineDecorationGradient() {
-  //   final errorBorder = OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       style: BorderStyle.solid,
-  //       color: Colors.red[500]!,
-  //       width: 2,
-  //     ),
-  //     borderRadius: const BorderRadius.all(Radius.circular(15)),
-  //   );
-  //   const normalBorder = OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       style: BorderStyle.solid,
-  //       color: primaryColor,
-  //       width: 2,
-  //     ),
-  //     borderRadius: BorderRadius.all(Radius.circular(15)),
-  //   );
-
-  //   const disabledBorder = OutlineInputBorder(
-  //     borderSide: BorderSide(
-  //       style: BorderStyle.solid,
-  //       color: Colors.white70,
-  //       width: 2,
-  //     ),
-  //     borderRadius: BorderRadius.all(Radius.circular(15)),
-  //   );
-
-  //   return InputDecorationTheme(
-  //     filled: true,
-  //     fillColor: Colors.white,
-  //     suffixIconColor: Colors.black,
-  //     prefixIconColor: Colors.black,
-  //     counterStyle: const TextStyle(color: Colors.white),
-  //     iconColor: Colors.white,
-  //     labelStyle: const TextStyle(color: Colors.black),
-  //     border: normalBorder,
-  //     enabledBorder: normalBorder,
-  //     focusedBorder: normalBorder,
-
-  //     // * disabled
-  //     disabledBorder: disabledBorder,
-
-  //     // * error
-  //     errorBorder: errorBorder,
-  //     focusedErrorBorder: errorBorder,
-  //     errorStyle: const TextStyle(color: Colors.white),
-  //   );
-  // }
-
-  // static BoxDecoration boxDecorationGradiente() => const BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           ThemeApp.primaryColorDark,
-  //           ThemeApp.primaryColor,
-  //         ],
-  //         begin: Alignment.centerLeft,
-  //         end: Alignment.centerRight,
-  //         stops: [0.2, 0.95],
-  //       ),
-  //     );
-
-  // static BoxDecoration buttonDecorationGradiente() => const BoxDecoration(
-  //       borderRadius: BorderRadius.all(Radius.circular(5)),
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           ThemeApp.primaryColorDark,
-  //           ThemeApp.primaryColor,
-  //         ],
-  //         begin: Alignment.centerLeft,
-  //         end: Alignment.centerRight,
-  //         stops: [0.2, 0.95],
-  //       ),
-  //     );
+  static ColorScheme getColorScheme(Color colorData, bool isDark) {
+    final scheme = _scheme(isDark, colorData);
+    return scheme.toColorScheme();
+  }
 }
 
-extension on DynamicScheme {
+extension DynamicExt on DynamicScheme {
   ColorScheme toColorScheme() {
     return ColorScheme(
       brightness: isDark ? Brightness.dark : Brightness.light,

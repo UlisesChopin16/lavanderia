@@ -1,4 +1,4 @@
-export 'categoria_item_servicio.dart';
+export 'precios_conceptos.dart';
 export 'categoria_servicio.dart';
 export 'cliente.dart';
 export 'configuracion_empresa.dart';

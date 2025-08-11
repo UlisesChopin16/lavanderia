@@ -9,12 +9,12 @@ sealed class ConfiguracionEmpresaModel with _$ConfiguracionEmpresaModel {
   const factory ConfiguracionEmpresaModel({
     required int id,
     required String nombre,
-    required String direccion,
     required String telefono,
     required String correo,
     required String paginaWeb,
+    required String password,
     String? logo,
-    required String color,
+    required int color,
     required DateTime fechaCreacion,
     DateTime? fechaActualizacion,
     DateTime? fechaEliminacion,
@@ -25,7 +25,7 @@ sealed class ConfiguracionEmpresaModel with _$ConfiguracionEmpresaModel {
   ) => ConfiguracionEmpresaModel(
     id: entry.id,
     nombre: entry.nombre,
-    direccion: entry.direccion,
+    password: entry.password,
     telefono: entry.telefono,
     correo: entry.correo,
     paginaWeb: entry.paginaWeb,
@@ -49,9 +49,12 @@ sealed class DireccionModel with _$DireccionModel {
     required String numeroExterior,
     String? numeroInterior,
     required String colonia,
-    required String codigoPostal,
+    required int codigoPostal,
     required String ciudad,
     required String estado,
+    required DateTime fechaCreacion,
+    DateTime? fechaActualizacion,
+    DateTime? fechaEliminacion,
   }) = _DireccionModel;
 
   factory DireccionModel.fromEntry(DireccionEntry entry) => DireccionModel(
@@ -64,6 +67,9 @@ sealed class DireccionModel with _$DireccionModel {
     codigoPostal: entry.codigoPostal,
     ciudad: entry.ciudad,
     estado: entry.estado,
+    fechaCreacion: entry.fechaCreacion,
+    fechaActualizacion: entry.fechaActualizacion,
+    fechaEliminacion: entry.fechaEliminacion,
   );
 
   factory DireccionModel.fromJson(Map<String, dynamic> json) =>

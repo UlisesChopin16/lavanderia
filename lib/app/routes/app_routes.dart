@@ -1,47 +1,50 @@
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/configuracion_empresa_view.dart';
-import 'package:lavanderia/features/home/presentation/views/home_view.dart';
-import 'package:lavanderia/features/orden_servicio/presentation/views/orden_servicio_view.dart';
+import 'package:lavanderia/features/presentation/types/home_tabs_type.dart';
+import 'package:lavanderia/features/presentation/views/home_view.dart';
 
-// final _shellNavigatorKey = GlobalKey<NavigatorState>();
-// final _rootNavigatorKey = GlobalKey<NavigatorState>();
 class AppRoutes {
   static const String home = '/';
-  static const String configuracionEmpresa = '/configuracionEmpresa/data';
+  static const String configuracionEmpresa = '/configuracionEmpresa';
   static const String ordenServicio = '/ordenServicio';
-  static final routes = [
-      // GoRoute(
-      //   path: home,
-      //   builder: (context, state) => const HomeView(),
-      // ),
-      ShellRoute(
-        // navigatorKey: _shellNavigatorKey,
-        // parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state, child) => HomeView(
-          child: child,
+  static const String configuracionGeneral = '/configuracionGeneral';
+
+  static List<GoRoute> get _tabRoutes => HomeTabsType.values
+      .map(
+        (tab) => GoRoute(
+          name: tab.route.name,
+          path: tab.route.path,
+          builder: (context, state) => tab.route.view,
         ),
-        routes: [
-          GoRoute(
-            // parentNavigatorKey: _shellNavigatorKey,
-            name: 'configuracionEmpresa',
-            path: configuracionEmpresa,
-            builder: (context, state) => const ConfiguracionEmpresaView(),
-          ),
-          GoRoute(
-            // parentNavigatorKey: _shellNavigatorKey,
-            name: 'OrdenServicio',
-            path: home,
-            builder: (context, state) => const OrdenServicioView(),
-          ),
-        ],
       )
-    ];
+      .toList();
 
-  // static final GoRouter router = GoRouter(
-  //   initialLocation: home,
-  //   debugLogDiagnostics: true,
+  static final routes = [
+    // ShellRoute(
+    //   builder: (context, state, child) => HomeView(
+    //     child: child,
+    //   ),
+    //   routes: [
+    //     ..._tabRoutes,
+    //   ],
+    // )
+    GoRoute(
+      path: home,
+      name: 'Home',
+      builder: (context, state) => const HomeView(),
+    ),
+    ..._tabRoutes,
+  ];
+}
 
-  //   // navigatorKey: _rootNavigatorKey,
-  //   routes: 
-  // );
+class DataRoute {
+  final String path;
+  final String name;
+  final Widget view;
+
+  const DataRoute({
+    required this.path,
+    required this.name,
+    required this.view,
+  });
 }

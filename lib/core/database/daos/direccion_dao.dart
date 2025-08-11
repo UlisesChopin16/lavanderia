@@ -9,15 +9,15 @@ class DireccionDao extends DatabaseAccessor<AppDatabase>
     with _$DireccionDaoMixin {
   DireccionDao(super.db);
 
-  Future<List<DireccionEntry>> getAll() => select(direccion).get();
+  Future<List<DireccionEntry>> getAll() async => await select(direccion).get();
 
   Stream<List<DireccionEntry>> watchAll() => select(direccion).watch();
 
-  Future<DireccionEntry?> getById(int id) => (select(
+  Future<DireccionEntry?> getById(int id) async => await (select(
     direccion,
   )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertDireccion(Insertable<DireccionEntry> row) {
+  Future<int> insertDireccion(Insertable<DireccionEntry> row) async {
     final now = DateTime.now();
     final casted = row as DireccionEntry;
     final direccionWithDate = casted.copyWith(
@@ -25,16 +25,16 @@ class DireccionDao extends DatabaseAccessor<AppDatabase>
       fechaActualizacion: Value(now),
     );
 
-    return into(direccion).insert(direccionWithDate);
+    return await into(direccion).insert(direccionWithDate);
   }
 
-  Future<bool> updateDireccion(Insertable<DireccionEntry> row) {
+  Future<bool> updateDireccion(Insertable<DireccionEntry> row) async {
     // Ensure that the cliente has an update date
     final now = DateTime.now();
     final casted = row as DireccionEntry;
     final direccionWithDate = casted.copyWith(fechaActualizacion: Value(now));
 
-    return update(direccion).replace(direccionWithDate);
+    return await update(direccion).replace(direccionWithDate);
   }
 
   Future<bool> deleteDireccion(int id) async {
@@ -48,6 +48,6 @@ class DireccionDao extends DatabaseAccessor<AppDatabase>
       fechaEliminacion: Value(now),
     );
 
-    return update(direccion).replace(updateDireccion);
+    return await update(direccion).replace(updateDireccion);
   }
 }

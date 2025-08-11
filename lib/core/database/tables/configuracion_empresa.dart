@@ -4,12 +4,11 @@ import 'package:drift/drift.dart';
 class ConfiguracionEmpresa extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get nombre => text()();
-  TextColumn get direccion => text()();
   TextColumn get telefono => text()();
   TextColumn get correo => text()();
   TextColumn get paginaWeb => text()();
   TextColumn get logo => text().nullable()();        // Guardar ruta de la imagen
-  TextColumn get color => text()();
+  IntColumn get color => integer()();
   TextColumn get password => text()(); // Contraseña para acceso administrativo
   DateTimeColumn get fechaCreacion => dateTime()();
   DateTimeColumn get fechaActualizacion => dateTime().nullable()();

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+
 import './../../core/database/app_database.dart';
 import './../../core/database/daos/daos.dart';
 import 'injector.config.dart';
@@ -17,7 +18,7 @@ abstract class DatabaseModule {
   @lazySingleton
   CategoriaServicioDao categoriaServicioDao(AppDatabase db) => db.categoriaServicioDao;
   @lazySingleton
-  CategoriaItemServicioDao categoriaItemServicioDao(AppDatabase db) => db.categoriaItemServicioDao;
+  PreciosConceptosDao preciosConceptosDao(AppDatabase db) => db.preciosConceptosDao;
   @lazySingleton
   ClientesDao clienteDao(AppDatabase db) => db.clientesDao;
   @lazySingleton

@@ -9,7 +9,7 @@ class Direccion extends Table {
   TextColumn get numeroExterior => text()();
   TextColumn get numeroInterior => text().nullable()();
   TextColumn get colonia => text()();
-  TextColumn get codigoPostal => text()();
+  IntColumn get codigoPostal => integer()();
   TextColumn get ciudad => text()();
   TextColumn get estado => text()();
   DateTimeColumn get fechaCreacion => dateTime()();

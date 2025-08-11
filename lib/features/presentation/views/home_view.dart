@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/core/extensions/theme_mode_ext.dart';
-import 'package:lavanderia/features/home/domain/types/home_tabs_type.dart';
-import 'package:lavanderia/features/home/presentation/views/view_model/home_view_model.dart';
+import 'package:lavanderia/features/presentation/types/home_tabs_type.dart';
+import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
 
 class HomeView extends HookConsumerWidget {
-  final Widget child;
-  const HomeView({super.key, required this.child});
+  const HomeView({super.key});
 
   static const tabs = HomeTabsType.values;
 
@@ -26,17 +24,10 @@ class HomeView extends HookConsumerWidget {
             width: 80,
             child: NavigationRail(
               selectedIndex: index,
-              // extended: ,
-              // leading: IconButton(
-              //   icon: const Icon(Icons.menu),
-              //   onPressed: () {
-              //     context.pop();
-              //   },
-              // ),
               onDestinationSelected: (indexPage) {
                 homeNotifier.setCurrentIndex(indexPage);
-                if (indexPage == index) return;
-                context.go(tabs[indexPage].route);
+                // if (indexPage == index) return;
+                // context.go(tabs[indexPage].route.path);
               },
               elevation: 5,
               labelType: NavigationRailLabelType.all,
@@ -66,8 +57,7 @@ class HomeView extends HookConsumerWidget {
           ),
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(
-            // child: tabs[index].view,
-            child: child,
+            child: tabs[index].route.view,
           )
         ],
       ),

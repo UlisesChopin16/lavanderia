@@ -53,7 +53,7 @@ sealed class ItemOrdenModel with _$ItemOrdenModel{
   const factory ItemOrdenModel({
     required int id,
     required int ordenId,
-    required int itemId,
+    required int precioConceptoId,
     required double cantidad,
     required double importe,
     required DateTime fechaCreacion,
@@ -64,7 +64,7 @@ sealed class ItemOrdenModel with _$ItemOrdenModel{
   factory ItemOrdenModel.fromEntry(ItemServicioOrdenEntry entry) => ItemOrdenModel(
     id: entry.id,
     ordenId: entry.ordenId,
-    itemId: entry.itemId,
+    precioConceptoId: entry.precioConceptoId,
     cantidad: entry.cantidad,
     importe: entry.importe,
     fechaCreacion: entry.fechaCreacion,

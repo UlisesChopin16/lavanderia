@@ -1,10 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/tables/tables.dart';
 
-@DataClassName('CategoriaItemServicioEntry')
-class CategoriaItemServicio extends Table {
+@DataClassName('PreciosConceptosEntry')
+class PreciosConceptos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get categoriaId => integer().references(CategoriaServicio, #id)(); // ID de la categoría del item
   IntColumn get itemId => integer().references(ItemServicio, #id)();
   IntColumn get sizeRopaId => integer().references(SizesRopa, #id)();
   IntColumn get diasEntrega => integer()(); // Días de entrega para este item en esta categoría

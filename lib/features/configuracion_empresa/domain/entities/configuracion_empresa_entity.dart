@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/utils/printer.dart';
+import 'package:lavanderia/features/configuracion_empresa/data/models/configuracion_empresa_model.dart';
 
 part 'configuracion_empresa_entity.freezed.dart';
 
@@ -26,6 +27,7 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
     if (color == 0) {
       const blue = Colors.blue;
       final argb = blue.toARGB32();
+      Printer.e('Color Parsed: $argb');
       final colorParsed = Color(argb);
       return colorParsed;
     }
@@ -34,10 +36,26 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
 
     return colorParsed;
   }
+
+  factory ConfiguracionEmpresaEntity.fromModel(ConfiguracionEmpresaModel config, DireccionModel direccion) =>
+      ConfiguracionEmpresaEntity(
+        id: config.id,
+        nombre: config.nombre,
+        telefono: config.telefono,
+        correo: config.correo,
+        paginaWeb: config.paginaWeb,
+        logo: config.logo ?? '',
+        color: config.color,
+        direccion: DireccionEntity.fromModel(direccion),
+        fechaCreacion: config.fechaCreacion,
+        fechaActualizacion: config.fechaActualizacion,
+        fechaEliminacion: config.fechaEliminacion,
+      );
 }
 
 @freezed
 sealed class DireccionEntity with _$DireccionEntity {
+  const DireccionEntity._();
   const factory DireccionEntity({
     @Default(-1) int id,
     @Default(-1) int empresaId,
@@ -48,5 +66,23 @@ sealed class DireccionEntity with _$DireccionEntity {
     @Default(-1) int codigoPostal,
     @Default('') String ciudad,
     @Default('') String estado,
+    DateTime? fechaCreacion,
+    DateTime? fechaActualizacion,
+    DateTime? fechaEliminacion,
   }) = _DireccionEntity;
+
+  factory DireccionEntity.fromModel(DireccionModel direccion) => DireccionEntity(
+    id: direccion.id,
+    empresaId: direccion.empresaId,
+    calle: direccion.calle,
+    numeroExterior: direccion.numeroExterior,
+    numeroInterior: direccion.numeroInterior ?? '',
+    colonia: direccion.colonia,
+    codigoPostal: direccion.codigoPostal,
+    ciudad: direccion.ciudad,
+    estado: direccion.estado,
+    fechaCreacion: direccion.fechaCreacion,
+    fechaActualizacion: direccion.fechaActualizacion,
+    fechaEliminacion: direccion.fechaEliminacion,
+  );
 }
