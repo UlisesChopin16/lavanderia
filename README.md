@@ -2,6 +2,12 @@
 
 A new Flutter project.
 
+## Execute
+### Ejecutar los siguientes comandos
+flutter clean
+flutter pub get
+dart run build_runner build -d
+
 ## Clientes de lavandería
 ### Campos requeridos:
 - ID

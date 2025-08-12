@@ -23,12 +23,13 @@ class ConfiguracionEmpresaDao extends DatabaseAccessor<AppDatabase>
     final now = DateTime.now();
     final casted = row as ConfiguracionEmpresaEntry;
     final configWithDate = casted.copyWith(
+      id: row.id == -1 ? 1 : row.id,
       fechaCreacion: now,
       fechaActualizacion: Value(now),
 
     );
 
-    return await into(configuracionEmpresa).insert(configWithDate);
+    return await into(configuracionEmpresa).insert(configWithDate,mode: InsertMode.insertOrReplace);
   }
 
   Future<bool> updateConfig(Insertable<ConfiguracionEmpresaEntry> row) async {

@@ -43,6 +43,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     super.initState();
     // WidgetsBinding.instance.
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final configuracionNotifier = ref.read(configuracionEmpresaViewModelProvider.notifier);
+      configuracionNotifier.initialize();
+    });
   }
 
   @override

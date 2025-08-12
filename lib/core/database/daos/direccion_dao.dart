@@ -21,6 +21,7 @@ class DireccionDao extends DatabaseAccessor<AppDatabase>
     final now = DateTime.now();
     final casted = row as DireccionEntry;
     final direccionWithDate = casted.copyWith(
+      id: row.id == -1 ? 1 : row.id,
       fechaCreacion: now,
       fechaActualizacion: Value(now),
     );

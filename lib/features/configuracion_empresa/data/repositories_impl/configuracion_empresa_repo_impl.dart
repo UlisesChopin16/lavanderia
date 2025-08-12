@@ -1,8 +1,13 @@
 import 'package:lavanderia/features/configuracion_empresa/data/datasources/configuracion_empresa_datasource.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/entities/configuracion_empresa_entity.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/extensions/configuracion_empresa_ext.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/repositories/configuracion_empresa_repository.dart';
 
+
+/// Implementation of the ConfiguracionEmpresaRepository that interacts with the datasource.
+/// This class provides methods to create, retrieve, and update configuration data for a company.
+@LazySingleton(as: ConfiguracionEmpresaRepository)
 class ConfiguracionEmpresaRepoImpl implements ConfiguracionEmpresaRepository {
   final ConfiguracionEmpresaDatasource datasource;
   const ConfiguracionEmpresaRepoImpl({required this.datasource});

@@ -1,9 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/files_system.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/entities/configuracion_empresa_entity.dart';
+import 'package:lavanderia/features/configuracion_empresa/domain/repositories/configuracion_empresa_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'configuracion_empresa_view_model.freezed.dart';
@@ -14,20 +16,55 @@ sealed class ConfiguracionEModel with _$ConfiguracionEModel {
   const ConfiguracionEModel._();
   const factory ConfiguracionEModel({
     @Default(false) bool isLoading,
-    @Default('') String errorMessage,
     @Default(false) bool visiblePassword,
+    @Default(true) bool isFirstTime,
+    @Default(true) bool blockUI,
+    @Default('') String errorMessage,
     @Default(ConfiguracionEmpresaEntity()) ConfiguracionEmpresaEntity configuracionEmpresa,
   }) = _ConfiguracionEModel;
 
   DireccionEntity get direccion => configuracionEmpresa.direccion;
 }
 
+
+
 @riverpod
 class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
+  final _configuracionEmpresaRepo = instance<ConfiguracionEmpresaRepository>();
+
   @override
   ConfiguracionEModel build() {
     return const ConfiguracionEModel();
   }
+
+  void initialize() => safeCall(
+        actionBefore: () async => state = state.copyWith(
+          isLoading: true,
+          errorMessage: '',
+        ),
+        actionAfter: () async => state = state.copyWith(
+          isLoading: false,
+          errorMessage: '',
+        ),
+        actionOnError: (error, message) async => state = state.copyWith(
+          isLoading: false,
+          errorMessage: message,
+        ),
+        action: () async {
+          final result = await _configuracionEmpresaRepo.getConfiguracionEmpresaById(1);
+          // result == null ? state = state.copyWith(isFirstTime: true) : state = state.copyWith(isFirstTime: false, configuracionEmpresa: result);
+          if (result == null) {
+            state = state.copyWith(isFirstTime: true);
+          } else {
+            state = state.copyWith(
+              isFirstTime: false,
+              blockUI: true,
+              configuracionEmpresa: result,
+            );
+          }
+        },
+      );
+  
 
   void setNombre(String nombre) {
     state = state.copyWith(
@@ -130,4 +167,87 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
       ),
     );
   }
+
+  String validateAll() {
+    final entity = state.configuracionEmpresa;
+    if (entity.nombre.trim().isEmpty) {
+      return 'El nombre es obligatorio';
+    }
+    if (entity.telefono.trim().isEmpty) {
+      return 'El teléfono es obligatorio';
+    }
+    if (entity.password.trim().isEmpty) {
+      return 'La contraseña es obligatoria';
+    }
+    if (entity.logo.trim().isEmpty) {
+      return 'El logo es obligatorio';
+    }
+    final direccion = entity.direccion;
+    if (direccion.calle.trim().isEmpty) {
+      return 'La calle es obligatoria';
+    }
+    if (direccion.numeroExterior.trim().isEmpty) {
+      return 'El número exterior es obligatorio';
+    }
+    if (direccion.colonia.trim().isEmpty) {
+      return 'La colonia es obligatoria';
+    }
+    if (direccion.codigoPostal <= 0) {
+      return 'El código postal es obligatorio';
+    }
+    if (direccion.ciudad.trim().isEmpty) {
+      return 'La ciudad es obligatoria';
+    }
+    if (direccion.estado.trim().isEmpty) {
+      return 'El estado es obligatorio';
+    }
+    return '';
+  }
+
+  void saveConfiguracionEmpresa({
+    VoidCallback? onSuccess,
+  }) async => await safeCall(
+        actionBefore: () async => state = state.copyWith(
+          isLoading: true,
+          errorMessage: '',
+        ),
+        actionAfter: () async => state = state.copyWith(
+          isLoading: false,
+          errorMessage: '',
+        ),
+        actionOnError: (error, message) async => state = state.copyWith(
+          isLoading: false,
+          errorMessage: message,
+        ),
+        action: () async {
+          final isFirstTime = state.isFirstTime;
+          final message = validateAll();
+          if (message.isNotEmpty) {
+            state = state.copyWith(errorMessage: message);
+            return;
+          }
+
+          // Save the configuration
+          if (isFirstTime) {
+            // Call the save method for the first time
+            await _configuracionEmpresaRepo.createConfiguracionEmpresa(state.configuracionEmpresa);
+          } else {
+            // Call the edit method for subsequent saves
+            await _configuracionEmpresaRepo.updateConfiguracionEmpresa(state.configuracionEmpresa);
+          }
+
+          onSuccess?.call();
+
+          // final result = await _configuracionEmpresaRepo.saveConfiguracionEmpresa(state.configuracionEmpresa);
+          // result.fold(
+          //   (failure) => throw Exception(failure.message),
+          //   (data) {
+          //     state = state.copyWith(
+          //       isFirstTime: false,
+          //       configuracionEmpresa: data,
+          //     );
+          //   },
+          // );
+        },
+      );
 }
