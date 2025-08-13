@@ -13,4 +13,8 @@ class IconsManager {
   // Icons for general settings view
   static const selectedCatalogoIcon = Icons.menu_book_rounded;
   static const unselectedCatalogoIcon = Icons.menu_book_outlined;
+
+  // Icons for clients view
+  static const selectedClientesIcon = Icons.people_rounded;
+  static const unselectedClientesIcon = Icons.people_outlined;
 }

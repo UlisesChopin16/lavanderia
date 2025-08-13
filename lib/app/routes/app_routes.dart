@@ -7,7 +7,8 @@ class AppRoutes {
   static const String home = '/';
   static const String configuracionEmpresa = '/configuracionEmpresa';
   static const String ordenServicio = '/ordenServicio';
-  static const String configuracionGeneral = '/configuracionGeneral';
+  static const String catalogos = '/catalogos';
+  static const String clientes = '/clientes';
 
   static List<GoRoute> get _tabRoutes => HomeTabsType.values
       .map(

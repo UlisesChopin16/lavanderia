@@ -14,7 +14,7 @@ enum HomeTabsType {
     // view: ConfiguracionEmpresaView(),
   ),
   ordenServicio(
-    title: 'Orden de Servicio',
+    title: 'Ordenes servicio',
     icon: IconsManager.selectedOrdenServicioIcon,
     unselectedIcon: IconsManager.unselectedOrdenServicioIcon,
     route: ordenServicioR,
@@ -25,6 +25,12 @@ enum HomeTabsType {
     icon: IconsManager.selectedCatalogoIcon,
     unselectedIcon: IconsManager.unselectedCatalogoIcon,
     route: configuracionGeneralR,
+  ),
+  clientes(
+    title: 'Clientes',
+    icon: IconsManager.selectedClientesIcon,
+    unselectedIcon: IconsManager.unselectedClientesIcon,
+    route: clientesR,
   );
 
   final String title;
@@ -50,7 +56,16 @@ const DataRoute ordenServicioR = DataRoute(
   view: OrdenServicioView(),
 );
 const DataRoute configuracionGeneralR = DataRoute(
-  path: AppRoutes.configuracionGeneral,
+  path: AppRoutes.catalogos,
   name: 'ConfiguracionGeneral',
   view: ConfiguracionGeneralView(),
+);
+const DataRoute clientesR = DataRoute(
+  path: AppRoutes.clientes,
+  name: 'Clientes',
+  view: Scaffold(
+    body: Center(
+      child: Text('Clientes'),
+    ),
+  ),
 );
