@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class AnimatedImageDialog extends StatelessWidget {
   final String title;
@@ -24,9 +24,7 @@ class AnimatedImageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final largeLabel = Theme.of(context).textTheme.labelLarge;
-    final labelSmall = Theme.of(context).textTheme.labelSmall;
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final labelLarge = Theme.of(context).textTheme.labelLarge;
     return AlertDialog.adaptive(
       title: Text(title),
       content: Column(
@@ -44,7 +42,7 @@ class AnimatedImageDialog extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: largeLabel,
+            style: labelLarge,
           ),
         ],
       ),
@@ -55,11 +53,11 @@ class AnimatedImageDialog extends StatelessWidget {
           },
           child: Text(
             closeText,
-            style: labelSmall?.copyWith(color: Colors.redAccent),
+            style: labelLarge?.copyWith(color: Colors.redAccent),
           ),
         ),
         if (actionVisible)
-          TextButton(
+          FilledButton(
             onPressed: () {
               // Add any additional action if needed
               onActionPressed?.call();
@@ -67,7 +65,6 @@ class AnimatedImageDialog extends StatelessWidget {
             },
             child: Text(
               actionText,
-              style: labelSmall?.copyWith(color: primaryColor),
             ),
           ),
       ],

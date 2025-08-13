@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lavanderia/core/extensions/theme_mode_ext.dart';
+import 'package:lavanderia/core/extensions/build_context_ext.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/presentation/types/home_tabs_type.dart';
 import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
+
+import '../widgets/widgets.dart';
 
 class HomeView extends HookConsumerWidget {
   const HomeView({super.key});
@@ -11,12 +14,14 @@ class HomeView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    addListener(context, ref);
     final homeNotifier = ref.read(homeViewModelProvider.notifier);
     final (index, themeMode) = ref.watch(
       homeViewModelProvider.select(
         (value) => (value.currentIndex, value.themeMode),
       ),
     );
+
     return Scaffold(
       body: Row(
         children: [
@@ -32,19 +37,8 @@ class HomeView extends HookConsumerWidget {
               elevation: 5,
               labelType: NavigationRailLabelType.all,
               minWidth: 100,
-              trailing: Switch(
-                value: themeMode == ThemeMode.dark,
-                onChanged: (value) {
-                  homeNotifier.setThemeMode(
-                    value ? ThemeMode.dark : ThemeMode.light,
-                  );
-                },
-                thumbIcon: WidgetStatePropertyAll(
-                  Icon(
-                    themeMode.icon,
-                  ),
-                ),
-              ),
+              leading: const SwitchUnlockUi(),
+              trailing: const SwitchThemeMode(),
               destinations: [
                 for (var tab in tabs)
                   NavigationRailDestination(
@@ -61,6 +55,15 @@ class HomeView extends HookConsumerWidget {
           )
         ],
       ),
+    );
+  }
+
+  void addListener(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      configuracionEmpresaViewModelProvider.select((value) => value.errorMessage),
+      (_, next) {
+        if (next.isNotEmpty) context.showErrorDialog(next);
+      },
     );
   }
 }

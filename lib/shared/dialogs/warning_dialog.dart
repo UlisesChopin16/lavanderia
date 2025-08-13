@@ -17,7 +17,7 @@ class WarningDialog extends StatelessWidget {
       title: title,
       message: message,
       imagePath: Assets.warning.path, // Path to your warning animation
-      actionVisible: false,
+      actionVisible: true,
     );
   }
 }

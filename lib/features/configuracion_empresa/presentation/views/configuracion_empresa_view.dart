@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
@@ -20,18 +19,17 @@ class ConfiguracionEmpresaView extends ConsumerStatefulWidget {
 }
 
 class _ConfiguracionEmpresaViewState extends ConsumerState<ConfiguracionEmpresaView> {
-
   @override
   Widget build(BuildContext context) {
-    addListener();
     final titleMedium = Theme.of(context).textTheme.titleMedium;
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final (isLoading, direccion, visiblePassword) = ref.watch(
+    final (isLoading, direccion, visiblePassword, blockUI) = ref.watch(
       configuracionEmpresaViewModelProvider.select(
         (value) => (
           value.isLoading,
           value.direccion,
           value.visiblePassword,
+          value.blockUI,
         ),
       ),
     );
@@ -46,81 +44,75 @@ class _ConfiguracionEmpresaViewState extends ConsumerState<ConfiguracionEmpresaV
         Scaffold(
           body: Center(
             child: SingleChildScrollView(
-              child: Card(
-                margin: const EdgeInsets.all(24.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: maxWidth,
-                    ),
-                    child: Column(
-                      spacing: 15,
-                      children: [
-                        const TitleContainer(
-                          title: 'Configuración de la Empresa',
-                          icon: IconsManager.selectedEmpresaIcon,
-                        ),
-                        const IntrinsicHeight(
-                          child: Wrap(
-                            spacing: 15,
-                            runSpacing: 15,
+              child: IgnorePointer(
+                ignoring: blockUI,
+                child: Card(
+                  margin: const EdgeInsets.all(24.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: maxWidth,
+                      ),
+                      child: Column(
+                        spacing: 15,
+                        children: [
+                          const TitleContainer(
+                            title: 'Configuración de la Empresa',
+                            icon: IconsManager.selectedEmpresaIcon,
+                          ),
+                          const IntrinsicHeight(
+                            child: Wrap(
+                              spacing: 15,
+                              runSpacing: 15,
+                              children: [
+                                Column(
+                                  children: [
+                                    PickFileContainer(
+                                      height: height,
+                                      width: widthField,
+                                    ),
+                                    RadioColors(
+                                      width: widthField,
+                                    ),
+                                  ],
+                                ),
+                                DatosEmpresaColumn(
+                                  widthField: widthField,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            spacing: 10,
                             children: [
-                              Column(
-                                children: [
-                                  PickFileContainer(
-                                    height: height,
-                                    width: widthField,
-                                  ),
-                                  RadioColors(
-                                    width: widthField,
-                                  ),
-                                ],
+                              const Expanded(child: Divider()),
+                              Text(
+                                'Dirección de la Empresa',
+                                style: titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                ),
                               ),
-                              DatosEmpresaColumn(
-                                widthField: widthField,
-                              ),
+                              const Expanded(child: Divider()),
                             ],
                           ),
-                        ),
-                        Row(
-                          spacing: 10,
-                          children: [
-                            const Expanded(child: Divider()),
-                            Text(
-                              'Dirección de la Empresa',
-                              style: titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: primaryColor,
-                              ),
-                            ),
-                            const Expanded(child: Divider()),
-                          ],
-                        ),
-                        const DatosDireccionWrap(
-                          widthField: widthField,
-                        ),
-                      ],
+                          const DatosDireccionWrap(
+                            widthField: widthField,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-          floatingActionButton: const SaveEditComponent(),
+          floatingActionButton: blockUI ? null : const SaveEditComponent(),
         ),
         // Aquí debe de ir la logica del block progress
         if (isLoading) const BlockProgress(),
       ],
-    );
-  }
-
-  void addListener() {
-    ref.listen(
-      configuracionEmpresaViewModelProvider.select((value) => value.errorMessage),
-      (_, next) {
-        if (next.isNotEmpty) context.showErrorDialog(next);
-      },
     );
   }
 

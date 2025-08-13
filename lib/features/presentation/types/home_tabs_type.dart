@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
+import 'package:lavanderia/features/catalogos/presentation/configuracion_general_view.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/configuracion_empresa_view.dart';
-import 'package:lavanderia/features/configuracion_general/presentation/configuracion_general_view.dart';
 import 'package:lavanderia/features/orden_servicio/presentation/views/orden_servicio_view.dart';
 
 enum HomeTabsType {
@@ -21,9 +21,9 @@ enum HomeTabsType {
     // view: OrdenServicioView(),
   ),
   configuracionGeneral(
-    title: 'General',
-    icon: IconsManager.selectedConfiguracionGeneralIcon,
-    unselectedIcon: IconsManager.unselectedConfiguracionGeneralIcon,
+    title: 'Catalogos',
+    icon: IconsManager.selectedCatalogoIcon,
+    unselectedIcon: IconsManager.unselectedCatalogoIcon,
     route: configuracionGeneralR,
   );
 

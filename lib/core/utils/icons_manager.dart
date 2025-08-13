@@ -11,6 +11,6 @@ class IconsManager {
   static const unselectedOrdenServicioIcon = FontAwesomeIcons.receipt;
 
   // Icons for general settings view
-  static const selectedConfiguracionGeneralIcon = Icons.settings_rounded;
-  static const unselectedConfiguracionGeneralIcon = Icons.settings_outlined;
+  static const selectedCatalogoIcon = Icons.menu_book_rounded;
+  static const unselectedCatalogoIcon = Icons.menu_book_outlined;
 }

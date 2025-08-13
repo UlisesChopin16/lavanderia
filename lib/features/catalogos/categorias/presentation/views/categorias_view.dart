@@ -42,7 +42,7 @@ class _CategoriasViewState extends ConsumerState<CategoriasView> {
               rows: const [
                 DataRow(cells: [
                   DataCell(Text('1')),
-                  DataCell(Text('Pequeño')),
+                  DataCell(Text('Pequeñito')),
                   DataCell(Text('Sí')),
                 ]),
                 DataRow(cells: [

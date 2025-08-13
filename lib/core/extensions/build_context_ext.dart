@@ -23,7 +23,7 @@ extension BuildContextExt on BuildContext {
     );
   }
 
-  Future<bool?> showWarningDialog(String message, {String title = 'Advertencia'}) async {
+  Future<bool?> showWarningDialog({String title = 'Advertencia', String message = ''}) async {
     return await showDialog<bool?>(
       context: this,
       builder: (context) {

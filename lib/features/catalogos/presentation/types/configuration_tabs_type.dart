@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lavanderia/features/configuracion_general/categorias/presentation/views/categorias_view.dart';
-import 'package:lavanderia/features/configuracion_general/sizes/presentation/views/sizes_view.dart';
+import 'package:lavanderia/features/catalogos/categorias/presentation/views/categorias_view.dart';
+import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
 
 enum ConfigurationTabsType {
   categorias(

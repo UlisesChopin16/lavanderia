@@ -17,16 +17,14 @@ sealed class ConfiguracionEModel with _$ConfiguracionEModel {
   const factory ConfiguracionEModel({
     @Default(false) bool isLoading,
     @Default(false) bool visiblePassword,
+    @Default(false) bool blockUI,
     @Default(true) bool isFirstTime,
-    @Default(true) bool blockUI,
     @Default('') String errorMessage,
     @Default(ConfiguracionEmpresaEntity()) ConfiguracionEmpresaEntity configuracionEmpresa,
   }) = _ConfiguracionEModel;
 
   DireccionEntity get direccion => configuracionEmpresa.direccion;
 }
-
-
 
 @riverpod
 class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
@@ -64,7 +62,6 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           }
         },
       );
-  
 
   void setNombre(String nombre) {
     state = state.copyWith(
@@ -145,7 +142,7 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           }
         },
       );
-  
+
   void setPassword(String password) {
     state = state.copyWith(
       configuracionEmpresa: state.configuracionEmpresa.copyWith(
@@ -155,6 +152,7 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
   }
 
   void toggleVisiblePassword() {
+    if (state.blockUI) return;
     state = state.copyWith(
       visiblePassword: !state.visiblePassword,
     );
@@ -206,7 +204,8 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
 
   void saveConfiguracionEmpresa({
     VoidCallback? onSuccess,
-  }) async => await safeCall(
+  }) async =>
+      await safeCall(
         actionBefore: () async => state = state.copyWith(
           isLoading: true,
           errorMessage: '',
@@ -250,4 +249,21 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
           // );
         },
       );
+
+  void setBlockUI(bool blockUI) {
+    state = state.copyWith(blockUI: blockUI, visiblePassword: !blockUI);
+  }
+
+  bool verifyPassword(String password) {
+    state = state.copyWith(
+      errorMessage: '',
+    );
+    final isValid = state.configuracionEmpresa.password == password;
+    if (!isValid) {
+      state = state.copyWith(errorMessage: 'Contraseña incorrecta');
+      return false;
+    }
+
+    return true;
+  }
 }

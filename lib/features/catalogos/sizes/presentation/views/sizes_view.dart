@@ -19,30 +19,30 @@ class _SizesViewState extends ConsumerState<SizesView> {
           child: TableCardInfo(
             titleAddButton: 'Agregar tamaño de ropa',
             actions: [
-              DataAction(
-                icon: Icons.edit,
-                tooltip: 'Editar',
-                callbackIndex: (index) {
-                  // Acción al presionar el botón de editar
-                  print('Editar Tamaño en la fila $index');
-                },
-              ),
-              DataAction(
-                icon: Icons.delete,
-                tooltip: 'Eliminar',
-                callbackIndex: (index) {
-                  // Acción al presionar el botón de eliminar
-                  print('Eliminar Tamaño en la fila $index');
-                },
-              ),
-              DataAction(
-                icon: Icons.add,
-                tooltip: 'Agregar',
-                callbackIndex: (index) {
-                  // Acción al presionar el botón de agregar
-                  print('Agregar Tamaño en la fila $index');
-                },
-              ),
+              // DataAction(
+              //   icon: Icons.edit,
+              //   tooltip: 'Editar',
+              //   callbackIndex: (index) {
+              //     // Acción al presionar el botón de editar
+              //     print('Editar Tamaño en la fila $index');
+              //   },
+              // ),
+              // DataAction(
+              //   icon: Icons.delete,
+              //   tooltip: 'Eliminar',
+              //   callbackIndex: (index) {
+              //     // Acción al presionar el botón de eliminar
+              //     print('Eliminar Tamaño en la fila $index');
+              //   },
+              // ),
+              // DataAction(
+              //   icon: Icons.add,
+              //   tooltip: 'Agregar',
+              //   callbackIndex: (index) {
+              //     // Acción al presionar el botón de agregar
+              //     print('Agregar Tamaño en la fila $index');
+              //   },
+              // ),
             ],
             onAddButtonPressed: () {
               // Acción al presionar el botón de agregar tamaño

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 
-class TableCardInfo extends StatefulWidget {
+class TableCardInfo extends ConsumerStatefulWidget {
   final String titleAddButton;
   final VoidCallback? onAddButtonPressed;
   final DataTable dataTable;
@@ -35,13 +37,13 @@ class TableCardInfo extends StatefulWidget {
   });
 
   @override
-  State<TableCardInfo> createState() => _TableCardInfoState();
+  ConsumerState<TableCardInfo> createState() => _TableCardInfoState();
 }
 
-class _TableCardInfoState extends State<TableCardInfo> {
+class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   int sortColumnIndex = 1;
   bool sortAscending = false;
-  List<DataAction> get actions => widget.actions;
+  List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
   DataTable get dataTable => widget.dataTable;
   List<DataColumn> get columns {
     List<DataColumn> columnas = dataTable.columns.map(_buildDataColumn).toList();
@@ -69,6 +71,9 @@ class _TableCardInfoState extends State<TableCardInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final blockUI = ref.watch(
+      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    );
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -92,25 +97,26 @@ class _TableCardInfoState extends State<TableCardInfo> {
                   ),
                 ),
               ),
-              FilledButton(
-                onPressed: widget.onAddButtonPressed,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              if (!blockUI)
+                FilledButton(
+                  onPressed: widget.onAddButtonPressed,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  ),
+                  // icon: const Icon(Icons.add),
+                  // label: Text(widget.titleAddButton),
+                  // iconAlignment: IconAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 10,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add),
+                      Text(widget.titleAddButton),
+                    ],
+                  ),
                 ),
-                // icon: const Icon(Icons.add),
-                // label: Text(widget.titleAddButton),
-                // iconAlignment: IconAlignment.start,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 10,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.add),
-                    Text(widget.titleAddButton),
-                  ],
-                ),
-              ),
             ],
           ),
           Wrap(
@@ -219,10 +225,12 @@ class DataAction {
   final ValueChanged<int> callbackIndex;
   final IconData icon;
   final String tooltip;
+  final bool isNotEnabled;
 
   const DataAction({
     required this.callbackIndex,
     required this.icon,
+    required this.isNotEnabled,
     this.tooltip = '',
   });
 
@@ -260,7 +268,7 @@ class _ActionsButtonsState extends State<_ActionsButtons> {
     Colors.yellowAccent,
   ];
   int get index => widget.index;
-  List<DataAction> get actions => widget.actions;
+  List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
   bool get isTooLong => actions.length >= 3;
 
   Widget get rowActions {

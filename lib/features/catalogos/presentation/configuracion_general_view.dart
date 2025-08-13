@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/utils/printer.dart';
-import 'package:lavanderia/features/configuracion_general/presentation/types/configuration_tabs_type.dart';
-import 'package:lavanderia/features/configuracion_general/presentation/view_model/configuracion_general_view_model.dart';
+import 'package:lavanderia/features/catalogos/presentation/types/configuration_tabs_type.dart';
+import 'package:lavanderia/features/catalogos/presentation/view_model/configuracion_general_view_model.dart';
 
 class ConfiguracionGeneralView extends ConsumerStatefulWidget {
   const ConfiguracionGeneralView({super.key});
