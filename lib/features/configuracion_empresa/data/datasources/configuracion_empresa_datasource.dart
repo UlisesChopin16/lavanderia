@@ -13,7 +13,7 @@ class ConfiguracionEmpresaDatasource {
     required this.direccionDao,
   });
 
-  Future<int> saveConfiguracionEmpresa(ConfiguracionEmpresaEntry entry) async =>
+  Future<int> saveConfiguracionEmpresa(ConfiguracionEmpresaCompanion  entry) async =>
       await configuracionEmpresaDao.insertConfig(entry);
 
   Future<ConfiguracionEmpresaModel?> getConfiguracionEmpresaById(int id) async {
@@ -33,7 +33,7 @@ class ConfiguracionEmpresaDatasource {
     }
     return null;
   }
-  Future<int> saveDireccion(DireccionEntry entry) async =>
+  Future<int> saveDireccion(DireccionCompanion entry) async =>
       await direccionDao.insertDireccion(entry);
 
   Future<void> updateDireccion(DireccionEntry entry) async =>

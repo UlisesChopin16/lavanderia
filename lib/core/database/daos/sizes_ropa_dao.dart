@@ -1,33 +1,22 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/tables/sizes_ropa.dart';
-import '../app_database.dart';
 
+import '../app_database.dart';
 
 part 'sizes_ropa_dao.g.dart';
 
 @DriftAccessor(tables: [SizesRopa])
-class SizesRopaDao extends DatabaseAccessor<AppDatabase>
-    with _$SizesRopaDaoMixin {
+class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixin {
   SizesRopaDao(super.db);
 
   Future<List<SizesRopaEntry>> getAll() => select(sizesRopa).get();
 
-  Stream<List<SizesRopaEntry>> watchAll() =>
-      select(sizesRopa).watch();
+  Stream<List<SizesRopaEntry>> watchAll() => select(sizesRopa).watch();
 
-  Future<SizesRopaEntry?> getById(int id) => (select(
-    sizesRopa,
-  )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  Future<SizesRopaEntry?> getById(int id) =>
+      (select(sizesRopa)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertSizes(Insertable<SizesRopaEntry> row) {
-    final now = DateTime.now();
-    final casted = row as SizesRopaEntry;
-    final data = casted.copyWith(
-      fechaCreacion: now,
-      fechaActualizacion: Value(now),
-    );
-    return into(sizesRopa).insert(data);
-  }
+  Future<int> insertSizes(SizesRopaCompanion row) async => await into(sizesRopa).insert(row);
 
   Future<bool> updateSizes(Insertable<SizesRopaEntry> row) {
     final now = DateTime.now();

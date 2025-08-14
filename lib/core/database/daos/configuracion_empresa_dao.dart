@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/tables/configuracion_empresa.dart';
+
 import '../app_database.dart';
 
 part 'configuracion_empresa_dao.g.dart';
@@ -12,25 +13,15 @@ class ConfiguracionEmpresaDao extends DatabaseAccessor<AppDatabase>
   Future<List<ConfiguracionEmpresaEntry>> getAll() async =>
       await select(configuracionEmpresa).get();
 
-  Stream<List<ConfiguracionEmpresaEntry>> watchAll() =>
-      select(configuracionEmpresa).watch();
+  Stream<List<ConfiguracionEmpresaEntry>> watchAll() => select(configuracionEmpresa).watch();
 
   Future<ConfiguracionEmpresaEntry?> getById(int id) async => await (select(
-    configuracionEmpresa,
-  )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+        configuracionEmpresa,
+      )..where((tbl) => tbl.id.equals(id)))
+          .getSingleOrNull();
 
-  Future<int> insertConfig(Insertable<ConfiguracionEmpresaEntry> row) async {
-    final now = DateTime.now();
-    final casted = row as ConfiguracionEmpresaEntry;
-    final configWithDate = casted.copyWith(
-      id: row.id == -1 ? 1 : row.id,
-      fechaCreacion: now,
-      fechaActualizacion: Value(now),
-
-    );
-
-    return await into(configuracionEmpresa).insert(configWithDate,mode: InsertMode.insertOrReplace);
-  }
+  Future<int> insertConfig(ConfiguracionEmpresaCompanion row) async =>
+      await into(configuracionEmpresa).insert(row);
 
   Future<bool> updateConfig(Insertable<ConfiguracionEmpresaEntry> row) async {
     // Ensure that the cliente has an update date

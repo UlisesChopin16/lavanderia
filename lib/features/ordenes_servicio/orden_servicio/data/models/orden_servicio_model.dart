@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../../core/database/app_database.dart';
+import '../../../../../core/database/app_database.dart';
 
 part 'orden_servicio_model.freezed.dart';
 part 'orden_servicio_model.g.dart';

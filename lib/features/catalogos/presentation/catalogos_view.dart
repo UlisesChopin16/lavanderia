@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/utils/printer.dart';
-import 'package:lavanderia/features/catalogos/presentation/types/configuration_tabs_type.dart';
-import 'package:lavanderia/features/catalogos/presentation/view_model/configuracion_general_view_model.dart';
+import 'package:lavanderia/features/catalogos/presentation/types/catalogos_tabs_type.dart';
+import 'package:lavanderia/features/catalogos/presentation/view_model/catalogos_view_model.dart';
 
-class ConfiguracionGeneralView extends ConsumerStatefulWidget {
-  const ConfiguracionGeneralView({super.key});
+class CatalogosView extends ConsumerStatefulWidget {
+  const CatalogosView({super.key});
 
   @override
-  ConsumerState<ConfiguracionGeneralView> createState() => _ConfiguracionGeneralViewState();
+  ConsumerState<CatalogosView> createState() => _CatalogosViewState();
 }
 
-class _ConfiguracionGeneralViewState extends ConsumerState<ConfiguracionGeneralView>
-    with TickerProviderStateMixin {
+class _CatalogosViewState extends ConsumerState<CatalogosView> with TickerProviderStateMixin {
   late TabController tabController;
-  final length = ConfigurationTabsType.values.length;
-  static const _values = ConfigurationTabsType.values;
+  final length = CatalogosTabsType.values.length;
+  static const _values = CatalogosTabsType.values;
   // static const _precioTab = ConfigurationTabsType.precios;
 
   @override
   Widget build(BuildContext context) {
-    final configuracionNotifier = ref.read(configuracionGeneralViewModelProvider.notifier);
+    final configuracionNotifier = ref.read(catalogosViewModelProvider.notifier);
     final currentTabIndex = ref.watch(
-      configuracionGeneralViewModelProvider.select((value) => value.currentTabIndex),
+      catalogosViewModelProvider.select((value) => value.currentTabIndex),
     );
-      tabController = TabController(
-        length: length,
-        initialIndex: currentTabIndex,
-        vsync: this,
-      );
+    tabController = TabController(
+      length: length,
+      initialIndex: currentTabIndex,
+      vsync: this,
+    );
     Printer.i('Current Tab Index: $currentTabIndex');
     return Scaffold(
       appBar: TabBar(

@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../../../core/database/app_database.dart';
 
 part 'sizes_ropa_model.freezed.dart';
 part 'sizes_ropa_model.g.dart';
@@ -17,12 +16,4 @@ sealed class SizesRopaModel with _$SizesRopaModel {
 
   factory SizesRopaModel.fromJson(Map<String, dynamic> json) =>
       _$SizesRopaModelFromJson(json);
-  factory SizesRopaModel.fromEntry(SizesRopaEntry entry) => SizesRopaModel(
-    id: entry.id,
-    nombre: entry.nombre,
-    estatus: entry.estatus,
-    fechaCreacion: entry.fechaCreacion,
-    fechaActualizacion: entry.fechaActualizacion,
-    fechaEliminacion: entry.fechaEliminacion,
-  );
 }

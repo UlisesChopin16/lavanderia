@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/catalogos/presentation/configuracion_general_view.dart';
+import 'package:lavanderia/features/catalogos/presentation/catalogos_view.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/configuracion_empresa_view.dart';
-import 'package:lavanderia/features/orden_servicio/presentation/views/orden_servicio_view.dart';
+import 'package:lavanderia/features/ordenes_servicio/presentation/views/home_ordenes_view.dart';
 
 enum HomeTabsType {
   empresas(
@@ -58,7 +58,7 @@ const DataRoute ordenServicioR = DataRoute(
 const DataRoute configuracionGeneralR = DataRoute(
   path: AppRoutes.catalogos,
   name: 'ConfiguracionGeneral',
-  view: ConfiguracionGeneralView(),
+  view: CatalogosView(),
 );
 const DataRoute clientesR = DataRoute(
   path: AppRoutes.clientes,

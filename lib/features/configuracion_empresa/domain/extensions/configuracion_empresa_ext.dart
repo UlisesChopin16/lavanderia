@@ -1,8 +1,23 @@
+import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/app_database.dart';
 import 'package:lavanderia/features/configuracion_empresa/data/models/configuracion_empresa_model.dart';
 import 'package:lavanderia/features/configuracion_empresa/domain/entities/configuracion_empresa_entity.dart';
 
 extension ConfiguracionEmpresaX on ConfiguracionEmpresaModel {
+  ConfiguracionEmpresaCompanion toCompanion() {
+    final now = DateTime.now();
+    return ConfiguracionEmpresaCompanion.insert(
+      nombre: nombre,
+      telefono: telefono,
+      correo: correo,
+      paginaWeb: paginaWeb,
+      logo: Value(logo),
+      color: color,
+      password: password,
+      fechaCreacion: now,
+      fechaActualizacion: Value(now),
+    );
+  }
   ConfiguracionEmpresaEntry toEntry() {
     return ConfiguracionEmpresaEntry(
       id: id,
@@ -66,6 +81,21 @@ extension ConfiguracionEmpresaEntityX on ConfiguracionEmpresaEntity {
 }
 
 extension DireccionModelX on DireccionModel {
+  DireccionCompanion toCompanion() {
+    final now = DateTime.now();
+    return DireccionCompanion.insert(
+      empresaId: empresaId,
+      calle: calle,
+      numeroExterior: numeroExterior,
+      numeroInterior: Value(numeroInterior),
+      colonia: colonia,
+      codigoPostal: codigoPostal,
+      ciudad: ciudad,
+      estado: estado,
+      fechaCreacion: now,
+      fechaActualizacion: Value(now),
+    );
+  }
   DireccionEntry toEntry() {
     return DireccionEntry(
       id: id,

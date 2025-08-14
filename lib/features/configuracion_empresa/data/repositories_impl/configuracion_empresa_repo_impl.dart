@@ -16,11 +16,12 @@ class ConfiguracionEmpresaRepoImpl implements ConfiguracionEmpresaRepository {
   Future<void> createConfiguracionEmpresa(ConfiguracionEmpresaEntity entity) async {
     // Convert the entity to a model and call the datasource method
     final model = entity.toModel();
-    final entry = model.toEntry();
+    final companion = model.toCompanion();
     final direccionModelo = entity.toModelDireccion();
 
-    final idEmpresa = await datasource.saveConfiguracionEmpresa(entry);
-    await datasource.saveDireccion(direccionModelo.copyWith(empresaId: idEmpresa).toEntry());
+    final idEmpresa = await datasource.saveConfiguracionEmpresa(companion);
+    final companionDireccion = direccionModelo.copyWith(empresaId: idEmpresa).toCompanion();
+    await datasource.saveDireccion(companionDireccion);
     // return await datasource.createConfiguracionEmpresa(entity.toModel());
   }
 

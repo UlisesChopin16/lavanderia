@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/tables/direccion.dart';
+
 import '../app_database.dart';
 
 part 'direccion_dao.g.dart';
 
 @DriftAccessor(tables: [Direccion])
-class DireccionDao extends DatabaseAccessor<AppDatabase>
-    with _$DireccionDaoMixin {
+class DireccionDao extends DatabaseAccessor<AppDatabase> with _$DireccionDaoMixin {
   DireccionDao(super.db);
 
   Future<List<DireccionEntry>> getAll() async => await select(direccion).get();
@@ -14,20 +14,12 @@ class DireccionDao extends DatabaseAccessor<AppDatabase>
   Stream<List<DireccionEntry>> watchAll() => select(direccion).watch();
 
   Future<DireccionEntry?> getById(int id) async => await (select(
-    direccion,
-  )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+        direccion,
+      )..where((tbl) => tbl.id.equals(id)))
+          .getSingleOrNull();
 
-  Future<int> insertDireccion(Insertable<DireccionEntry> row) async {
-    final now = DateTime.now();
-    final casted = row as DireccionEntry;
-    final direccionWithDate = casted.copyWith(
-      id: row.id == -1 ? 1 : row.id,
-      fechaCreacion: now,
-      fechaActualizacion: Value(now),
-    );
-
-    return await into(direccion).insert(direccionWithDate);
-  }
+  Future<int> insertDireccion(DireccionCompanion row) async =>
+      await into(direccion).insert(row);
 
   Future<bool> updateDireccion(Insertable<DireccionEntry> row) async {
     // Ensure that the cliente has an update date

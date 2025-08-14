@@ -4,6 +4,12 @@ import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 
+/// This widget displays a card with a title, an add button, a search field,
+/// optional filters, and a data table.
+/// The add button calls the [onAddButtonPressed] callback when pressed.
+/// The search field calls the [onSearchChanged] callback when the text changes.
+/// The filters are displayed above the table and can be used to filter the data in the table.
+/// If in the `DataTable` there aren´t rows, it will display a message indicating that there are no data.
 class TableCardInfo extends ConsumerStatefulWidget {
   final String titleAddButton;
   final VoidCallback? onAddButtonPressed;
@@ -17,23 +23,22 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// Each filter should be a widget that can be used to filter the data in the table
   final List<Widget> filters;
 
-  /// Actions to be displayed in the table
-  /// Each action should be a [DataAction] with a callback that receives the index of the row
-  /// where the action was triggered.
-  /// If no actions are provided, the table will not display an actions column.
-  /// If actions are provided, they will be displayed in the last column of the table.
-  /// The actions will be displayed as buttons in each row.
-  /// If the number of actions is greater than 2, a menu button will be displayed instead of individual buttons.
-  final List<DataAction> actions;
+  /// This property add a column with name 'Acciones' at the end of the table.
+  /// Add an extra [DataCell] to each [DataRow] with the actions buttons.
+  /// Use [ActionsButtons] widget to display the actions buttons.
+  /// By default, this property is true.
+  /// if this property is false, the table will not have the 'Acciones' column and remove the last
+  /// cell of each row.
+  final bool showActions;
 
   const TableCardInfo({
     super.key,
     required this.titleAddButton,
     required this.dataTable,
+    this.showActions = true,
     this.onAddButtonPressed,
     this.onSearchChanged,
     this.filters = const [],
-    this.actions = const [],
   });
 
   @override
@@ -43,11 +48,12 @@ class TableCardInfo extends ConsumerStatefulWidget {
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   int sortColumnIndex = 1;
   bool sortAscending = false;
-  List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
+  // List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
+  bool get showActions => widget.showActions;
   DataTable get dataTable => widget.dataTable;
   List<DataColumn> get columns {
     List<DataColumn> columnas = dataTable.columns.map(_buildDataColumn).toList();
-    if (actions.isNotEmpty) {
+    if (showActions) {
       columnas.add(
         const DataColumn(
           label: Text('Acciones'),
@@ -58,7 +64,12 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
     return columnas;
   }
 
-  List<DataRow> get rows => _buildDataRows(dataTable.rows);
+  List<DataRow> get rows {
+    if (dataTable.rows.isEmpty) {
+      return [];
+    }
+    return _buildDataRows(dataTable.rows);
+  }
 
   DataTable get newDataTable {
     return DataTable(
@@ -74,6 +85,27 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
     final blockUI = ref.watch(
       configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
     );
+    if (rows.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 20,
+          children: [
+            Text(
+              'No hay datos disponibles\nAgregue un nuevo elemento',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            if (!blockUI)
+              _AddRow(
+                titleAddButton: widget.titleAddButton,
+                onAddButtonPressed: widget.onAddButtonPressed,
+              ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -98,24 +130,9 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
                 ),
               ),
               if (!blockUI)
-                FilledButton(
-                  onPressed: widget.onAddButtonPressed,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  ),
-                  // icon: const Icon(Icons.add),
-                  // label: Text(widget.titleAddButton),
-                  // iconAlignment: IconAlignment.start,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 10,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.add),
-                      Text(widget.titleAddButton),
-                    ],
-                  ),
+                _AddRow(
+                  titleAddButton: widget.titleAddButton,
+                  onAddButtonPressed: widget.onAddButtonPressed,
                 ),
             ],
           ),
@@ -166,25 +183,9 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   DataRow _buildDataRow(DataRow row, int index) {
     final colorRowTheme = Theme.of(context).extension<ColorRowTheme>();
     List<DataCell> cells = row.cells.map((cell) => _buildDataCell(cell, index)).toList();
-    // for (var i = 0; i < cells.length; i++) {
-    //   cells.add(
-    //     DataCell(
-    //       _ActionsButtons(
-    //         index: index,
-    //         actions: actions,
-    //       ),
-    //     ),
-    //   );
-    // }
-    if (actions.isNotEmpty) {
-      cells.add(
-        DataCell(
-          _ActionsButtons(
-            index: index,
-            actions: actions,
-          ),
-        ),
-      );
+
+    if (!showActions) {
+      cells.removeLast(); // Remove the last cell if actions are not shown
     }
     return DataRow(
       color: WidgetStatePropertyAll(
@@ -221,8 +222,41 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 }
 
+class _AddRow extends StatelessWidget {
+  final String titleAddButton;
+  final VoidCallback? onAddButtonPressed;
+
+  const _AddRow({
+    required this.titleAddButton,
+    this.onAddButtonPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: onAddButtonPressed,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      ),
+      // icon: const Icon(Icons.add),
+      // label: Text(widget.titleAddButton),
+      // iconAlignment: IconAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 10,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.add),
+          Flexible(child: Text(titleAddButton)),
+        ],
+      ),
+    );
+  }
+}
+
 class DataAction {
-  final ValueChanged<int> callbackIndex;
+  final VoidCallback callbackIndex;
   final IconData icon;
   final String tooltip;
   final bool isNotEnabled;
@@ -233,32 +267,20 @@ class DataAction {
     required this.isNotEnabled,
     this.tooltip = '',
   });
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FloatingActionButton.small(
-  //     heroTag: null,
-  //     tooltip: tooltip,
-  //     backgroundColor: color,
-  //     onPressed: () => callbackIndex.call(0),
-  //     child: Icon(icon, color: color),
-  //   );
-  // }
 }
 
-class _ActionsButtons extends StatefulWidget {
-  final int index;
+class ActionsButtons extends StatefulWidget {
   final List<DataAction> actions;
-  const _ActionsButtons({
-    required this.index,
+  const ActionsButtons({
+    super.key,
     required this.actions,
   });
 
   @override
-  State<_ActionsButtons> createState() => _ActionsButtonsState();
+  State<ActionsButtons> createState() => _ActionsButtonsState();
 }
 
-class _ActionsButtonsState extends State<_ActionsButtons> {
+class _ActionsButtonsState extends State<ActionsButtons> {
   final globalButtonKey = GlobalKey();
   static const colors = [
     Colors.redAccent,
@@ -267,7 +289,7 @@ class _ActionsButtonsState extends State<_ActionsButtons> {
     Colors.deepPurpleAccent,
     Colors.yellowAccent,
   ];
-  int get index => widget.index;
+  // int get index => widget.index;
   List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
   bool get isTooLong => actions.length >= 3;
 
@@ -293,7 +315,7 @@ class _ActionsButtonsState extends State<_ActionsButtons> {
                 tooltip: actions[i].tooltip,
                 backgroundColor: seedColor.primary,
                 foregroundColor: seedColor.onPrimary,
-                onPressed: () => actions[i].callbackIndex.call(widget.index),
+                onPressed: () => actions[i].callbackIndex.call(),
                 child: Icon(actions[i].icon),
               ),
             );
@@ -352,7 +374,7 @@ class _ActionsButtonsState extends State<_ActionsButtons> {
             leading: Icon(actions[i].icon, color: colors[i]),
             title: Text(actions[i].tooltip),
             onTap: () {
-              actions[i].callbackIndex.call(widget.index);
+              actions[i].callbackIndex.call();
               Navigator.of(context).pop();
             },
           ),

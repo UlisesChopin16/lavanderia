@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lavanderia/features/catalogos/categorias/presentation/views/categorias_view.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
 
-enum ConfigurationTabsType {
+enum CatalogosTabsType {
   categorias(
     title: 'Categorias de ropa',
     icon: Icons.category_rounded,
@@ -27,7 +27,7 @@ enum ConfigurationTabsType {
   final IconData unselectedIcon;
   final Widget view;
 
-  const ConfigurationTabsType({
+  const CatalogosTabsType({
     required this.title,
     required this.icon,
     required this.unselectedIcon,
