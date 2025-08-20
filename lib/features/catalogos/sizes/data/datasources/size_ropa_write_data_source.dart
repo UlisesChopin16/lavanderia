@@ -7,10 +7,10 @@ import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa
 class SizeRopaWriteDataSource {
   final SizesRopaDao sizesRopaDao;
 
-  SizeRopaWriteDataSource(this.sizesRopaDao);
+  const SizeRopaWriteDataSource(this.sizesRopaDao);
 
-  Future<void> insertSizeRopa(SizesRopaModel sizeRopa) async {
-    await sizesRopaDao.insertSizes(sizeRopa.toCompanion());
+  Future<int> insertSizeRopa(SizesRopaModel sizeRopa) async {
+    return await sizesRopaDao.insertSizes(sizeRopa.toCompanion());
   }
 
   Future<void> updateSizeRopa(SizesRopaModel sizeRopa) async {

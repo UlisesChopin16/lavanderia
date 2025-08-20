@@ -8,7 +8,7 @@ import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa
 class SizeRopaReadDataSource {
   final SizesRopaDao sizesRopaDao;
 
-  SizeRopaReadDataSource(this.sizesRopaDao);
+  const SizeRopaReadDataSource(this.sizesRopaDao);
 
   Future<List<SizesRopaModel>> getAllSizesRopa() async {
     final sizesRopa = await sizesRopaDao.getAll();

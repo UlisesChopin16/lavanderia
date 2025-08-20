@@ -8,6 +8,6 @@ class ObtainSizeRopaById {
 
   ObtainSizeRopaById(this.repository);
 
-  Future<SizesRopaEntity> call(int id) => repository.getSizeRopaById(id);
+  Future<SizesRopaEntity?> call(int id) => repository.getSizeRopaById(id);
   
 }
