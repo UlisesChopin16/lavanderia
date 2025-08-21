@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:lavanderia/features/catalogos/categorias/presentation/views/categorias_view.dart';
-import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
+import 'package:lavanderia/core/utils/icons_manager.dart';
+import 'package:lavanderia/features/catalogos/categorias_sizes/categorias/presentation/views/categorias_view.dart';
+import 'package:lavanderia/features/catalogos/categorias_sizes/sizes/presentation/views/sizes_view.dart';
 
 enum CatalogosTabsType {
   categorias(
     title: 'Categorias de ropa',
-    icon: Icons.category_rounded,
-    unselectedIcon: Icons.category_outlined,
+    icon: IconsManager.selectedCategoriasIcon,
+    unselectedIcon: IconsManager.unselectedCategoriasIcon,
     view: CategoriasView(),
   ),
   sizes(
     title: 'Tamaños de ropa',
-    icon: Icons.design_services_rounded,
-    unselectedIcon: Icons.design_services_outlined,
+    icon: IconsManager.selectedSizesIcon,
+    unselectedIcon: IconsManager.unselectedSizesIcon,
     view: SizesView(),
   ),
   precios(
     title: 'Precios de ropa',
-    icon: Icons.paid_rounded,
-    unselectedIcon: Icons.paid_outlined,
+    icon: IconsManager.selectedPreciosIcon,
+    unselectedIcon: IconsManager.unselectedPreciosIcon,
     view: Center(child: Text('Precios de ropa')),
   );
 

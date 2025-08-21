@@ -1,7 +1,7 @@
 enum EstatusType {
+  todos(value: 'Todos'),
   activo(value: 'Activo'),
-  inactivo(value: 'Inactivo'),
-  suspendido(value: 'Suspendido');
+  inactivo(value: 'Inactivo');
 
   final String value;
   const EstatusType({

@@ -17,4 +17,17 @@ class IconsManager {
   // Icons for clients view
   static const selectedClientesIcon = Icons.people_rounded;
   static const unselectedClientesIcon = Icons.people_outlined;
+
+  // Icons for categories
+  static const selectedCategoriasIcon = Icons.category_rounded;
+  static const unselectedCategoriasIcon = Icons.category_outlined;
+
+  // Icons for sizes view
+  static const selectedSizesIcon = Icons.design_services_rounded;
+  static const unselectedSizesIcon = Icons.design_services_outlined;
+
+  // Icons for prices view
+  static const selectedPreciosIcon = Icons.paid_rounded;
+  static const unselectedPreciosIcon = Icons.paid_outlined;
+
 }

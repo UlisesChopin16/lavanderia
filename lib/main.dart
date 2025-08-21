@@ -6,9 +6,14 @@ import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
+  await initializeDateFormatting('es_ES');
+
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

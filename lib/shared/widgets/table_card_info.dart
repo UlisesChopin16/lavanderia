@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
+import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/shared/widgets/sort_button.dart';
+
+import 'button_clear_filters.dart';
 
 /// This widget displays a card with a title, an add button, a search field,
 /// optional filters, and a data table.
@@ -11,18 +16,6 @@ import 'package:lavanderia/features/configuracion_empresa/presentation/views/vie
 /// The filters are displayed above the table and can be used to filter the data in the table.
 /// If in the `DataTable` there aren´t rows, it will display a message indicating that there are no data.
 class TableCardInfo extends ConsumerStatefulWidget {
-  final String titleAddButton;
-  final VoidCallback? onAddButtonPressed;
-  final DataTable dataTable;
-
-  /// Callback to be called when the search text changes
-  /// The callback receives the search text as a parameter
-  final ValueChanged<String>? onSearchChanged;
-
-  /// Filters to be displayed above the table
-  /// Each filter should be a widget that can be used to filter the data in the table
-  final List<Widget> filters;
-
   /// This property add a column with name 'Acciones' at the end of the table.
   /// Add an extra [DataCell] to each [DataRow] with the actions buttons.
   /// Use [ActionsButtons] widget to display the actions buttons.
@@ -31,14 +24,41 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// cell of each row.
   final bool showActions;
 
+  /// If true, will display a button to clear filters
+  final bool haveFilters;
+
+  final String titleAddButton;
+  // final DataTable dataTable;
+  final List<DataColumn> columns;
+  final List<DataRow> rows;
+
+  /// Filters to be displayed above the table
+  /// Each filter should be a widget that can be used to filter the data in the table
+  final List<Widget> filters;
+
+  /// Callback to be called when the search text changes
+  /// The callback receives the search text as a parameter
+  final ValueChanged<String>? onSearchChanged;
+  final ValueChanged<bool>? onSortChange;
+
+  final VoidCallback? onAddButtonPressed;
+  final VoidCallback? onClearFilters;
+
+  final Widget smallView;
+
   const TableCardInfo({
     super.key,
     required this.titleAddButton,
-    required this.dataTable,
-    this.showActions = true,
+    required this.columns,
+    required this.rows,
+    required this.smallView,
     this.onAddButtonPressed,
+    this.onClearFilters,
     this.onSearchChanged,
+    this.onSortChange,
+    this.showActions = true,
     this.filters = const [],
+    this.haveFilters = false,
   });
 
   @override
@@ -47,12 +67,11 @@ class TableCardInfo extends ConsumerStatefulWidget {
 
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   int sortColumnIndex = 1;
-  bool sortAscending = false;
+  bool sortAscending = true;
   // List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
   bool get showActions => widget.showActions;
-  DataTable get dataTable => widget.dataTable;
   List<DataColumn> get columns {
-    List<DataColumn> columnas = dataTable.columns.map(_buildDataColumn).toList();
+    List<DataColumn> columnas = widget.columns.map(_buildDataColumn).toList();
     if (showActions) {
       columnas.add(
         const DataColumn(
@@ -65,10 +84,10 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 
   List<DataRow> get rows {
-    if (dataTable.rows.isEmpty) {
+    if (widget.rows.isEmpty) {
       return [];
     }
-    return _buildDataRows(dataTable.rows);
+    return _buildDataRows(widget.rows);
   }
 
   DataTable get newDataTable {
@@ -82,30 +101,32 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isSmall = width <= ConstantsManager.mediumScreen;
     final blockUI = ref.watch(
       configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
     );
-    if (rows.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 20,
-          children: [
-            Text(
-              'No hay datos disponibles\nAgregue un nuevo elemento',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            if (!blockUI)
-              _AddRow(
-                titleAddButton: widget.titleAddButton,
-                onAddButtonPressed: widget.onAddButtonPressed,
-              ),
-          ],
-        ),
-      );
-    }
+    // if (rows.isEmpty && !widget.haveFilters) {
+    //   return Padding(
+    //     padding: const EdgeInsets.all(40.0),
+    //     child: Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       spacing: 20,
+    //       children: [
+    //         Text(
+    //           'No hay datos disponibles\nAgregue un nuevo elemento',
+    //           textAlign: TextAlign.center,
+    //           style: Theme.of(context).textTheme.titleMedium,
+    //         ),
+    //         if (!blockUI)
+    //           _AddRow(
+    //             titleAddButton: widget.titleAddButton,
+    //             onAddButtonPressed: widget.onAddButtonPressed,
+    //           ),
+    //       ],
+    //     ),
+    //   );
+    // }
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -113,11 +134,15 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Wrap(
+            // mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.end,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            alignment: WrapAlignment.end,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runAlignment: WrapAlignment.end,
             spacing: 15,
+            runSpacing: 10,
             children: [
               TextField(
                 onChanged: widget.onSearchChanged,
@@ -136,6 +161,8 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
                 ),
             ],
           ),
+          const Divider(),
+          const Gap(0),
           Wrap(
             alignment: WrapAlignment.end,
             crossAxisAlignment: WrapCrossAlignment.end,
@@ -143,12 +170,33 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
             spacing: 10,
             runSpacing: 10,
             children: [
+              if (widget.haveFilters)
+                ButtonClearFilters(
+                  onPressed: widget.onClearFilters,
+                ),
               ...widget.filters,
+              if (widget.onSortChange != null)
+                SortButton(
+                  isAscending: sortAscending,
+                  onSortChange: () {
+                    setState(() {
+                      sortAscending = !sortAscending;
+                    });
+                    widget.onSortChange?.call(sortAscending);
+                  },
+                ),
             ],
           ),
-          SingleChildScrollView(
-            child: newDataTable,
-          ),
+          if (isSmall) widget.smallView else newDataTable,
+          if (widget.rows.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Text(
+                'No hay datos disponibles\nAgregue un nuevo elemento',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
         ],
       ),
     );
@@ -173,7 +221,7 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 
   List<DataRow> _buildDataRows(List<DataRow> rows) {
-    List<DataRow> newRows = List.from(dataTable.rows);
+    List<DataRow> newRows = List.from(rows);
     for (var i = 0; i < rows.length; i++) {
       newRows[i] = _buildDataRow(rows[i], i);
     }

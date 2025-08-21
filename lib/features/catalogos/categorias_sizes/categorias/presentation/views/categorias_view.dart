@@ -39,21 +39,21 @@ class _CategoriasViewState extends ConsumerState<CategoriasView> {
           //       const DataColumn(label: Text('Activo')),
           //     ],
           //     rows: const [
-          //       DataRow(cells: [
-          //         DataCell(Text('1')),
-          //         DataCell(Text('Pequeño')),
-          //         DataCell(Text('Sí')),
-          //       ]),
-          //       DataRow(cells: [
-          //         DataCell(Text('2')),
-          //         DataCell(Text('Mediano')),
-          //         DataCell(Text('No')),
-          //       ]),
-          //       DataRow(cells: [
-          //         DataCell(Text('2')),
-          //         DataCell(Text('Mediano')),
-          //         DataCell(Text('No')),
-          //       ]),
+          //       // DataRow(cells: [
+          //       //   DataCell(Text('1')),
+          //       //   DataCell(Text('Pequeñito')),
+          //       //   DataCell(Text('Sí')),
+          //       // ]),
+          //       // DataRow(cells: [
+          //       //   DataCell(Text('2')),
+          //       //   DataCell(Text('Mediano')),
+          //       //   DataCell(Text('No')),
+          //       // ]),
+          //       // DataRow(cells: [
+          //       //   DataCell(Text('2')),
+          //       //   DataCell(Text('Mediano')),
+          //       //   DataCell(Text('No')),
+          //       // ]),
           //     ],
           // ),
         ),
