@@ -5,7 +5,6 @@ import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
-import 'package:lavanderia/shared/widgets/sort_button.dart';
 
 import 'button_clear_filters.dart';
 
@@ -27,7 +26,8 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// If true, will display a button to clear filters
   final bool haveFilters;
 
-  final String titleAddButton;
+  final int sortColumnIndex;
+
   // final DataTable dataTable;
   final List<DataColumn> columns;
   final List<DataRow> rows;
@@ -35,6 +35,8 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// Filters to be displayed above the table
   /// Each filter should be a widget that can be used to filter the data in the table
   final List<Widget> filters;
+
+  final String titleAddButton;
 
   /// Callback to be called when the search text changes
   /// The callback receives the search text as a parameter
@@ -59,6 +61,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
     this.showActions = true,
     this.filters = const [],
     this.haveFilters = false,
+    this.sortColumnIndex = 1,
   });
 
   @override
@@ -66,7 +69,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
 }
 
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
-  int sortColumnIndex = 1;
+  late int sortColumnIndex = widget.sortColumnIndex;
   bool sortAscending = true;
   // List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
   bool get showActions => widget.showActions;
@@ -91,9 +94,12 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 
   DataTable get newDataTable {
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final color = isDark ? Colors.grey[800] : Colors.grey[200];
     return DataTable(
       sortColumnIndex: sortColumnIndex,
       sortAscending: sortAscending,
+      // dataRowColor: WidgetStateProperty.resolveAs(WidgetStatePropertyAll(color), {WidgetState.hovered}),
       columns: columns,
       rows: rows,
     );
@@ -127,85 +133,98 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
     //     ),
     //   );
     // }
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        spacing: 10,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Wrap(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.end,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            alignment: WrapAlignment.end,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runAlignment: WrapAlignment.end,
-            spacing: 15,
-            runSpacing: 10,
-            children: [
-              TextField(
-                onChanged: widget.onSearchChanged,
-                decoration: const InputDecoration(
-                  constraints: BoxConstraints(maxWidth: 300),
-                  labelText: 'Buscar',
-                  suffixIcon: Icon(
-                    Icons.search,
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOutCubic,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Wrap(
+              // mainAxisSize: MainAxisSize.min,
+              // mainAxisAlignment: MainAxisAlignment.end,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              alignment: WrapAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runAlignment: WrapAlignment.end,
+              spacing: 15,
+              runSpacing: 10,
+              children: [
+                TextField(
+                  onChanged: widget.onSearchChanged,
+                  decoration: const InputDecoration(
+                    constraints: BoxConstraints(maxWidth: 300),
+                    labelText: 'Buscar',
+                    suffixIcon: Icon(
+                      Icons.search,
+                    ),
                   ),
                 ),
-              ),
-              if (!blockUI)
-                _AddRow(
-                  titleAddButton: widget.titleAddButton,
-                  onAddButtonPressed: widget.onAddButtonPressed,
-                ),
-            ],
-          ),
-          const Divider(),
-          const Gap(0),
-          Wrap(
-            alignment: WrapAlignment.end,
-            crossAxisAlignment: WrapCrossAlignment.end,
-            runAlignment: WrapAlignment.end,
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              if (widget.haveFilters)
-                ButtonClearFilters(
-                  onPressed: widget.onClearFilters,
-                ),
-              ...widget.filters,
-              if (widget.onSortChange != null)
-                SortButton(
-                  isAscending: sortAscending,
-                  onSortChange: () {
-                    setState(() {
-                      sortAscending = !sortAscending;
-                    });
-                    widget.onSortChange?.call(sortAscending);
-                  },
-                ),
-            ],
-          ),
-          if (isSmall) widget.smallView else newDataTable,
-          if (widget.rows.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Text(
-                'No hay datos disponibles\nAgregue un nuevo elemento',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+                if (!blockUI)
+                  _AddRow(
+                    titleAddButton: widget.titleAddButton,
+                    onAddButtonPressed: widget.onAddButtonPressed,
+                  ),
+              ],
             ),
-        ],
+            const Divider(),
+            const Gap(0),
+            Wrap(
+              alignment: WrapAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              runAlignment: WrapAlignment.end,
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                if (widget.haveFilters)
+                  ButtonClearFilters(
+                    onPressed: widget.onClearFilters,
+                  ),
+                ...widget.filters,
+                // if (widget.onSortChange != null)
+                //   SortButton(
+                //     isAscending: sortAscending,
+                //     onSortChange: () {
+                //       setState(() {
+                //         sortAscending = !sortAscending;
+                //       });
+                //       widget.onSortChange?.call(sortAscending);
+                //     },
+                //   ),
+              ],
+            ),
+            if (isSmall) widget.smallView else newDataTable,
+            if (widget.rows.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Text(
+                  'No hay datos disponibles\nAgregue un nuevo elemento',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
   DataColumn _buildDataColumn(DataColumn column) {
+    final label = column.label as Text;
+    final newLabel = Flexible(
+      child: Text(
+        label.data!,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
     return DataColumn(
       headingRowAlignment: MainAxisAlignment.center,
-      label: Center(child: column.label),
+      label: newLabel,
       numeric: column.numeric,
       tooltip: column.tooltip,
       onSort: (columnIndex, ascending) {
@@ -235,16 +254,27 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
     if (!showActions) {
       cells.removeLast(); // Remove the last cell if actions are not shown
     }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hoveredColor = !isDark ? Colors.black : Colors.grey[200];
+
     return DataRow(
-      color: WidgetStatePropertyAll(
-        colorRowTheme?.getColor(index + 1),
+      color: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
+          // All rows will have the same base color
+          if (states.contains(WidgetState.hovered)) {
+            return hoveredColor;
+          }
+          // Even rows will have a different color
+          return colorRowTheme?.getColor(index + 1);
+        },
       ),
       cells: cells,
       key: row.key,
       onSelectChanged: row.onSelectChanged,
-      mouseCursor: row.mouseCursor,
+      mouseCursor: const WidgetStatePropertyAll(SystemMouseCursors.basic),
       selected: row.selected,
-      onLongPress: row.onLongPress,
+      onLongPress: () {},
     );
   }
 

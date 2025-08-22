@@ -30,20 +30,20 @@ class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixi
     }
 
     final mode = filtros.ascendente ? OrderingMode.asc : OrderingMode.desc;
-    final orderAll = [
-      (tbl) => OrderingTerm(
-            expression: tbl.estatus,
-            mode: mode,
-          ),
-      (tbl) => OrderingTerm(
-            expression: tbl.nombre,
-            mode: mode,
-          ),
-    ];
+    // final orderAll = [
+    //   (tbl) => OrderingTerm(
+    //         expression: tbl.estatus,
+    //         mode: mode,
+    //       ),
+    //   (tbl) => OrderingTerm(
+    //         expression: tbl.nombre,
+    //         mode: mode,
+    //       ),
+    // ];
 
 
     query.orderBy([
-      if (filtros.estatus == EstatusType.todos && filtros.ordenamiento == null) ...orderAll,
+      // if (filtros.estatus == EstatusType.todos && filtros.ordenamiento == null) ...orderAll,
       
       if (filtros.ordenamiento == ColumnNamesType.id) 
         (tbl) => OrderingTerm(

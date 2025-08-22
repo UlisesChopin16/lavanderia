@@ -44,7 +44,8 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
     final isDark = colorScheme.brightness == Brightness.dark;
     final colorRowTheme = ColorRowTheme(
       firstRowColor: isDark ? colorScheme.surfaceContainerLow : Colors.white,
-      secondRowColor: colorScheme.surfaceContainerHighest,
+      secondRowColor:
+          isDark ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainerLow,
     );
     return ThemeData(
       useMaterial3: true,
@@ -166,7 +167,6 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
       variant: Variant.vibrant,
     );
   }
-
 
   static ({InputDecoration inputDecoration, TextStyle style}) disableInputsProfile({
     required String labelText,

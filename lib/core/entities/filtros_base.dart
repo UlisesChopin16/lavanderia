@@ -11,10 +11,10 @@ sealed class FiltrosBase with _$FiltrosBase {
     @Default('') String nombre,
     @Default(EstatusType.activo) EstatusType estatus,
     @Default(true) bool ascendente,
-    @Default(null) ColumnNamesType? ordenamiento,
+    @Default(ColumnNamesType.nombre) ColumnNamesType ordenamiento,
   }) = _FiltrosBase;
 
   bool get haveFilters {
-    return nombre.isNotEmpty || estatus != EstatusType.activo || ordenamiento != null;
+    return nombre.isNotEmpty || estatus != EstatusType.activo || ordenamiento != ColumnNamesType.nombre;
   }
 }
