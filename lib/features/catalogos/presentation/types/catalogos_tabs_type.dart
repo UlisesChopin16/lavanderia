@@ -1,46 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/catalogos/categorias_sizes/presentation/categorias_sizes_view.dart';
+import 'package:lavanderia/features/catalogos/categorias/presentation/views/categorias_view.dart';
+import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
 
 enum CatalogosTabsType {
   categorias(
-    title: 'Categorias y tamaños',
-    icon: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      spacing: 10,
-      children: [
-        Icon(IconsManager.selectedCategoriasIcon),
-        Icon(IconsManager.selectedSizesIcon),
-      ],
-    ),
-    unselectedIcon: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      spacing: 10,
-      children: [
-        Icon(IconsManager.unselectedCategoriasIcon),
-        Icon(IconsManager.unselectedSizesIcon),
-      ],
-    ),
-    view: CategoriasSizesView(),
+    title: 'Categorias de ropa',
+    icon: IconsManager.selectedCategoriasIcon,
+    unselectedIcon: IconsManager.unselectedCategoriasIcon,
+    view: CategoriasView(),
+  ),
+  sizes(
+    title: 'Tamaños de ropa',
+    icon: IconsManager.selectedSizesIcon,
+    unselectedIcon: IconsManager.unselectedSizesIcon,
+    view: SizesView(),
   ),
   precios(
     title: 'Precios de ropa',
-    icon: Icon(IconsManager.selectedPreciosIcon),
-    unselectedIcon: Icon(IconsManager.unselectedPreciosIcon),
+    icon: IconsManager.selectedPreciosIcon,
+    unselectedIcon: IconsManager.unselectedPreciosIcon,
     view: Center(child: Text('Precios de ropa')),
   );
 
-// sizes(
-//     title: 'Tamaños de ropa',
-//     icon: IconsManager.selectedSizesIcon,
-//     unselectedIcon: IconsManager.unselectedSizesIcon,
-//     view: SizesView(),
-//   ),
   final String title;
-  final Widget icon;
-  final Widget unselectedIcon;
+  final IconData icon;
+  final IconData unselectedIcon;
   final Widget view;
 
   const CatalogosTabsType({

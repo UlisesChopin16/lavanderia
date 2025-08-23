@@ -80,10 +80,12 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: isDark ? null : Colors.white,
-        constraints: const BoxConstraints(maxHeight: 50),
         contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         labelStyle: TextStyle(
           color: colorScheme.primary,
+        ),
+        errorStyle: TextStyle(
+          color: colorScheme.error,
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(

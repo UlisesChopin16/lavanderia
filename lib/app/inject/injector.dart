@@ -3,12 +3,15 @@ import 'package:injectable/injectable.dart';
 
 import './../../core/database/app_database.dart';
 import './../../core/database/daos/daos.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'injector.config.dart';
 
 final instance = GetIt.instance;
 
-@InjectableInit()
-void configureDependencies() => instance.init();
+@InjectableInit(
+
+)
+Future<void> configureDependencies() async => await instance.init();
 
 @module
 abstract class DatabaseModule {
@@ -34,3 +37,11 @@ abstract class DatabaseModule {
   @lazySingleton
   OrdenServicioDao ordenServicioDao(AppDatabase db) => db.ordenServicioDao;
 }
+
+class SharedPreferencesModule {
+  static Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    instance.registerLazySingleton<SharedPreferences>(() => prefs);
+  }
+}
+// Future<SharedPreferences> get prefs async => await SharedPreferences.getInstance();

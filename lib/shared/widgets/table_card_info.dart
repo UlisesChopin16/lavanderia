@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
-import 'package:lavanderia/app/theme/theme_app.dart';
-import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/shared/widgets/actions_button.dart';
 
 import 'button_clear_filters.dart';
+
+export 'package:lavanderia/shared/widgets/actions_button.dart';
 
 /// This widget displays a card with a title, an add button, a search field,
 /// optional filters, and a data table.
@@ -23,8 +24,13 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// cell of each row.
   final bool showActions;
 
+  final bool ascending;
+
   /// If true, will display a button to clear filters
   final bool haveFilters;
+
+  /// If true, the table will be displayed in a small view
+  final bool isSmall;
 
   final int sortColumnIndex;
 
@@ -45,7 +51,6 @@ class TableCardInfo extends ConsumerStatefulWidget {
 
   final VoidCallback? onAddButtonPressed;
   final VoidCallback? onClearFilters;
-
   final Widget smallView;
 
   const TableCardInfo({
@@ -54,6 +59,8 @@ class TableCardInfo extends ConsumerStatefulWidget {
     required this.columns,
     required this.rows,
     required this.smallView,
+    required this.ascending,
+    required this.isSmall,
     this.onAddButtonPressed,
     this.onClearFilters,
     this.onSearchChanged,
@@ -69,10 +76,13 @@ class TableCardInfo extends ConsumerStatefulWidget {
 }
 
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
-  late int sortColumnIndex = widget.sortColumnIndex;
-  bool sortAscending = true;
-  // List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
+  // late int sortColumnIndex = widget.sortColumnIndex;
+  bool get isSmall => widget.isSmall;
   bool get showActions => widget.showActions;
+  bool get sortAscending => widget.ascending;
+
+  int get sortColumnIndex => widget.sortColumnIndex;
+
   List<DataColumn> get columns {
     List<DataColumn> columnas = widget.columns.map(_buildDataColumn).toList();
     if (showActions) {
@@ -94,12 +104,9 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 
   DataTable get newDataTable {
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
-    // final color = isDark ? Colors.grey[800] : Colors.grey[200];
     return DataTable(
       sortColumnIndex: sortColumnIndex,
       sortAscending: sortAscending,
-      // dataRowColor: WidgetStateProperty.resolveAs(WidgetStatePropertyAll(color), {WidgetState.hovered}),
       columns: columns,
       rows: rows,
     );
@@ -107,34 +114,12 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final isSmall = width <= ConstantsManager.mediumScreen;
     final blockUI = ref.watch(
       configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
     );
-    // if (rows.isEmpty && !widget.haveFilters) {
-    //   return Padding(
-    //     padding: const EdgeInsets.all(40.0),
-    //     child: Column(
-    //       mainAxisSize: MainAxisSize.min,
-    //       spacing: 20,
-    //       children: [
-    //         Text(
-    //           'No hay datos disponibles\nAgregue un nuevo elemento',
-    //           textAlign: TextAlign.center,
-    //           style: Theme.of(context).textTheme.titleMedium,
-    //         ),
-    //         if (!blockUI)
-    //           _AddRow(
-    //             titleAddButton: widget.titleAddButton,
-    //             onAddButtonPressed: widget.onAddButtonPressed,
-    //           ),
-    //       ],
-    //     ),
-    //   );
-    // }
+
     return AnimatedSize(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOutCubic,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -174,7 +159,7 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
             const Gap(0),
             Wrap(
               alignment: WrapAlignment.end,
-              crossAxisAlignment: WrapCrossAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.center,
               runAlignment: WrapAlignment.end,
               spacing: 10,
               runSpacing: 10,
@@ -184,16 +169,6 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
                     onPressed: widget.onClearFilters,
                   ),
                 ...widget.filters,
-                // if (widget.onSortChange != null)
-                //   SortButton(
-                //     isAscending: sortAscending,
-                //     onSortChange: () {
-                //       setState(() {
-                //         sortAscending = !sortAscending;
-                //       });
-                //       widget.onSortChange?.call(sortAscending);
-                //     },
-                //   ),
               ],
             ),
             if (isSmall) widget.smallView else newDataTable,
@@ -227,13 +202,11 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
       label: newLabel,
       numeric: column.numeric,
       tooltip: column.tooltip,
-      onSort: (columnIndex, ascending) {
-        setState(() {
-          sortColumnIndex = columnIndex;
-          sortAscending = ascending;
-        });
-        column.onSort?.call(columnIndex, ascending);
-      },
+      // onSort: (columnIndex, ascending) {
+
+      //   column.onSort?.call(columnIndex, ascending);
+      // },
+      onSort: column.onSort,
       columnWidth: column.columnWidth,
       mouseCursor: column.mouseCursor,
     );
@@ -328,135 +301,6 @@ class _AddRow extends StatelessWidget {
           const Icon(Icons.add),
           Flexible(child: Text(titleAddButton)),
         ],
-      ),
-    );
-  }
-}
-
-class DataAction {
-  final VoidCallback callbackIndex;
-  final IconData icon;
-  final String tooltip;
-  final bool isNotEnabled;
-
-  const DataAction({
-    required this.callbackIndex,
-    required this.icon,
-    required this.isNotEnabled,
-    this.tooltip = '',
-  });
-}
-
-class ActionsButtons extends StatefulWidget {
-  final List<DataAction> actions;
-  const ActionsButtons({
-    super.key,
-    required this.actions,
-  });
-
-  @override
-  State<ActionsButtons> createState() => _ActionsButtonsState();
-}
-
-class _ActionsButtonsState extends State<ActionsButtons> {
-  final globalButtonKey = GlobalKey();
-  static const colors = [
-    Colors.redAccent,
-    Colors.greenAccent,
-    Colors.blueAccent,
-    Colors.deepPurpleAccent,
-    Colors.yellowAccent,
-  ];
-  // int get index => widget.index;
-  List<DataAction> get actions => widget.actions.where((action) => !action.isNotEnabled).toList();
-  bool get isTooLong => actions.length >= 3;
-
-  Widget get rowActions {
-    final brightness = Theme.of(context).colorScheme.brightness;
-    return Center(
-      child: Row(
-        spacing: 5,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ...List.generate(actions.length, (i) {
-            final color = colors[i];
-            final seedColor = ThemeApp.getColorScheme(
-              color,
-              brightness == Brightness.dark,
-            );
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: FloatingActionButton.small(
-                heroTag: null,
-                tooltip: actions[i].tooltip,
-                backgroundColor: seedColor.primary,
-                foregroundColor: seedColor.onPrimary,
-                onPressed: () => actions[i].callbackIndex.call(),
-                child: Icon(actions[i].icon),
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget get actionsButton {
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
-    return Center(
-      child: FloatingActionButton.small(
-        key: globalButtonKey,
-        heroTag: null,
-        tooltip: 'Menu de acciones',
-        backgroundColor: primaryColor,
-        foregroundColor: onPrimaryColor,
-        onPressed: () => showPopupMenu(),
-        child: const Icon(Icons.menu),
-      ),
-    );
-  }
-
-  Widget get actionsCell => isTooLong ? actionsButton : rowActions;
-
-  @override
-  Widget build(BuildContext context) {
-    // PopupMenuButton
-    return actionsCell;
-  }
-
-  void showPopupMenu() async {
-    final RenderBox button = globalButtonKey.currentContext!.findRenderObject()! as RenderBox;
-    final RenderBox overlay = Navigator.of(context, rootNavigator: true)
-        .overlay!
-        .context
-        .findRenderObject()! as RenderBox;
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    await showMenu(
-      context: context,
-      position: position,
-      items: List.generate(
-        actions.length,
-        (i) => PopupMenuItem(
-          value: actions[i],
-          child: ListTile(
-            leading: Icon(actions[i].icon, color: colors[i]),
-            title: Text(actions[i].tooltip),
-            onTap: () {
-              actions[i].callbackIndex.call();
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
       ),
     );
   }

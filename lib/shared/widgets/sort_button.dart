@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lavanderia/core/utils/icons_manager.dart';
 
 class SortButton extends StatelessWidget {
   final bool isAscending;
   final VoidCallback? onSortChange;
   const SortButton({super.key, required this.isAscending, this.onSortChange});
 
-  IconData get iconData => isAscending ? FontAwesomeIcons.arrowUpAZ : FontAwesomeIcons.arrowDownZA;
+  IconData get iconData => isAscending ? IconsManager.orderAZ : IconsManager.orderZA;
   String get tooltip => isAscending ? 'Ascendente' : 'Descendente';
 
   @override

@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/catalogos/presentation/catalogos_view.dart';
+import 'package:lavanderia/features/catalogos/presentation/views/catalogos_view.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/configuracion_empresa_view.dart';
 import 'package:lavanderia/features/ordenes_servicio/presentation/views/home_ordenes_view.dart';
 
 enum HomeTabsType {
-  empresas(
-    title: 'Empresa',
-    icon: IconsManager.selectedEmpresaIcon,
-    unselectedIcon: IconsManager.unselectedEmpresaIcon,
-    route: configuracionEmpresaR,
-    // view: ConfiguracionEmpresaView(),
-  ),
   ordenServicio(
     title: 'Ordenes servicio',
     icon: IconsManager.selectedOrdenServicioIcon,
@@ -20,7 +13,7 @@ enum HomeTabsType {
     route: ordenServicioR,
     // view: OrdenServicioView(),
   ),
-  configuracionGeneral(
+  catalogos(
     title: 'Catalogos',
     icon: IconsManager.selectedCatalogoIcon,
     unselectedIcon: IconsManager.unselectedCatalogoIcon,
@@ -31,6 +24,13 @@ enum HomeTabsType {
     icon: IconsManager.selectedClientesIcon,
     unselectedIcon: IconsManager.unselectedClientesIcon,
     route: clientesR,
+  ),
+  empresas(
+    title: 'Empresa',
+    icon: IconsManager.selectedEmpresaIcon,
+    unselectedIcon: IconsManager.unselectedEmpresaIcon,
+    route: configuracionEmpresaR,
+    // view: ConfiguracionEmpresaView(),
   );
 
   final String title;

@@ -30,4 +30,10 @@ class IconsManager {
   static const selectedPreciosIcon = Icons.paid_rounded;
   static const unselectedPreciosIcon = Icons.paid_outlined;
 
+  static const orderAZ = FontAwesomeIcons.arrowUpAZ;
+  static const orderZA = FontAwesomeIcons.arrowDownZA;
+
+  static IconData getSortIcon(bool isAscending) {
+    return isAscending ? orderAZ : orderZA;
+  }
 }

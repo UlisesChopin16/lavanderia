@@ -12,7 +12,7 @@ class TitleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final titleTheme = Theme.of(context).textTheme.titleLarge;
+    final titleTheme = Theme.of(context).textTheme.titleMedium;
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(

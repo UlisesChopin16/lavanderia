@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/tables/sizes_ropa.dart';
-import 'package:lavanderia/core/entities/filtros_base.dart';
-import 'package:lavanderia/core/types/column_names_type.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
+import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
+import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 
 import '../app_database.dart';
 
@@ -41,30 +41,34 @@ class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixi
     //       ),
     // ];
 
-
     query.orderBy([
       // if (filtros.estatus == EstatusType.todos && filtros.ordenamiento == null) ...orderAll,
-      
-      if (filtros.ordenamiento == ColumnNamesType.id) 
+
+      if (filtros.ordenamiento == ColumnNamesType.id)
         (tbl) => OrderingTerm(
-            expression: tbl.id,
-            mode: mode,
-          ),
-      if (filtros.ordenamiento == ColumnNamesType.nombre) 
+              expression: tbl.id,
+              mode: mode,
+            ),
+      if (filtros.ordenamiento == ColumnNamesType.nombre)
         (tbl) => OrderingTerm(
-            expression: tbl.nombre,
-            mode: mode,
-          ),
-      if (filtros.ordenamiento == ColumnNamesType.estatus) 
+              expression: tbl.nombre,
+              mode: mode,
+            ),
+      if (filtros.ordenamiento == ColumnNamesType.estatus)
         (tbl) => OrderingTerm(
-            expression: tbl.estatus,
-            mode: mode,
-          ),
+              expression: tbl.estatus,
+              mode: mode,
+            ),
       if (filtros.ordenamiento == ColumnNamesType.fechaCreacion)
         (tbl) => OrderingTerm(
-            expression: tbl.fechaCreacion,
-            mode: mode,
-          ),
+              expression: tbl.fechaCreacion,
+              mode: mode,
+            ),
+      if (filtros.ordenamiento == ColumnNamesType.fechaEliminacion)
+        (tbl) => OrderingTerm(
+              expression: tbl.fechaEliminacion,
+              mode: mode,
+            ),
     ]);
 
     // Apply filters to the query if needed
@@ -83,11 +87,12 @@ class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixi
     return update(sizesRopa).replace(data);
   }
 
-  Future<bool> deleteSizes(int id) async {
+  Future<bool> deleteSizes(SizesRopaEntry entry) async {
     final now = DateTime.now();
-    final record = await getById(id);
-    if (record == null) return false;
-    final updated = record.copyWith(fechaEliminacion: Value(now), fechaActualizacion: Value(now));
+    // final record = await getById(id);
+    // if (record == null) return false;
+    final updated = entry.copyWith(fechaEliminacion: Value(now), fechaActualizacion: Value(now));
     return update(sizesRopa).replace(updated);
+    // return await delete(sizesRopa).delete(updated);
   }
 }

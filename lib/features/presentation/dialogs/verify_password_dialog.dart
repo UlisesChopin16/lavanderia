@@ -15,24 +15,31 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
   String password = '';
   @override
   Widget build(BuildContext context) {
-    final configuracionNotifier = ref.read(configuracionEmpresaViewModelProvider.notifier);
     // final (variable) = ref.watch(provider.select((value) => (value.variable)));
     return AlertDialog(
       title: const Text('Ingresar al modo administrador'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Por favor, ingresa tu contraseña para continuar.'),
-          TextField(
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Contraseña',
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          children: [
+            const Text('Por favor, ingresa tu contraseña para continuar.'),
+            TextField(
+              autofocus: true,
+              textCapitalization: TextCapitalization.words,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Contraseña',
+              ),
+              onChanged: (value) {
+                password = value;
+              },
+              onEditingComplete: validatePassword,
             ),
-            onChanged: (value) {
-              password = value;
-            },
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -42,25 +49,28 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
           child: const Text('Cancelar'),
         ),
         FilledButton(
-          onPressed: () async {
-            final isValid = configuracionNotifier.verifyPassword(password);
-            if (isValid) {
-              final confirm = await context.showWarningDialog(
-                message: '¿Estás seguro de entrar al modo administrador?\n'
-                    'Esta acción habilitará botones de edición, eliminación y guardado.',
-              );
-              if (!context.mounted) return;
-              if (confirm == true) {
-                configuracionNotifier.setBlockUI(false);
-                context.pop();
-              } else {
-                context.pop();
-              }
-            }
-          },
+          onPressed: validatePassword,
           child: const Text('Verificar'),
         ),
       ],
     );
+  }
+
+  void validatePassword() async {
+    final configuracionNotifier = ref.read(configuracionEmpresaViewModelProvider.notifier);
+    final isValid = configuracionNotifier.verifyPassword(password);
+    if (isValid) {
+      final confirm = await context.showWarningDialog(
+        message: '¿Estás seguro de entrar al modo administrador?\n'
+            'Esta acción habilitará botones de edición, eliminación y guardado.',
+      );
+      if (!mounted) return;
+      if (confirm == true) {
+        configuracionNotifier.setBlockUI(false);
+        context.pop();
+      } else {
+        context.pop();
+      }
+    }
   }
 }

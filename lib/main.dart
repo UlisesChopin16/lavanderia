@@ -11,6 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
+  await SharedPreferencesModule.init();
   await initializeDateFormatting('es_ES');
 
 
@@ -50,7 +51,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final configuracionNotifier = ref.read(configuracionEmpresaViewModelProvider.notifier);
+      final homeNotifier = ref.read(homeViewModelProvider.notifier);
       configuracionNotifier.initialize();
+      homeNotifier.getThemeMode();
     });
   }
 
