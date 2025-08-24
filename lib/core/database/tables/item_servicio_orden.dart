@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/precios_conceptos.dart';
+import 'package:lavanderia/features/catalogos/precios/data/db/precios_conceptos.dart';
 import 'orden_servicio.dart';
 
 @DataClassName('ItemServicioOrdenEntry')

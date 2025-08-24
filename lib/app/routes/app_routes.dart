@@ -10,6 +10,11 @@ class AppRoutes {
   static const String catalogos = '/catalogos';
   static const String clientes = '/clientes';
 
+  static GoRouter router = GoRouter(
+    initialLocation: home,
+    debugLogDiagnostics: true,
+    routes: routes,
+  );
   static List<GoRoute> get _tabRoutes => HomeTabsType.values
       .map(
         (tab) => GoRoute(

@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
+export 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
+export 'package:lavanderia/core/types/estatus_type.dart';
 
 part 'filtros_base.freezed.dart';
 

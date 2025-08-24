@@ -16,6 +16,7 @@ class WarningDialog extends StatelessWidget {
     return AnimatedImageDialog(
       title: title,
       message: message,
+      closeText: 'Cancelar',
       imagePath: Assets.warning.path, // Path to your warning animation
       actionVisible: true,
     );

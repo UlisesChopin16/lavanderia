@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
-import 'package:lavanderia/core/utils/printer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,14 +40,7 @@ class HomeViewModel extends _$HomeViewModel {
 
   void setThemeMode(ThemeMode mode) async {
     state = state.copyWith(themeMode: mode);
-    final data = await _sharedPreferences.setString(keyThemeMode, mode.toString());
-    if (data) {
-      final newMode = _sharedPreferences.getString(keyThemeMode);
-      Printer.i('Theme mode changed to: $newMode');
-    } else {
-      // Failed to save
-      Printer.e('Failed to save theme mode');
-    }
+    await _sharedPreferences.setString(keyThemeMode, mode.toString());
   }
   
   void toggleThemeMode() async {

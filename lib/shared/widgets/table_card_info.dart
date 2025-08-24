@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
@@ -76,19 +76,21 @@ class TableCardInfo extends ConsumerStatefulWidget {
 }
 
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
+  final controller = TextEditingController();
   // late int sortColumnIndex = widget.sortColumnIndex;
   bool get isSmall => widget.isSmall;
   bool get showActions => widget.showActions;
   bool get sortAscending => widget.ascending;
-
+  bool get haveFilters => widget.haveFilters;
   int get sortColumnIndex => widget.sortColumnIndex;
+  List<Widget> get filters => widget.filters;
 
   List<DataColumn> get columns {
     List<DataColumn> columnas = widget.columns.map(_buildDataColumn).toList();
     if (showActions) {
       columnas.add(
         const DataColumn(
-          label: Text('Acciones'),
+          label: Text(''),
           headingRowAlignment: MainAxisAlignment.center,
         ),
       );
@@ -114,10 +116,6 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final blockUI = ref.watch(
-      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
-    );
-
     return AnimatedSize(
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOutCubic,
@@ -128,55 +126,23 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Wrap(
-              // mainAxisSize: MainAxisSize.min,
-              // mainAxisAlignment: MainAxisAlignment.end,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              alignment: WrapAlignment.end,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runAlignment: WrapAlignment.end,
-              spacing: 15,
-              runSpacing: 10,
-              children: [
-                TextField(
-                  onChanged: widget.onSearchChanged,
-                  decoration: const InputDecoration(
-                    constraints: BoxConstraints(maxWidth: 300),
-                    labelText: 'Buscar',
-                    suffixIcon: Icon(
-                      Icons.search,
-                    ),
-                  ),
-                ),
-                if (!blockUI)
-                  _AddRow(
-                    titleAddButton: widget.titleAddButton,
-                    onAddButtonPressed: widget.onAddButtonPressed,
-                  ),
-              ],
+            _SearchAndAdd(
+              controller: controller,
+              widget: widget,
             ),
             const Divider(),
             const Gap(0),
-            Wrap(
-              alignment: WrapAlignment.end,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runAlignment: WrapAlignment.end,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                if (widget.haveFilters)
-                  ButtonClearFilters(
-                    onPressed: widget.onClearFilters,
-                  ),
-                ...widget.filters,
-              ],
+            _Filters(
+              onClearFilters: clearFilters,
+              haveFilters: haveFilters,
+              filters: filters,
             ),
             if (isSmall) widget.smallView else newDataTable,
             if (widget.rows.isEmpty)
               Padding(
-                padding: const EdgeInsets.only(top: 15.0),
+                padding: const EdgeInsets.only(bottom: 15.0),
                 child: Text(
-                  'No hay datos disponibles\nAgregue un nuevo elemento',
+                  'No hay elementos disponibles',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -269,6 +235,87 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
       onLongPress: cell.onLongPress,
       onTapCancel: cell.onTapCancel,
       onTapDown: cell.onTapDown,
+    );
+  }
+
+  void clearFilters() {
+    controller.clear();
+    widget.onClearFilters?.call();
+  }
+}
+
+class _Filters extends StatelessWidget {
+  const _Filters({
+    required this.onClearFilters,
+    required this.haveFilters,
+    required this.filters,
+  });
+
+  final void Function()? onClearFilters;
+  final bool haveFilters;
+  final List<Widget> filters;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      runAlignment: WrapAlignment.end,
+      spacing: 10,
+      runSpacing: 10,
+      children: [
+        if (haveFilters)
+          ButtonClearFilters(
+            onPressed: onClearFilters,
+          ),
+        ...filters,
+      ],
+    );
+  }
+}
+
+class _SearchAndAdd extends HookConsumerWidget {
+  const _SearchAndAdd({
+    required this.widget,
+    required this.controller,
+  });
+
+  final TableCardInfo widget;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blockUI = ref.watch(
+      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    );
+
+    return Wrap(
+      // mainAxisSize: MainAxisSize.min,
+      // mainAxisAlignment: MainAxisAlignment.end,
+      // crossAxisAlignment: CrossAxisAlignment.center,
+      alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      runAlignment: WrapAlignment.end,
+      spacing: 15,
+      runSpacing: 10,
+      children: [
+        TextField(
+          controller: controller,
+          onChanged: widget.onSearchChanged,
+          decoration: const InputDecoration(
+            constraints: BoxConstraints(maxWidth: 300),
+            labelText: 'Buscar',
+            suffixIcon: Icon(
+              Icons.search,
+            ),
+          ),
+        ),
+        if (!blockUI)
+          _AddRow(
+            titleAddButton: widget.titleAddButton,
+            onAddButtonPressed: widget.onAddButtonPressed,
+          ),
+      ],
     );
   }
 }

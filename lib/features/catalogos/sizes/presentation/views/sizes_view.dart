@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
-import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.dart';
@@ -27,6 +27,8 @@ class _SizesViewState extends ConsumerState<SizesView> {
 
   @override
   Widget build(BuildContext context) {
+    _addErrorListener();
+    _addSuccessListener();
     final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
     final blockUI = ref.watch(
       configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
@@ -37,13 +39,13 @@ class _SizesViewState extends ConsumerState<SizesView> {
       ),
     );
     final isSmall = MediaQuery.of(context).size.width < 950;
-    Printer.i(filtros);
+
     return Center(
       child: SizedBox(
-        width: 900,
+        width: 1000,
         child: SingleChildScrollView(
           child: Card(
-            margin: const EdgeInsets.only(top: 16.0),
+            margin: const EdgeInsets.all(24),
             child: StreamBuilder(
               stream: sizeRopaNotifier.observeSizes(),
               builder: (context, asyncSnapshot) {
@@ -55,13 +57,7 @@ class _SizesViewState extends ConsumerState<SizesView> {
                   haveFilters: filtros.haveFilters,
                   titleAddButton: 'Agregar tamaño de ropa',
                   onClearFilters: sizeRopaNotifier.clearFilters,
-                  onAddButtonPressed: () async {
-                    // Acción al presionar el botón de agregar tamaño
-                    final nombre = await showNombreDialog();
-                    if (nombre != null) {
-                      sizeRopaNotifier.createSize(nombre);
-                    }
-                  },
+                  onAddButtonPressed: onAddSize,
                   onSearchChanged: sizeRopaNotifier.setNombre,
                   onSortChange: sizeRopaNotifier.setSort,
                   filters: [
@@ -97,10 +93,6 @@ class _SizesViewState extends ConsumerState<SizesView> {
                         );
                       },
                     ),
-                    // if (thereAreInactives)
-                    //   const DataColumn(
-                    //     label: Text('Fecha de Eliminación'),
-                    //   ),
                   ],
                   rows: List.generate(
                     asyncSnapshot.data?.length ?? 0,
@@ -130,6 +122,23 @@ class _SizesViewState extends ConsumerState<SizesView> {
     );
   }
 
+  void onAddSize() async {
+    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+    // Acción al presionar el botón de agregar tamaño
+    final nombre = await showNombreDialog();
+
+    if (nombre == null) return;
+    if (!mounted) return;
+
+    final confirm = await context.showWarningDialog(
+      message: '¿Estás seguro de agregar el tamaño "$nombre"?',
+    );
+
+    if (confirm == true) {
+      sizeRopaNotifier.createSize(nombre);
+    }
+  }
+
   Future<String?> showNombreDialog() {
     const title = 'Nuevo tamaño de ropa';
     return showDialog<String?>(
@@ -143,5 +152,23 @@ class _SizesViewState extends ConsumerState<SizesView> {
         );
       },
     );
+  }
+
+  void _addErrorListener() {
+    ref.listen(sizesViewModelProvider.select((state) => state.errorMessage), (previous, next) {
+      // Acción al cambiar el estado del notifier
+      if (next.isNotEmpty) {
+        context.showErrorDialog(next);
+      }
+    });
+  }
+
+  void _addSuccessListener() {
+    ref.listen(sizesViewModelProvider.select((state) => state.successMessage), (previous, next) {
+      // Acción al cambiar el estado del notifier
+      if (next.isNotEmpty) {
+        context.showSuccessDialog(next);
+      }
+    });
   }
 }

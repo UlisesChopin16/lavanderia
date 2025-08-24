@@ -1,10 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
-import 'package:lavanderia/core/utils/printer.dart';
-import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
-import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
-import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
+import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,6 +15,7 @@ sealed class SizesModel with _$SizesModel {
   const factory SizesModel({
     @Default(false) bool isLoading,
     @Default('') String errorMessage,
+    @Default('') String successMessage,
     @Default(FiltrosBase()) FiltrosBase filtros,
   }) = _SizesModel;
 }
@@ -38,8 +36,15 @@ class SizesViewModel extends _$SizesViewModel {
 
   void createSize(String nombre) {
     safeCall(
-      actionBefore: () async => state = state.copyWith(isLoading: true),
-      actionAfter: () async => state = state.copyWith(isLoading: false),
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Tamaño de ropa creado con éxito',
+      ),
       actionOnError: (error, message) async => state.copyWith(
         errorMessage: message,
         isLoading: false,
@@ -53,10 +58,16 @@ class SizesViewModel extends _$SizesViewModel {
       },
     );
   }
+
   void updateSize(SizesRopaEntity entity) {
     safeCall(
-      actionBefore: () async => state = state.copyWith(isLoading: true),
-      actionAfter: () async => state = state.copyWith(isLoading: false),
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state =
+          state.copyWith(isLoading: false, successMessage: 'Tamaño de ropa actualizado con éxito'),
       actionOnError: (error, message) async => state.copyWith(
         errorMessage: message,
         isLoading: false,
@@ -66,10 +77,16 @@ class SizesViewModel extends _$SizesViewModel {
       },
     );
   }
+
   void desactivateSize(SizesRopaEntity entity) {
     safeCall(
-      actionBefore: () async => state = state.copyWith(isLoading: true),
-      actionAfter: () async => state = state.copyWith(isLoading: false),
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state =
+          state.copyWith(isLoading: false, successMessage: 'Tamaño de ropa desactivado con éxito'),
       actionOnError: (error, message) async => state.copyWith(
         errorMessage: message,
         isLoading: false,
@@ -97,7 +114,6 @@ class SizesViewModel extends _$SizesViewModel {
   }
 
   void setOrden(ColumnNamesType orden) {
-    Printer.i('Ordenamiento: ${orden.title}');
     state = state.copyWith(filtros: state.filtros.copyWith(ordenamiento: orden));
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/features/configuracion_empresa/data/models/configuracion_empresa_model.dart';
 
 part 'configuracion_empresa_entity.freezed.dart';
@@ -52,7 +51,6 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
   //       direccion.estado.trim().isNotEmpty;
   // }
   Color get colorParsed {
-    Printer.e('Color: $color');
     if (color == 0) {
       const blue = Colors.blue;
       final argb = blue.toARGB32();

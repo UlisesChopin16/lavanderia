@@ -19,12 +19,6 @@ enum HomeTabsType {
     unselectedIcon: IconsManager.unselectedCatalogoIcon,
     route: configuracionGeneralR,
   ),
-  clientes(
-    title: 'Clientes',
-    icon: IconsManager.selectedClientesIcon,
-    unselectedIcon: IconsManager.unselectedClientesIcon,
-    route: clientesR,
-  ),
   empresas(
     title: 'Empresa',
     icon: IconsManager.selectedEmpresaIcon,
@@ -60,12 +54,4 @@ const DataRoute configuracionGeneralR = DataRoute(
   name: 'ConfiguracionGeneral',
   view: CatalogosView(),
 );
-const DataRoute clientesR = DataRoute(
-  path: AppRoutes.clientes,
-  name: 'Clientes',
-  view: Scaffold(
-    body: Center(
-      child: Text('Clientes'),
-    ),
-  ),
-);
+

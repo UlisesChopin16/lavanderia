@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/cliente.dart';
-import '../app_database.dart';
+import 'package:lavanderia/features/catalogos/clientes/data/db/cliente.dart';
+import '../../../../../../core/database/app_database.dart';
 
 part 'cliente_dao.g.dart';
 

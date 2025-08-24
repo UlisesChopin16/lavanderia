@@ -1,9 +1,9 @@
-export 'precios_conceptos.dart';
-export 'categoria_servicio.dart';
-export 'cliente.dart';
-export 'configuracion_empresa.dart';
-export 'direccion.dart';
-export 'sizes_ropa.dart';
+export '../../../features/catalogos/precios/data/db/precios_conceptos.dart';
+export '../../../features/catalogos/categorias/data/db/categoria_servicio.dart';
+export '../../../features/catalogos/clientes/data/db/cliente.dart';
+export '../../../features/configuracion_empresa/data/db/configuracion_empresa.dart';
+export '../../../features/configuracion_empresa/data/db/direccion.dart';
+export '../../../features/catalogos/sizes/data/db/sizes_ropa.dart';
 export 'item_servicio.dart';
 export 'item_servicio_orden.dart';
 export 'orden_servicio.dart';

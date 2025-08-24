@@ -10,7 +10,11 @@ import 'package:lavanderia/shared/widgets/actions_button.dart';
 class ActionsRow extends ConsumerStatefulWidget {
   final SizesRopaEntity size;
   final bool isSmall;
-  const ActionsRow({super.key, required this.size, required this.isSmall});
+  const ActionsRow({
+    super.key,
+    required this.size,
+    this.isSmall = false,
+  });
 
   @override
   ConsumerState<ActionsRow> createState() => _ActionsRowState();
@@ -24,20 +28,13 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
 
   @override
   Widget build(BuildContext context) {
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    
     return ActionsButtons(
       isSmall: isSmall,
       actions: [
         if (!isInactive)
           DataAction(
             color: Colors.blue,
-            callbackIndex: () async {
-              final nombre = await showNombreDialog();
-              if (nombre != null && nombre.isNotEmpty) {
-                sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
-              }
-            },
+            callbackIndex: onEditSize,
             icon: Icons.edit,
             isNotEnabled: false,
             tooltip: 'Editar tamaño de ropa',
@@ -45,15 +42,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
         if (!isInactive)
           DataAction(
             color: Colors.red,
-            callbackIndex: () async {
-              final response = await context.showWarningDialog(
-                message:
-                    '¿Estás seguro de desactivar el tamaño "${size.nombre}"?\nAl desactivarlo, ya no estará disponible para su uso.',
-              );
-              if (response == true) {
-                sizeRopaNotifier.desactivateSize(size);
-              }
-            },
+            callbackIndex: onDeleteSize,
             icon: Icons.delete,
             isNotEnabled: false,
             tooltip: 'Eliminar tamaño de ropa',
@@ -61,19 +50,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
         if (size.estatus == EstatusType.inactivo)
           DataAction(
             color: Colors.green,
-            callbackIndex: () async {
-              final response = await context.showWarningDialog(
-                message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
-              );
-              if (response == true) {
-                sizeRopaNotifier.updateSize(
-                  size.copyWith(
-                    estatus: EstatusType.activo,
-                    fechaEliminacion: null,
-                  ),
-                );
-              }
-            },
+            callbackIndex: onRestoreSize,
             icon: Icons.restore,
             isNotEnabled: false,
             tooltip: 'Activar tamaño de ropa',
@@ -95,5 +72,51 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
         );
       },
     );
+  }
+
+  void onEditSize() async {
+    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+    // Acción al presionar el botón de agregar tamaño
+    final nombre = await showNombreDialog();
+
+    if (nombre == null) return;
+    if (nombre.isEmpty) return;
+    if (!mounted) return;
+
+    final confirm = await context.showWarningDialog(
+      message: '¿Estás seguro de editar este tamaño?',
+    );
+
+    if (confirm == true) {
+      sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
+    }
+  }
+
+  void onDeleteSize() async {
+    final question = '¿Estás seguro de desactivar el tamaño "${size.nombre}"?';
+    const message =
+        'Al desactivarlo, ya no estará disponible para su uso y se desactivarán todos los conceptos relacionados con él.';
+    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+    final response = await context.showWarningDialog(
+      message: '$question\n$message',
+    );
+    if (response == true) {
+      sizeRopaNotifier.desactivateSize(size);
+    }
+  }
+
+  void onRestoreSize() async {
+    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+    final response = await context.showWarningDialog(
+      message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
+    );
+    if (response == true) {
+      sizeRopaNotifier.updateSize(
+        size.copyWith(
+          estatus: EstatusType.activo,
+          fechaEliminacion: null,
+        ),
+      );
+    }
   }
 }

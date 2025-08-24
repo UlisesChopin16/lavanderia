@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/precios_conceptos.dart';
+import 'package:lavanderia/features/catalogos/precios/data/db/precios_conceptos.dart';
 
-import '../app_database.dart';
+import '../../../../../../core/database/app_database.dart';
 
-part 'categoria_item_servicio_dao.g.dart';
+part 'precios_conceptos_dao.g.dart';
 
 @DriftAccessor(tables: [PreciosConceptos])
 class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosConceptosDaoMixin {

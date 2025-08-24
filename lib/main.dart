@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
@@ -83,13 +82,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       darkTheme: theme.toThemeData(isDark: true),
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
-      routerConfig: GoRouter(
-        initialLocation: AppRoutes.home,
-        debugLogDiagnostics: true,
-        routes: AppRoutes.routes,
-        // refreshListenable:
-        //   ref.watch(homeViewModelProvider),
-      ),
+      routerConfig: AppRoutes.router,
 
       // home: const HomeView(),
     );

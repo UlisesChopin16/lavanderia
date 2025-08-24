@@ -11,7 +11,7 @@ final instance = GetIt.instance;
 @InjectableInit(
 
 )
-Future<void> configureDependencies() async => await instance.init();
+void configureDependencies() => instance.init();
 
 @module
 abstract class DatabaseModule {

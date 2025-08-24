@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/configuracion_empresa.dart';
+import 'package:lavanderia/features/configuracion_empresa/data/db/configuracion_empresa.dart';
 
-import '../app_database.dart';
+import '../../../../../core/database/app_database.dart';
 
 part 'configuracion_empresa_dao.g.dart';
 

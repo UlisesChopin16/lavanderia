@@ -1,8 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../../../../core/database/app_database.dart';
 
-part 'categoria_servicio.freezed.dart';
-part 'categoria_servicio.g.dart';
+part 'categoria_servicio_model.freezed.dart';
+part 'categoria_servicio_model.g.dart';
 
 @freezed
 sealed class CategoriaServicioModel with _$CategoriaServicioModel {
@@ -17,12 +16,4 @@ sealed class CategoriaServicioModel with _$CategoriaServicioModel {
 
   factory CategoriaServicioModel.fromJson(Map<String, dynamic> json) =>
       _$CategoriaServicioModelFromJson(json);
-  factory CategoriaServicioModel.fromEntry(CategoriaServicioEntry entry) => CategoriaServicioModel(
-    id: entry.id,
-    nombre: entry.nombre,
-    estatus: entry.estatus,
-    fechaCreacion: entry.fechaCreacion,
-    fechaActualizacion: entry.fechaActualizacion,
-    fechaEliminacion: entry.fechaEliminacion,
-  );
 }

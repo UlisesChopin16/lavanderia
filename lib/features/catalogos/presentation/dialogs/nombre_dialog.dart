@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/string_ext.dart';
+import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 
 class NombreDialog extends StatefulWidget {
   const NombreDialog({
@@ -34,10 +35,9 @@ class _NombreDialogState extends State<NombreDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final labelLarge = Theme.of(context).textTheme.labelLarge;
-
-    return AlertDialog(
-      title: Text(widget.title),
+    return BaseDialog(
+      title: widget.title,
+      onActionPressed: validateNombre,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 16.0),
         child: Form(
@@ -46,6 +46,8 @@ class _NombreDialogState extends State<NombreDialog> {
             autofocus: true,
             controller: _nombreController,
             textCapitalization: TextCapitalization.words,
+            onEditingComplete: validateNombre,
+            onChanged: onChangeNombre,
             decoration: InputDecoration(
               labelText: widget.label,
               hintText: widget.hintText,
@@ -57,30 +59,9 @@ class _NombreDialogState extends State<NombreDialog> {
               }
               return null;
             },
-            onChanged: onChangeNombre,
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            'Cancelar',
-            style: labelLarge?.copyWith(color: Colors.redAccent),
-          ),
-        ),
-        FilledButton(
-          onPressed: () {
-            // Add any additional action if needed
-            validateNombre();
-          },
-          child: const Text(
-            'Aceptar',
-          ),
-        ),
-      ],
     );
   }
 

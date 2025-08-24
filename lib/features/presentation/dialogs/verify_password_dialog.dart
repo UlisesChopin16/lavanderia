@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 
 class VerifyPasswordDialog extends ConsumerStatefulWidget {
   const VerifyPasswordDialog({super.key});
@@ -16,8 +17,11 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     // final (variable) = ref.watch(provider.select((value) => (value.variable)));
-    return AlertDialog(
-      title: const Text('Ingresar al modo administrador'),
+    return BaseDialog(
+      title: 'Ingresar al modo administrador',
+      closeText: 'Cancelar',
+      actionText: 'Verificar',
+      onActionPressed: validatePassword,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
         child: Column(
@@ -25,7 +29,7 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
           children: [
-            const Text('Por favor, ingresa tu contraseña para continuar.'),
+            const Text('Ingresa tu contraseña para continuar.'),
             TextField(
               autofocus: true,
               textCapitalization: TextCapitalization.words,
@@ -41,18 +45,6 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            context.pop();
-          },
-          child: const Text('Cancelar'),
-        ),
-        FilledButton(
-          onPressed: validatePassword,
-          child: const Text('Verificar'),
-        ),
-      ],
     );
   }
 
@@ -62,15 +54,18 @@ class _VerifyPasswordDialogState extends ConsumerState<VerifyPasswordDialog> {
     if (isValid) {
       final confirm = await context.showWarningDialog(
         message: '¿Estás seguro de entrar al modo administrador?\n'
-            'Esta acción habilitará botones de edición, eliminación y guardado.',
+            'Esta acción habilitará botones de creación, edición y eliminación.',
       );
       if (!mounted) return;
       if (confirm == true) {
         configuracionNotifier.setBlockUI(false);
-        context.pop();
-      } else {
-        context.pop();
+        await context.showSuccessDialog(
+          'Modo administrador habilitado.\n'
+          'Recuerda desactivar el modo administrador cuando termines.',
+        );
       }
+      if (!mounted) return;
+      context.pop();
     }
   }
 }

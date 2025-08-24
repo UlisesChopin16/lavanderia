@@ -1,10 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/sizes_ropa.dart';
-import 'package:lavanderia/core/types/estatus_type.dart';
+import 'package:lavanderia/features/catalogos/sizes/data/db/sizes_ropa.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
-import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 
-import '../app_database.dart';
+import '../../../../../../core/database/app_database.dart';
 
 part 'sizes_ropa_dao.g.dart';
 

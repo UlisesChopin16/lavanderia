@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
+import 'base_dialog.dart';
+
 class AnimatedImageDialog extends StatelessWidget {
   final String title;
   final String message;
@@ -22,52 +24,34 @@ class AnimatedImageDialog extends StatelessWidget {
     this.onActionPressed,
   });
 
+  Widget get icon => Lottie.asset(
+        imagePath,
+        animate: true,
+        repeat: true,
+        width: 150,
+        height: 150,
+        fit: BoxFit.contain,
+      );
+
   @override
   Widget build(BuildContext context) {
     final labelLarge = Theme.of(context).textTheme.labelLarge;
-    return AlertDialog.adaptive(
-      title: Text(title),
-      content: Column(
-        spacing: 15,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Lottie.asset(
-            imagePath,
-            animate: true,
-            repeat: true,
-            width: 150,
-            height: 150,
-            fit: BoxFit.contain,
-          ),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: labelLarge,
-          ),
-        ],
+    return BaseDialog(
+      icon: icon,
+      title: title,
+      closeText: closeText,
+      actionText: actionText,
+      actionVisible: actionVisible,
+      requestFocus: true,
+      onActionPressed: () {
+        onActionPressed?.call();
+        context.pop(true);
+      },
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: labelLarge,
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            closeText,
-            style: labelLarge?.copyWith(color: Colors.redAccent),
-          ),
-        ),
-        if (actionVisible)
-          FilledButton(
-            onPressed: () {
-              // Add any additional action if needed
-              onActionPressed?.call();
-              context.pop(true);
-            },
-            child: Text(
-              actionText,
-            ),
-          ),
-      ],
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'cliente.dart';
+import '../../../features/catalogos/clientes/data/db/cliente.dart';
 
 @DataClassName('OrdenServicioEntry')
 class OrdenServicio extends Table {
