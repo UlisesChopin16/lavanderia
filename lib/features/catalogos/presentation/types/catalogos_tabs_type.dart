@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/catalogos/categorias/presentation/views/categoria_view.dart';
+import 'package:lavanderia/features/catalogos/categorias/categorias/presentation/views/categoria_view.dart';
 import 'package:lavanderia/features/catalogos/clientes/presentation/views/clientes_view.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
 

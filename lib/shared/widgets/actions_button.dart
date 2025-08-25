@@ -101,14 +101,18 @@ class _ActionsButtonsState extends State<ActionsButtons> {
       items: List.generate(
         actions.length,
         (i) {
+          final action = actions[i];
           return PopupMenuItem(
-            value: actions[i],
+            value: action,
             child: ListTile(
-              leading: Icon(actions[i].icon, color: actions[i].color),
-              title: Text(actions[i].tooltip),
+              leading: Icon(action.icon, color: action.color),
+              title: Text(action.tooltip),
               onTap: () {
-                actions[i].callbackIndex.call();
-                Navigator.of(context).pop();
+                // if (action.canPop) {
+                //   Navigator.of(context).pop();
+                // }
+                  Navigator.of(context).pop();
+                action.callbackIndex.call();
               },
             ),
           );
@@ -119,10 +123,14 @@ class _ActionsButtonsState extends State<ActionsButtons> {
 }
 
 class DataAction {
+  // final bool canPop;
   final VoidCallback callbackIndex;
   final IconData icon;
   final Color color;
   final String tooltip;
+
+  /// Si la acción está habilitada o no.
+  /// Si es verdadero, la acción está deshabilitada.
   final bool isNotEnabled;
 
   const DataAction({
@@ -130,6 +138,7 @@ class DataAction {
     required this.icon,
     required this.isNotEnabled,
     required this.color,
-    this.tooltip = '',
+    required this.tooltip,
+    // this.canPop = true,
   });
 }

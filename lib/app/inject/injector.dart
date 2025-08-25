@@ -8,9 +8,7 @@ import 'injector.config.dart';
 
 final instance = GetIt.instance;
 
-@InjectableInit(
-
-)
+@InjectableInit()
 void configureDependencies() => instance.init();
 
 @module

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lavanderia/features/catalogos/categorias/presentation/views/view_model/categoria_view_model.dart';
+import 'package:lavanderia/features/catalogos/categorias/categorias/presentation/views/view_model/categoria_view_model.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/catalogos_tabs_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/views/view_model/catalogos_view_model.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
