@@ -6,7 +6,7 @@ import 'package:lavanderia/core/extensions/string_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/categorias/categorias/domain/entities/categoria_servicio_entity.dart';
-import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
+import 'package:lavanderia/features/catalogos/categorias/conceptos/presentation/dialogs/add_concepto_dialog.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
@@ -78,7 +78,7 @@ class _ConceptosViewState extends ConsumerState<ConceptosView> {
                   haveFilters: filtros.haveFilters,
                   titleAddButton: 'Agregar concepto de ropa',
                   onClearFilters: conceptosNotifier.clearFilters,
-                  onAddButtonPressed: onAddConcepto,
+                  onAddButtonPressed: showAddConceptDialog,
                   onSearchChanged: conceptosNotifier.setNombre,
                   onSortChange: conceptosNotifier.setSort,
                   filters: [
@@ -147,34 +147,25 @@ class _ConceptosViewState extends ConsumerState<ConceptosView> {
     );
   }
 
-  void onAddConcepto() async {
-    final conceptosNotifier = ref.read(conceptosViewModelProvider.notifier);
-    // Acción al presionar el botón de agregar concepto
-    final nombre = await showNombreDialog();
+  // void onAddConcepto() async {
+  //   final conceptosNotifier = ref.read(conceptosViewModelProvider.notifier);
+  //   // Acción al presionar el botón de agregar concepto
+  //   await showNombreDialog();
 
-    if (nombre == null) return;
-    if (!mounted) return;
+  //   if (nombre == null) return;
+  //   if (!mounted) return;
 
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de agregar el concepto "$nombre"?',
-    );
+  //   final confirm = await context.showWarningDialog(
+  //     message: '¿Estás seguro de agregar el concepto "$nombre"?',
+  //   );
 
-    if (confirm == true) {
-      conceptosNotifier.createConcepto(nombre);
-    }
-  }
+  // }
 
-  Future<String?> showNombreDialog() {
-    const title = 'Nuevo concepto de ropa';
+  Future<void> showAddConceptDialog() {
     return showDialog<String?>(
       context: context,
       builder: (context) {
-        return const NombreDialog(
-          title: title,
-          nombre: '',
-          label: 'Nombre del concepto',
-          hintText: 'Ej: Playera, Tenis, Sábanas',
-        );
+        return const AddConceptoDialog();
       },
     );
   }

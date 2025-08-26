@@ -28,26 +28,55 @@ class RadioColors extends ConsumerWidget {
     );
     return SizedBox(
       width: width,
-      child: Wrap(
-        children: colors.map(
-          (color) {
-            return Radio(
-              value: color,
-              groupValue: groupValue,
-              onChanged: (value) {
-                if (value == null) return;
-                configuracionNotifier.setColor(value);
-              },
-              activeColor: color,
-              fillColor: WidgetStatePropertyAll(
-                color,
-              ),
-              overlayColor: WidgetStatePropertyAll(
-                color.withOpacity(0.2),
-              ),
-            );
-          },
-        ).toList(),
+      // child: Wrap(
+      //   children: colors.map(
+      //     (color) {
+      //       return RadioGroup(
+      //         groupValue: groupValue,
+      //         onChanged: (value) {
+      //           if (value == null) return;
+      //           configuracionNotifier.setColor(value);
+      //         },
+      //         child: Wrap(
+      //           children: [
+      //             Radio(
+      //               value: color,
+      //               activeColor: color,
+      //               fillColor: WidgetStatePropertyAll(
+      //                 color,
+      //               ),
+      //               overlayColor: WidgetStatePropertyAll(
+      //                 color.withOpacity(0.2),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     },
+      //   ).toList(),
+      // ),
+      child: RadioGroup(
+        groupValue: groupValue,
+        onChanged: (value) {
+          if (value == null) return;
+          configuracionNotifier.setColor(value);
+        },
+        child: Wrap(
+          children: colors
+              .map(
+                (color) => Radio(
+                  value: color,
+                  activeColor: color,
+                  fillColor: WidgetStatePropertyAll(
+                    color,
+                  ),
+                  overlayColor: WidgetStatePropertyAll(
+                    color.withOpacity(0.2),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }
