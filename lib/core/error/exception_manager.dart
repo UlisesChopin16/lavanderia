@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:lavanderia/core/error/s_q_l_exception.dart';
 
 class ExceptionManager {
   static const defaultMessage = 'Ocurrió un error en la operación, reintente más tarde.';
@@ -15,13 +16,17 @@ class ExceptionManager {
     String? customMessage,
     bool sendCrash = false,
   }) async {
-    final message = await getErrorMessage(
-      exception: exception,
-      stackTrace: stackTrace,
-      customMessage: customMessage,
-    );
+    final message = switch (exception) {
+      SQLException e => e.message,
+      _ => defaultMessage,
+    };
 
-    return customMessage ?? message;
+    if (kDebugMode) {
+      debugPrint("$exception");
+      debugPrintStack(stackTrace: stackTrace);
+    }
+
+    return message;
   }
 
   Future<String> getErrorMessage({

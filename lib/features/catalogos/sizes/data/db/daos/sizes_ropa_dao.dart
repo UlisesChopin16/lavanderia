@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:lavanderia/core/error/s_q_l_exception.dart';
 import 'package:lavanderia/features/catalogos/sizes/data/db/sizes_ropa.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 
@@ -76,7 +77,18 @@ class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixi
   Future<SizesRopaEntry?> getById(int id) =>
       (select(sizesRopa)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertSizes(SizesRopaCompanion row) async => await into(sizesRopa).insert(row);
+  Future<int> insertSizes(SizesRopaCompanion row) async {
+    final query = select(sizesRopa);
+    final value = row.nombre.value.toLowerCase();
+    query.where((tbl) => tbl.nombre.lower().equals(value));
+    final dataRow = await query.get();
+
+    if (dataRow.isNotEmpty) {
+      throw SQLException(message: 'Ya existe un tamaño de ropa con el nombre "${row.nombre.value}".');
+    }
+    
+    return await into(sizesRopa).insert(row);
+  }
 
   Future<bool> updateSizes(Insertable<SizesRopaEntry> row) {
     final now = DateTime.now();

@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:lavanderia/core/error/s_q_l_exception.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 
 import '../../../../../../../core/database/app_database.dart';
@@ -65,13 +66,22 @@ class ItemServicioDao extends DatabaseAccessor<AppDatabase> with _$ItemServicioD
       )..where((tbl) => tbl.id.equals(id)))
           .getSingleOrNull();
 
-  Future<int> insertItem(ItemServicioCompanion item) {
+  Future<int> insertItem(ItemServicioCompanion item) async {
+    final query = select(itemServicio);
+    final value = item.nombre.value.toLowerCase();
+    query.where((tbl) => tbl.nombre.lower().equals(value));
+    final dataRow = await query.get();
+
+    if (dataRow.isNotEmpty) {
+      throw SQLException(message: 'Ya existe un concepto con el nombre "${item.nombre.value}".');
+    }
+
     final now = DateTime.now();
     final data = item.copyWith(
       fechaCreacion: Value(now),
       fechaActualizacion: Value(now),
     );
-    return into(itemServicio).insert(data);
+    return await into(itemServicio).insert(data);
   }
 
   Future<bool> updateItem(ItemServicioEntry item) {

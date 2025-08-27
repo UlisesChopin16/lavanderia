@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:lavanderia/core/error/s_q_l_exception.dart';
 import 'package:lavanderia/features/catalogos/categorias/categorias/data/db/categoria_servicio.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 
@@ -111,8 +112,24 @@ class CategoriaServicioDao extends DatabaseAccessor<AppDatabase> with _$Categori
   Future<CategoriaServicioEntry?> getById(int id) =>
       (select(categoriaServicio)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertCategoria(CategoriaServicioCompanion row) async =>
-      await into(categoriaServicio).insert(row);
+  Future<int> insertCategoria(CategoriaServicioCompanion row) async {
+    final query = select(categoriaServicio);
+    final value = row.nombre.value.toLowerCase();
+    query.where((tbl) => tbl.nombre.lower().equals(value));
+    final dataRow = await query.get();
+
+    if (dataRow.isNotEmpty) {
+      throw SQLException(message: 'Ya existe una categoría con el nombre "${row.nombre.value}".');
+    }
+
+    final now = DateTime.now();
+    final data = row.copyWith(
+      fechaCreacion: Value(now),
+      fechaActualizacion: Value(now),
+    );
+
+    return await into(categoriaServicio).insert(data);
+  }
 
   Future<bool> updateCategoria(Insertable<CategoriaServicioEntry> row) {
     final now = DateTime.now();
