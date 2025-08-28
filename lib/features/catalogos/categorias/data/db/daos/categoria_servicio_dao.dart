@@ -1,24 +1,24 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/error/s_q_l_exception.dart';
+import 'package:lavanderia/features/catalogos/categorias/data/db/categoria_servicio.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
-import 'package:lavanderia/features/catalogos/sizes/data/db/sizes_ropa.dart';
 
 import '../../../../../../core/database/app_database.dart';
 
-part 'sizes_ropa_dao.g.dart';
+part 'categoria_servicio_dao.g.dart';
 
-@DriftAccessor(tables: [SizesRopa])
-class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixin {
-  SizesRopaDao(super.db);
+@DriftAccessor(tables: [CategoriaServicio])
+class CategoriaServicioDao extends DatabaseAccessor<AppDatabase> with _$CategoriaServicioDaoMixin {
+  CategoriaServicioDao(super.db);
 
-  Future<List<SizesRopaEntry>> getAll() async {
-    final query = select(sizesRopa);
+  Future<List<CategoriaServicioEntry>> getAll() async {
+    final query = select(categoriaServicio);
     query.where((tbl) => tbl.estatus.equals(EstatusType.activo.value));
     return await query.get();
   }
 
-  Stream<List<SizesRopaEntry>> watchAll(FiltrosBase filtros) {
-    final query = select(sizesRopa);
+  Stream<List<CategoriaServicioEntry>> watchAll(FiltrosBase filtros) {
+    final query = select(categoriaServicio);
 
     if (filtros.estatus != EstatusType.todos) {
       query.where((tbl) => tbl.estatus.equals(filtros.estatus.value));
@@ -73,48 +73,58 @@ class SizesRopaDao extends DatabaseAccessor<AppDatabase> with _$SizesRopaDaoMixi
     return query.watch();
   }
 
-  Future<SizesRopaEntry?> getById(int id) async =>
-      await (select(sizesRopa)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  Future<CategoriaServicioEntry?> getById(int id) async =>
+      await (select(categoriaServicio)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertSizes(SizesRopaCompanion row) async {
-    await rowExists(row);
-    return await into(sizesRopa).insert(row);
+  Future<int> insertCategoria(CategoriaServicioCompanion row) async {
+    final exists = await rowExists(row);
+
+    if (exists) {
+      throw SQLException(message: 'Ya existe una categoría con el nombre "${row.nombre.value}".');
+    }
+
+    final now = DateTime.now();
+    final data = row.copyWith(
+      fechaCreacion: Value(now),
+      fechaActualizacion: Value(now),
+    );
+
+    return await into(categoriaServicio).insert(data);
   }
 
-  Future<bool> updateSizes(SizesRopaEntry row) async {
-    await rowEntryExists(row);
+  Future<bool> updateCategoria(CategoriaServicioEntry row) async {
+    final exists = await rowEntryExists(row);
+    if (exists) {
+      throw SQLException(message: 'Ya existe una categoría con el nombre "${row.nombre}".');
+    }
 
     final now = DateTime.now();
     final data = row.copyWith(fechaActualizacion: Value(now));
-    return await update(sizesRopa).replace(data);
+    return await update(categoriaServicio).replace(data);
   }
 
-  Future<bool> deleteSizes(SizesRopaEntry entry) async {
+  Future<bool> deleteCategoria(CategoriaServicioEntry entry) async {
     final now = DateTime.now();
     // final record = await getById(id);
     // if (record == null) return false;
     final updated = entry.copyWith(fechaEliminacion: Value(now), fechaActualizacion: Value(now));
-    return await update(sizesRopa).replace(updated);
-    // return await delete(sizesRopa).delete(updated);
+    return await update(categoriaServicio).replace(updated);
+    // return await delete(CategoriaRopa).delete(updated);
   }
 
-  Future<void> rowExists(SizesRopaCompanion row) async {
-    final query = select(sizesRopa);
+  Future<bool> rowExists(CategoriaServicioCompanion row) async {
+    final query = select(categoriaServicio);
     query.where((tbl) => tbl.nombre.lower().equals(row.nombre.value.toLowerCase()));
     final dataRow = await query.get();
-    if (dataRow.isNotEmpty) {
-      throw SQLException(message: 'Ya existe un tamaño de ropa con el nombre "${row.nombre}".');
-    }
+    return dataRow.isNotEmpty;
   }
 
-  Future<void> rowEntryExists(SizesRopaEntry row) async {
-    final query = select(sizesRopa);
+  Future<bool> rowEntryExists(CategoriaServicioEntry row) async {
+    final query = select(categoriaServicio);
     query.where(
       (tbl) => tbl.nombre.lower().equals(row.nombre.toLowerCase()) & tbl.id.isNotIn([row.id]),
     );
     final dataRow = await query.get();
-    if (dataRow.isNotEmpty) {
-      throw SQLException(message: 'Ya existe un tamaño de ropa con el nombre "${row.nombre}".');
-    }
+    return dataRow.isNotEmpty;
   }
 }

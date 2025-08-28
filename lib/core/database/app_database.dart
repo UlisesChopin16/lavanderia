@@ -15,7 +15,6 @@ part 'app_database.g.dart';
 @DriftDatabase(
   tables: [
     Cliente,
-    ItemServicio,
     OrdenServicio,
     ItemServicioOrden,
     ConfiguracionEmpresa,
@@ -26,7 +25,6 @@ part 'app_database.g.dart';
   ],
   daos: [
     ClientesDao,
-    ItemServicioDao,
     OrdenServicioDao,
     ItemServicioOrdenDao,
     ConfiguracionEmpresaDao,

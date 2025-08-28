@@ -4,8 +4,9 @@ import 'package:lavanderia/core/database/tables/tables.dart';
 @DataClassName('PreciosConceptosEntry')
 class PreciosConceptos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get itemId => integer().references(ItemServicio, #id)();
+  IntColumn get categoriaId => integer().references(CategoriaServicio, #id)();
   IntColumn get sizeRopaId => integer().references(SizesRopa, #id)();
+  TextColumn get nombreConcepto => text()();
   IntColumn get diasEntrega => integer()(); // Días de entrega para este item en esta categoría
   TextColumn get tipoUnidad => text()(); // Ej. "Kg" o "pieza"
   RealColumn get importe => real()();

@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/error/s_q_l_exception.dart';
 import 'package:lavanderia/features/catalogos/precios/data/db/precios_conceptos.dart';
-import 'package:lavanderia/features/catalogos/precios/data/models/precios_detalles_entry/precios_detalles_entry.dart';
+import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/filtros/filtros_precios.dart';
 
 import '../../../../../../core/database/app_database.dart';
+
+export 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
 
 part 'precios_conceptos_dao.g.dart';
 
@@ -14,20 +16,18 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
 
   // Future<List<PreciosConceptosEntry>> getAll() => select(preciosConceptos).get();
 
-  Stream<List<PrecioConDetalles>> watchAllConceptosSizes({
+  Stream<List<PrecioConDetallesEntry>> watchAllBySize({
     required int sizeId,
     required FiltrosPrecios filtros,
   }) {
     final query = queryWithFilters(filtros);
     query.where(sizesRopa.id.equals(sizeId));
-    query.groupBy([itemServicio.id]);
 
     // query.where();
     return query.watch().map((rows) {
       return rows.map((row) {
-        return PrecioConDetalles(
+        return PrecioConDetallesEntry(
           row.readTable(preciosConceptos),
-          row.readTable(itemServicio),
           row.readTable(sizesRopa),
           row.readTable(categoriaServicio),
         );
@@ -35,19 +35,18 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     });
   }
 
-  Stream<List<PrecioConDetalles>> watchAllByConcepto({
-    required int conceptoId,
+  Stream<List<PrecioConDetallesEntry>> watchAllByCategoria({
+    required int categoriaId,
     required FiltrosPrecios filtros,
   }) {
     final query = queryWithFilters(filtros);
-    query.where(preciosConceptos.itemId.equals(conceptoId));
+    query.where(categoriaServicio.id.equals(categoriaId));
 
     // query.where();
     return query.watch().map((rows) {
       return rows.map((row) {
-        return PrecioConDetalles(
+        return PrecioConDetallesEntry(
           row.readTable(preciosConceptos),
-          row.readTable(itemServicio),
           row.readTable(sizesRopa),
           row.readTable(categoriaServicio),
         );
@@ -55,14 +54,13 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     });
   }
 
-  Stream<List<PrecioConDetalles>> watchAll(FiltrosPrecios filtros) {
+  Stream<List<PrecioConDetallesEntry>> watchAll({required FiltrosPrecios filtros}) {
     final query = queryWithFilters(filtros);
     // query.where();
     return query.watch().map((rows) {
       return rows.map((row) {
-        return PrecioConDetalles(
+        return PrecioConDetallesEntry(
           row.readTable(preciosConceptos),
-          row.readTable(itemServicio),
           row.readTable(sizesRopa),
           row.readTable(categoriaServicio),
         );
@@ -72,11 +70,10 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
 
   JoinedSelectStatement queryJoined() {
     final query = select(preciosConceptos).join([
-      innerJoin(itemServicio, itemServicio.id.equalsExp(preciosConceptos.itemId)),
       innerJoin(sizesRopa, sizesRopa.id.equalsExp(preciosConceptos.sizeRopaId)),
       innerJoin(
         categoriaServicio,
-        categoriaServicio.id.equalsExp(itemServicio.categoriaId),
+        categoriaServicio.id.equalsExp(preciosConceptos.categoriaId),
       ),
     ]);
 
@@ -95,8 +92,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     if (filtros.nombre.isNotEmpty) {
       // Se buscara por nombre de categoria, nombre de concepto o Nombre de tamaño
       query.where(
-        itemServicio.nombre.like('%${filtros.nombre}%') |
-            categoriaServicio.nombre.like('%${filtros.nombre}%') |
+        categoriaServicio.nombre.like('%${filtros.nombre}%') |
             sizesRopa.nombre.like('%${filtros.nombre}%'),
       );
       // query.where((tbl) => tbl.nombre.like('%${filtros.nombre}%'));
@@ -112,7 +108,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
         ),
       if (filtros.ordenamiento == ColumnPreciosName.nombre)
         OrderingTerm(
-          expression: itemServicio.nombre,
+          expression: preciosConceptos.nombreConcepto,
           mode: mode,
         ),
       if (filtros.ordenamiento == ColumnPreciosName.categoria)
@@ -158,23 +154,12 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     ]);
 
     return query;
-
   }
 
   Future<int> insertPrecio(PreciosConceptosCompanion row) async {
-    final query = queryJoined();
-    // Nos aseguramos que el precio no exista ya en la base de datos con el mismo concepto
-    // y el mismo tamaño
-    query.where(
-      preciosConceptos.itemId.equals(row.itemId.value) &
-          preciosConceptos.sizeRopaId.equals(row.sizeRopaId.value),
-    );
-
-    final dataRow = await query.get();
-
-    if (dataRow.isNotEmpty) {
-      throw const SQLException(message: 'El precio para este concepto y tamaño ya existe.');
-    }
+    await verifyCategoriaEstatus(row);
+    await verifySizeEstatus(row);
+    await rowExists(row);
 
     final now = DateTime.now();
     final data = row.copyWith(
@@ -185,7 +170,11 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     return into(preciosConceptos).insert(data);
   }
 
-  Future<bool> updateRelacion(PreciosConceptosEntry row) {
+  Future<bool> updateRelacion(PreciosConceptosEntry row) async {
+    await verifyCategoriaEstatusEntry(row);
+    await verifySizeEstatusEntry(row);
+    await rowEntryExists(row);
+
     final now = DateTime.now();
     final data = row.copyWith(fechaActualizacion: Value(now));
     return update(preciosConceptos).replace(data);
@@ -195,5 +184,209 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     final now = DateTime.now();
     final updated = row.copyWith(fechaEliminacion: Value(now));
     return update(preciosConceptos).replace(updated);
+  }
+
+  Future<void> desactivatePreciosByCategoria(int categoriaId) async {
+    final query = select(preciosConceptos);
+    query.where((tbl) => tbl.categoriaId.equals(categoriaId) & tbl.fechaEliminacion.isNull());
+    final rows = await query.get();
+
+    final now = DateTime.now();
+    for (var row in rows) {
+      final updated = row.copyWith(
+        estatus: EstatusType.inactivo.value,
+        fechaEliminacion: Value(now),
+        fechaActualizacion: Value(now),
+      );
+      await update(preciosConceptos).replace(updated);
+    }
+  }
+
+  Future<void> activatePreciosByCategoria(int categoriaId) async {
+    final query = select(preciosConceptos);
+    query.where((tbl) => tbl.categoriaId.equals(categoriaId) & tbl.fechaEliminacion.isNotNull());
+    final rows = await query.get();
+
+    final now = DateTime.now();
+    for (var row in rows) {
+      final updated = row.copyWith(
+        estatus: EstatusType.activo.value,
+        fechaEliminacion: const Value(null),
+        fechaActualizacion: Value(now),
+      );
+      await update(preciosConceptos).replace(updated);
+    }
+  }
+
+  Future<void> desactivatePreciosBySize(int sizeId) async {
+    final query = select(preciosConceptos);
+    query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNull());
+    final rows = await query.get();
+
+    final now = DateTime.now();
+    for (var row in rows) {
+      final updated = row.copyWith(
+        estatus: EstatusType.inactivo.value,
+        fechaEliminacion: Value(now),
+        fechaActualizacion: Value(now),
+      );
+      await update(preciosConceptos).replace(updated);
+    }
+  }
+
+  Future<void> activatePreciosBySize(int sizeId) async {
+    final query = select(preciosConceptos);
+    query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNotNull());
+    final rows = await query.get();
+
+    final now = DateTime.now();
+    for (var row in rows) {
+      final updated = row.copyWith(
+        estatus: EstatusType.activo.value,
+        fechaEliminacion: const Value(null),
+        fechaActualizacion: Value(now),
+      );
+      await update(preciosConceptos).replace(updated);
+    }
+  }
+
+  Future<void> rowExists(PreciosConceptosCompanion row) async {
+    final query = queryJoined();
+    // Nos aseguramos que el precio no exista ya en la base de datos con el mismo concepto
+    // y el mismo tamaño
+    query.where(
+      preciosConceptos.categoriaId.equals(row.categoriaId.value) &
+          preciosConceptos.sizeRopaId.equals(row.sizeRopaId.value) &
+          preciosConceptos.nombreConcepto.lower().equals(row.nombreConcepto.value.toLowerCase()),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final categoria = detallesRow.categoria.nombre;
+    final size = detallesRow.size.nombre;
+
+    if (dataRow.isNotEmpty) {
+      throw SQLException(
+        message:
+            'El concepto "$nombreConcepto" ya existe para la categoria "$categoria" y el tamaño "$size".',
+      );
+    }
+  }
+
+  Future<void> rowEntryExists(PreciosConceptosEntry row) async {
+    final query = queryJoined();
+    // Nos aseguramos que el precio no exista ya en la base de datos con el mismo concepto
+    // y el mismo tamaño
+    query.where(
+      preciosConceptos.categoriaId.equals(row.categoriaId) &
+          preciosConceptos.sizeRopaId.equals(row.sizeRopaId) &
+          preciosConceptos.nombreConcepto.lower().equals(row.nombreConcepto.toLowerCase()) &
+          preciosConceptos.id.isNotIn([row.id]),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final categoria = detallesRow.categoria.nombre;
+    final size = detallesRow.size.nombre;
+
+    if (dataRow.isNotEmpty) {
+      throw SQLException(
+        message:
+            'El concepto "$nombreConcepto" ya existe para la categoria "$categoria" y el tamaño "$size".',
+      );
+    }
+  }
+
+  Future<void> verifyCategoriaEstatus(PreciosConceptosCompanion row) async {
+    final query = queryJoined();
+    query.where(
+      preciosConceptos.categoriaId.equals(row.categoriaId.value),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final categoria = detallesRow.categoria.nombre;
+    final isInactive = detallesRow.categoria.estatus == EstatusType.inactivo.value;
+
+    if (isInactive) {
+      throw SQLException(
+        message:
+            'No se puede crear el concepto "$nombreConcepto" porque la categoria "$categoria" está inactiva, porfavor active la categoria antes de continuar.',
+      );
+    }
+  }
+
+  Future<void> verifyCategoriaEstatusEntry(PreciosConceptosEntry row) async {
+    final query = queryJoined();
+    query.where(
+      preciosConceptos.categoriaId.equals(row.categoriaId),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final categoria = detallesRow.categoria.nombre;
+    final isInactive = detallesRow.categoria.estatus == EstatusType.inactivo.value;
+
+    if (isInactive) {
+      throw SQLException(
+        message:
+            'No se puede actualizar el concepto "$nombreConcepto" porque la categoria "$categoria" está inactiva, porfavor active la categoria antes de continuar.',
+      );
+    }
+  }
+
+  Future<void> verifySizeEstatus(PreciosConceptosCompanion row) async {
+    final query = queryJoined();
+
+    query.where(
+      preciosConceptos.sizeRopaId.equals(row.sizeRopaId.value),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final size = detallesRow.size.nombre;
+    final isInactive = detallesRow.size.estatus == EstatusType.inactivo.value;
+
+    if (isInactive) {
+      throw SQLException(
+        message:
+            'No se puede crear el concepto "$nombreConcepto" porque el tamaño "$size" está inactivo, porfavor active el tamaño antes de continuar.',
+      );
+    }
+  }
+
+  Future<void> verifySizeEstatusEntry(PreciosConceptosEntry row) async {
+    final query = queryJoined();
+    query.where(
+      preciosConceptos.sizeRopaId.equals(row.sizeRopaId),
+    );
+
+    final dataRow = await query.get();
+    final detallesRow = detalles(dataRow).first;
+    final nombreConcepto = row.nombreConcepto;
+    final size = detallesRow.size.nombre;
+    final isInactive = detallesRow.size.estatus == EstatusType.inactivo.value;
+
+    if (isInactive) {
+      throw SQLException(
+        message:
+            'No se puede actualizar el concepto "$nombreConcepto" porque el tamaño "$size" está inactivo, porfavor active el tamaño antes de continuar.',
+      );
+    }
+  }
+
+  List<PrecioConDetallesEntry> detalles(List<TypedResult> rows) {
+    return rows.map((row) {
+      return PrecioConDetallesEntry(
+        row.readTable(preciosConceptos),
+        row.readTable(sizesRopa),
+        row.readTable(categoriaServicio),
+      );
+    }).toList();
   }
 }
