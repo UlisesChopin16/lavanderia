@@ -8,6 +8,7 @@ class DropdownMenuBase<T> extends StatelessWidget {
   final Widget? leadingIcon;
   final String? label;
   final bool enableSearch;
+  final double? width;
 
   const DropdownMenuBase({
     super.key,
@@ -18,11 +19,14 @@ class DropdownMenuBase<T> extends StatelessWidget {
     this.leadingIcon,
     this.label,
     this.enableSearch = false,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return DropdownMenu<T>(
+      width: width,
       enableSearch: enableSearch,
       requestFocusOnTap: enableSearch,
       controller: controller,

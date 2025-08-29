@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:lavanderia/core/error/s_q_l_exception.dart';
+import 's_q_l_exception.dart';
+import 'validate_exception.dart';
 
 class ExceptionManager {
   static const defaultMessage = 'Ocurrió un error en la operación, reintente más tarde.';
@@ -17,6 +18,7 @@ class ExceptionManager {
     bool sendCrash = false,
   }) async {
     final message = switch (exception) {
+      ValidateException e => e.message,
       SQLException e => e.message,
       _ => defaultMessage,
     };

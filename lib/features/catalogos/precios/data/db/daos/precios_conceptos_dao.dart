@@ -269,7 +269,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     if (dataRow.isNotEmpty) {
       throw SQLException(
         message:
-            'El concepto "$nombreConcepto" ya existe para la categoria "$categoria" y el tamaño "$size".',
+            'Ya hay un registro en la base de datos con el concepto "$nombreConcepto" en la categoria "$categoria" y con el tamaño "$size".',
       );
     }
   }
@@ -294,7 +294,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     if (dataRow.isNotEmpty) {
       throw SQLException(
         message:
-            'El concepto "$nombreConcepto" ya existe para la categoria "$categoria" y el tamaño "$size".',
+            'Ya hay un registro en la base de datos con el concepto "$nombreConcepto" en la categoria "$categoria" y con el tamaño "$size".',
       );
     }
   }

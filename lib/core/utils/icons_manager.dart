@@ -34,7 +34,7 @@ class IconsManager {
   static const orderZA = FontAwesomeIcons.arrowDownZA;
 
   // static const clotheIcon = FontAwesomeIcons.shirt;
-  static const clotheIcon = Icons.checkroom;
+  static const clotheIcon = Icons.checkroom_rounded;
 
   static IconData getSortIcon(bool isAscending) {
     return isAscending ? orderAZ : orderZA;

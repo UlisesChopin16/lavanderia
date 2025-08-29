@@ -1,18 +1,18 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/app_database.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/extensions/categoria_servicio_ext.dart';
 import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
 import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_model/precio_con_detalles_model.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
+import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
 
 extension PrecioConDetallesEntityX on PrecioConDetallesEntity {
   PrecioConDetallesModel toModel() {
     return PrecioConDetallesModel(
       idPrecio: idPrecio,
-      idCategoria: idCategoria,
-      idSize: idSize,
+      categoria: categoria.toModel(),
+      size: size.toModel(),
       nombreConcepto: nombreConcepto,
-      nombreCategoria: nombreCategoria,
-      nombreSize: nombreSize,
       diasEntrega: diasEntrega,
       tipoUnidad: tipoUnidad.value,
       importe: importe,
@@ -28,8 +28,8 @@ extension SizesRopaModelX on PrecioConDetallesModel {
   PrecioConDetallesEntity toEntity() {
     return PrecioConDetallesEntity(
       idPrecio: idPrecio,
-      idCategoria: idCategoria,
-      idSize: idSize,
+      categoria: categoria.toEntity(),
+      size: size.toEntity(),
       nombreConcepto: nombreConcepto,
       diasEntrega: diasEntrega,
       tipoUnidad: UnitType.fromString(tipoUnidad),
@@ -44,8 +44,8 @@ extension SizesRopaModelX on PrecioConDetallesModel {
   PreciosConceptosEntry toEntry() {
     return PreciosConceptosEntry(
       id: idPrecio,
-      categoriaId: idCategoria,
-      sizeRopaId: idSize,
+      categoriaId: categoria.id,
+      sizeRopaId: size.id,
       nombreConcepto: nombreConcepto,
       diasEntrega: diasEntrega,
       tipoUnidad: tipoUnidad,
@@ -60,8 +60,8 @@ extension SizesRopaModelX on PrecioConDetallesModel {
   PreciosConceptosCompanion toCompanion() {
     final now = DateTime.now();
     return PreciosConceptosCompanion.insert(
-      categoriaId: idCategoria,
-      sizeRopaId: idSize,
+      categoriaId: categoria.id,
+      sizeRopaId: size.id,
       nombreConcepto: nombreConcepto,
       diasEntrega: diasEntrega,
       tipoUnidad: tipoUnidad,
@@ -77,11 +77,9 @@ extension PreciosConceptosEntryX on PrecioConDetallesEntry {
   PrecioConDetallesModel toModel() {
     return PrecioConDetallesModel(
       idPrecio: precio.id,
-      idCategoria: precio.categoriaId,
-      idSize: precio.sizeRopaId,
+      categoria: categoria.toModel(),
+      size: size.toModel(),
       nombreConcepto: precio.nombreConcepto,
-      nombreCategoria: categoria.nombre,
-      nombreSize: size.nombre,
       diasEntrega: precio.diasEntrega,
       tipoUnidad: precio.tipoUnidad,
       importe: precio.importe,
