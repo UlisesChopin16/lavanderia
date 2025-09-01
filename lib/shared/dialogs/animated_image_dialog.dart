@@ -47,10 +47,12 @@ class AnimatedImageDialog extends StatelessWidget {
         onActionPressed?.call();
         context.pop(true);
       },
-      content: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: labelLarge,
+      content: SingleChildScrollView(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: labelLarge,
+        ),
       ),
     );
   }

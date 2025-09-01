@@ -5,6 +5,7 @@ import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
 
 class ActionsRow extends ConsumerStatefulWidget {
@@ -28,15 +29,26 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
 
   @override
   Widget build(BuildContext context) {
+    final blockUI = ref.watch(
+      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    );
     return ActionsButtons(
       isSmall: isSmall,
       actions: [
+        DataAction(
+          // canPop: false,
+          callbackIndex: () {},
+          icon: Icons.visibility,
+          isNotEnabled: false,
+          color: Colors.blue,
+          tooltip: 'Ver conceptos de ropa',
+        ),
         if (!isInactive)
           DataAction(
-            color: Colors.blue,
+            color: Colors.yellow,
             callbackIndex: onEditSize,
             icon: Icons.edit,
-            isNotEnabled: false,
+            isNotEnabled: blockUI,
             tooltip: 'Editar tamaño de ropa',
           ),
         if (!isInactive)
@@ -44,7 +56,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
             color: Colors.red,
             callbackIndex: onDeleteSize,
             icon: Icons.delete,
-            isNotEnabled: false,
+            isNotEnabled: blockUI,
             tooltip: 'Eliminar tamaño de ropa',
           ),
         if (size.estatus == EstatusType.inactivo)
@@ -52,7 +64,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
             color: Colors.green,
             callbackIndex: onRestoreSize,
             icon: Icons.restore,
-            isNotEnabled: false,
+            isNotEnabled: blockUI,
             tooltip: 'Activar tamaño de ropa',
           ),
       ],
@@ -111,12 +123,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
     );
     if (response == true) {
-      sizeRopaNotifier.updateSize(
-        size.copyWith(
-          estatus: EstatusType.activo,
-          fechaEliminacion: null,
-        ),
-      );
+      sizeRopaNotifier.activateSize(size);
     }
   }
 }

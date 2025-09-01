@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/usecases/change_precios_status_by_size.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,9 +24,10 @@ sealed class SizesModel with _$SizesModel {
 @riverpod
 class SizesViewModel extends _$SizesViewModel {
   final _createCase = instance<CreateSizeRopa>();
-  final _desactivateCase = instance<DesactivateSizeRopa>();
+  final _deactivateCase = instance<DesactivateSizeRopa>();
   final _observeCase = instance<ObserveSizesRopa>();
   final _updateCase = instance<UpdateSizeRopa>();
+  final _changeEstatusPrecio = instance<ChangePreciosStatusBySize>();
   // final _obtainCase = instance<ObtainAllSizesRopa>();
   // 92590007
 
@@ -45,15 +47,12 @@ class SizesViewModel extends _$SizesViewModel {
         isLoading: false,
         successMessage: 'Tamaño de ropa creado con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
-        final entity = SizesRopaEntity(
-          nombre: nombre,
-          estatus: EstatusType.activo,
-        );
+        final entity = SizesRopaEntity(nombre: nombre);
         await _createCase.call(entity);
       },
     );
@@ -66,9 +65,11 @@ class SizesViewModel extends _$SizesViewModel {
         errorMessage: '',
         successMessage: '',
       ),
-      actionAfter: () async => state =
-          state.copyWith(isLoading: false, successMessage: 'Tamaño de ropa actualizado con éxito'),
-      actionOnError: (error, message) async => state.copyWith(
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Tamaño de ropa actualizado con éxito',
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
@@ -85,14 +86,49 @@ class SizesViewModel extends _$SizesViewModel {
         errorMessage: '',
         successMessage: '',
       ),
-      actionAfter: () async => state =
-          state.copyWith(isLoading: false, successMessage: 'Tamaño de ropa desactivado con éxito'),
-      actionOnError: (error, message) async => state.copyWith(
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Tamaño de ropa desactivado con éxito',
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
-        await _desactivateCase.call(entity.copyWith(estatus: EstatusType.inactivo));
+        final newEntity = entity.copyWith(
+          estatus: EstatusType.inactivo,
+          fechaEliminacion: DateTime.now(),
+        );
+
+        await _deactivateCase.call(newEntity);
+        await _changeEstatusPrecio.deactivatePrecios(entity.id);
+      },
+    );
+  }
+
+  void activateSize(SizesRopaEntity entity) {
+    safeCall(
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Tamaño de ropa activado con éxito',
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
+        errorMessage: message,
+        isLoading: false,
+      ),
+      action: () async {
+        final newEntity = entity.copyWith(
+          estatus: EstatusType.activo,
+          fechaEliminacion: null,
+        );
+
+        await _updateCase.call(newEntity);
+        await _changeEstatusPrecio.activatePrecios(entity.id);
       },
     );
   }

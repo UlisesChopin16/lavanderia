@@ -186,7 +186,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     return update(preciosConceptos).replace(updated);
   }
 
-  Future<void> desactivatePreciosByCategoria(int categoriaId) async {
+  Future<void> deactivatePreciosByCategoria(int categoriaId) async {
     final query = select(preciosConceptos);
     query.where((tbl) => tbl.categoriaId.equals(categoriaId) & tbl.fechaEliminacion.isNull());
     final rows = await query.get();
@@ -203,13 +203,20 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> activatePreciosByCategoria(int categoriaId) async {
-    final query = select(preciosConceptos);
-    query.where((tbl) => tbl.categoriaId.equals(categoriaId) & tbl.fechaEliminacion.isNotNull());
+    final query = queryJoined();
+    query.where(
+      categoriaServicio.id.equals(categoriaId) &
+          preciosConceptos.fechaEliminacion.isNotNull() &
+          sizesRopa.estatus.equals(EstatusType.activo.value),
+    );
+    // final query = select(preciosConceptos);
+    // query.where((tbl) => tbl.categoriaId.equals(categoriaId) & tbl.fechaEliminacion.isNotNull());
     final rows = await query.get();
+    final dataRows = convertToDetalles(rows);
 
     final now = DateTime.now();
-    for (var row in rows) {
-      final updated = row.copyWith(
+    for (var row in dataRows) {
+      final updated = row.precio.copyWith(
         estatus: EstatusType.activo.value,
         fechaEliminacion: const Value(null),
         fechaActualizacion: Value(now),
@@ -218,7 +225,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     }
   }
 
-  Future<void> desactivatePreciosBySize(int sizeId) async {
+  Future<void> deactivatePreciosBySize(int sizeId) async {
     final query = select(preciosConceptos);
     query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNull());
     final rows = await query.get();
@@ -235,13 +242,20 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> activatePreciosBySize(int sizeId) async {
-    final query = select(preciosConceptos);
-    query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNotNull());
+    final query = queryJoined();
+    query.where(
+      sizesRopa.id.equals(sizeId) &
+          preciosConceptos.fechaEliminacion.isNotNull() &
+          categoriaServicio.estatus.equals(EstatusType.activo.value),
+    );
+    // final query = select(preciosConceptos);
+    // query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNotNull());
     final rows = await query.get();
+    final dataRows = convertToDetalles(rows);
 
     final now = DateTime.now();
-    for (var row in rows) {
-      final updated = row.copyWith(
+    for (var row in dataRows) {
+      final updated = row.precio.copyWith(
         estatus: EstatusType.activo.value,
         fechaEliminacion: const Value(null),
         fechaActualizacion: Value(now),
@@ -261,12 +275,12 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
-    final nombreConcepto = row.nombreConcepto;
-    final categoria = detallesRow.categoria.nombre;
-    final size = detallesRow.size.nombre;
 
     if (dataRow.isNotEmpty) {
+      final detallesRow = convertToDetalles(dataRow).first;
+      final nombreConcepto = row.nombreConcepto.value;
+      final categoria = detallesRow.categoria.nombre;
+      final size = detallesRow.size.nombre;
       throw SQLException(
         message:
             'Ya hay un registro en la base de datos con el concepto "$nombreConcepto" en la categoria "$categoria" y con el tamaño "$size".',
@@ -286,12 +300,12 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
-    final nombreConcepto = row.nombreConcepto;
-    final categoria = detallesRow.categoria.nombre;
-    final size = detallesRow.size.nombre;
 
     if (dataRow.isNotEmpty) {
+      final detallesRow = convertToDetalles(dataRow).first;
+      final nombreConcepto = row.nombreConcepto;
+      final categoria = detallesRow.categoria.nombre;
+      final size = detallesRow.size.nombre;
       throw SQLException(
         message:
             'Ya hay un registro en la base de datos con el concepto "$nombreConcepto" en la categoria "$categoria" y con el tamaño "$size".',
@@ -300,16 +314,19 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> verifyCategoriaEstatus(PreciosConceptosCompanion row) async {
-    final query = queryJoined();
+    final query = select(categoriaServicio);
+    // query.where(
+    //   categoriaServicio.id.equals(row.categoriaId.value),
+    // );
     query.where(
-      preciosConceptos.categoriaId.equals(row.categoriaId.value),
+      (tbl) => tbl.id.equals(row.categoriaId.value),
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
-    final nombreConcepto = row.nombreConcepto;
-    final categoria = detallesRow.categoria.nombre;
-    final isInactive = detallesRow.categoria.estatus == EstatusType.inactivo.value;
+    final detallesRow = dataRow.first;
+    final nombreConcepto = row.nombreConcepto.value;
+    final isInactive = detallesRow.estatus == EstatusType.inactivo.value;
+    final categoria = detallesRow.nombre;
 
     if (isInactive) {
       throw SQLException(
@@ -320,16 +337,21 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> verifyCategoriaEstatusEntry(PreciosConceptosEntry row) async {
-    final query = queryJoined();
+    // final query = queryJoined();
+    // query.where(
+    //   categoriaServicio.id.equals(row.categoriaId),
+    // );
+
+    final query = select(categoriaServicio);
     query.where(
-      preciosConceptos.categoriaId.equals(row.categoriaId),
+      (tbl) => tbl.id.equals(row.categoriaId),
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
+    final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto;
-    final categoria = detallesRow.categoria.nombre;
-    final isInactive = detallesRow.categoria.estatus == EstatusType.inactivo.value;
+    final categoria = detallesRow.nombre;
+    final isInactive = detallesRow.estatus == EstatusType.inactivo.value;
 
     if (isInactive) {
       throw SQLException(
@@ -340,17 +362,22 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> verifySizeEstatus(PreciosConceptosCompanion row) async {
-    final query = queryJoined();
+    // final query = queryJoined();
 
+    // query.where(
+    //   sizesRopa.id.equals(row.sizeRopaId.value),
+    // );
+
+    final query = select(sizesRopa);
     query.where(
-      preciosConceptos.sizeRopaId.equals(row.sizeRopaId.value),
+      (tbl) => tbl.id.equals(row.sizeRopaId.value),
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
-    final nombreConcepto = row.nombreConcepto;
-    final size = detallesRow.size.nombre;
-    final isInactive = detallesRow.size.estatus == EstatusType.inactivo.value;
+    final detallesRow = dataRow.first;
+    final nombreConcepto = row.nombreConcepto.value;
+    final size = detallesRow.nombre;
+    final isInactive = detallesRow.estatus == EstatusType.inactivo.value;
 
     if (isInactive) {
       throw SQLException(
@@ -361,16 +388,16 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
   }
 
   Future<void> verifySizeEstatusEntry(PreciosConceptosEntry row) async {
-    final query = queryJoined();
+    final query = select(sizesRopa);
     query.where(
-      preciosConceptos.sizeRopaId.equals(row.sizeRopaId),
+      (tbl) => tbl.id.equals(row.sizeRopaId),
     );
 
     final dataRow = await query.get();
-    final detallesRow = detalles(dataRow).first;
+    final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto;
-    final size = detallesRow.size.nombre;
-    final isInactive = detallesRow.size.estatus == EstatusType.inactivo.value;
+    final size = detallesRow.nombre;
+    final isInactive = detallesRow.estatus == EstatusType.inactivo.value;
 
     if (isInactive) {
       throw SQLException(
@@ -380,7 +407,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     }
   }
 
-  List<PrecioConDetallesEntry> detalles(List<TypedResult> rows) {
+  List<PrecioConDetallesEntry> convertToDetalles(List<TypedResult> rows) {
     return rows.map((row) {
       return PrecioConDetallesEntry(
         row.readTable(preciosConceptos),

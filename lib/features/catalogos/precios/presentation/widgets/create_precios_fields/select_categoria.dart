@@ -16,7 +16,9 @@ class SelectCategoria extends HookConsumerWidget {
     required this.onCategoriaChanged,
   });
 
-  List<DropdownMenuEntry<CategoriaServicioEntity>> _dropdownItems(List<CategoriaServicioEntity> categorias) {
+  List<DropdownMenuEntry<CategoriaServicioEntity>> _dropdownItems(
+    List<CategoriaServicioEntity> categorias,
+  ) {
     return categorias.map((categoria) {
       return DropdownMenuEntry(
         value: categoria,
@@ -25,22 +27,27 @@ class SelectCategoria extends HookConsumerWidget {
     }).toList();
   }
 
+  static const width = 200.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categorias = ref.watch(preciosViewModelProvider.select((state) => state.categorias));
     final controller = useTextEditingController();
     controller.text = categoriaValue.nombre;
 
-    return DropdownMenuBase<CategoriaServicioEntity>(
-      label: 'Categoría',
-      width: 250,
-      controller: controller,
-      items: _dropdownItems(categorias),
-      leadingIcon: const Icon(IconsManager.selectedCategoriasIcon),
-      value: categoriaValue,
-      onChanged: (value) {
-        onCategoriaChanged(value ?? const CategoriaServicioEntity());
-      },
+    return SizedBox(
+      width: width,
+      child: DropdownMenuBase<CategoriaServicioEntity>(
+        label: 'Categoría',
+        width: width,
+        controller: controller,
+        items: _dropdownItems(categorias),
+        leadingIcon: const Icon(IconsManager.selectedCategoriasIcon),
+        value: categoriaValue,
+        onChanged: (value) {
+          onCategoriaChanged(value ?? const CategoriaServicioEntity());
+        },
+      ),
     );
   }
 }

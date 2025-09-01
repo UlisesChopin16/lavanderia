@@ -12,25 +12,34 @@ class DiasField extends StatelessWidget {
     required this.dias,
   });
 
+  static const width = 180.0;
+
   @override
   Widget build(BuildContext context) {
     final value = dias == '0' ? '' : dias;
-    return TextFormField(
-      initialValue: value,
-      decoration: const InputDecoration(
-        constraints: BoxConstraints(maxWidth: 150),
-        prefixIcon: Icon(Icons.calendar_today_rounded),
-        labelText: 'Días de entrega',
-        hintText: 'Ej: 1, 2, 3, etc.',
+    return SizedBox(
+      width: width,
+      child: TextFormField(
+        initialValue: value,
+        decoration: const InputDecoration(
+          constraints: BoxConstraints(maxWidth: width),
+          prefixIcon: Icon(Icons.calendar_today_rounded),
+          label: Text(
+            'Días de entrega',
+            maxLines: 2,
+          ),
+          floatingLabelAlignment: FloatingLabelAlignment.start,
+          hintText: 'Ej: 1, 2, 3, etc.',
+        ),
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d+$')),
+          LengthLimitingTextInputFormatter(12),
+        ],
+        onChanged: (value) {
+          onDiasChanged(value.normalizeSpaces());
+        },
       ),
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+$')),
-        LengthLimitingTextInputFormatter(12),
-      ],
-      onChanged: (value) {
-        onDiasChanged(value.normalizeSpaces());
-      },
     );
   }
 }

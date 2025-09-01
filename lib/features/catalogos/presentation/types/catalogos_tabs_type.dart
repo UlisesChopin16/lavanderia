@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/categorias/presentation/views/categoria_view.dart';
 import 'package:lavanderia/features/catalogos/clientes/presentation/views/clientes_view.dart';
+import 'package:lavanderia/features/catalogos/precios/presentation/views/precios_view.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/sizes_view.dart';
 
 enum CatalogosTabsType {
@@ -27,7 +28,7 @@ enum CatalogosTabsType {
     title: 'Precios de ropa',
     icon: IconsManager.selectedPreciosIcon,
     unselectedIcon: IconsManager.unselectedPreciosIcon,
-    view: Center(child: Text('Precios de ropa')),
+    view: PreciosView(),
   );
 
   final String title;

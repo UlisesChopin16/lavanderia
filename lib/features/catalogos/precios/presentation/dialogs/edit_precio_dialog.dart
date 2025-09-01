@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
+import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/widgets/edit_fields_precio.dart';
@@ -29,7 +30,9 @@ class _EditPrecioDialogState extends ConsumerState<EditPrecioDialog> {
     return Stack(
       children: [
         BaseDialog(
-          title: 'Crear Precios',
+          title: 'Editar concepto de ropa',
+          icon: const Icon(IconsManager.clotheIcon),
+          onActionPressed: validateNombre,
           content: SingleChildScrollView(
             child: EditFieldsPrecio(
               precio: precio,
@@ -48,18 +51,24 @@ class _EditPrecioDialogState extends ConsumerState<EditPrecioDialog> {
 
   void validateNombre() async {
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de editar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?',
-    );
 
-    if (!mounted) return;
-    if (confirm == true) {
-      preciosNotifier.updatePrecio(
-        entity: precio,
-        onSuccess: () {
-          context.pop();
-        },
-      );
-    }
+    final message =
+        '¿Estás seguro de editar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?';
+    // final confirm = await context.showWarningDialog(
+    //   message: message,
+    // );
+
+    preciosNotifier.updatePrecio(
+      entity: precio,
+      onConfirm: () async {
+        final confirm = await context.showWarningDialog(
+          message: message,
+        );
+        return confirm;
+      },
+      onSuccess: () {
+        context.pop();
+      },
+    );
   }
 }

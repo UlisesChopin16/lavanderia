@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/error/validate_exception.dart';
@@ -64,7 +64,7 @@ class PreciosViewModel extends _$PreciosViewModel {
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
@@ -83,7 +83,7 @@ class PreciosViewModel extends _$PreciosViewModel {
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
@@ -94,7 +94,11 @@ class PreciosViewModel extends _$PreciosViewModel {
     );
   }
 
-  void createPrecios(List<PrecioConDetallesEntity> precios) {
+  void createPrecios({
+    required List<PrecioConDetallesEntity> precios,
+    required VoidCallback onSuccess,
+    required Future<bool?> Function() onConfirm,
+  }) {
     safeCall(
       actionBefore: () async => state = state.copyWith(
         isLoading: true,
@@ -105,10 +109,12 @@ class PreciosViewModel extends _$PreciosViewModel {
         isLoading: false,
         successMessage: 'Conceptos creados con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
-        errorMessage: message,
-        isLoading: false,
-      ),
+      actionOnError: (error, message) async {
+        state = state.copyWith(
+          errorMessage: message,
+          isLoading: false,
+        );
+      },
       action: () async {
         final nuevosPrecios = applyCategoriaOrSize(precios);
         validatePrecios(nuevosPrecios);
@@ -117,9 +123,18 @@ class PreciosViewModel extends _$PreciosViewModel {
           await _verifyExistCase.call(precio);
         }
 
+        final confirm = await onConfirm();
+
+        if (confirm != true) {
+          state = state.copyWith(isLoading: false);
+          return;
+        }
+
         for (final precio in nuevosPrecios) {
           await _createCase.call(precio);
         }
+
+        onSuccess();
       },
     );
   }
@@ -127,6 +142,7 @@ class PreciosViewModel extends _$PreciosViewModel {
   void updatePrecio({
     required PrecioConDetallesEntity entity,
     required VoidCallback onSuccess,
+    required Future<bool?> Function() onConfirm,
   }) {
     safeCall(
       actionBefore: () async => state = state.copyWith(
@@ -138,15 +154,24 @@ class PreciosViewModel extends _$PreciosViewModel {
         isLoading: false,
         successMessage: 'Concepto actualizado con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
-        if (entity.isEmpty) {
-          throw const ValidateException(message: 'Los datos del concepto no pueden estar vacíos');
+        final validate = entity.validate();
+        if (validate.isNotEmpty) {
+          throw ValidateException(message: 'Error en el Concepto:\n$validate');
         }
+
+        final confirm = await onConfirm();
+        if (confirm != true) {
+          state = state.copyWith(isLoading: false);
+          return;
+        }
+
         await _updateCase.call(entity);
+        onSuccess();
       },
     );
   }
@@ -162,12 +187,38 @@ class PreciosViewModel extends _$PreciosViewModel {
         isLoading: false,
         successMessage: 'Concepto desactivado con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
         await _desactivateCase.call(entity.copyWith(estatus: EstatusType.inactivo));
+      },
+    );
+  }
+
+  void activatePrecio(PrecioConDetallesEntity entity) {
+    safeCall(
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Concepto activado con éxito',
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
+        errorMessage: message,
+        isLoading: false,
+      ),
+      action: () async {
+        await _updateCase.call(
+          entity.copyWith(
+            estatus: EstatusType.activo,
+            fechaEliminacion: null,
+          ),
+        );
       },
     );
   }
@@ -178,14 +229,14 @@ class PreciosViewModel extends _$PreciosViewModel {
       final precio = precios[i];
       final key = precio.key;
       final index = i + 1;
-      final indexMessage = 'Error en el Concepto #$index';
+      final indexMessage = 'Error en el Concepto #$index:';
       final messageValidate = precio.validate();
       if (messageValidate.isNotEmpty) {
         throw ValidateException(message: '$indexMessage\n$messageValidate');
       }
 
       if (mapPrecios.containsKey(key)) {
-        final message = '$indexMessage\n${precio.errorMessage}';
+        final message = '$indexMessage\n - ${precio.errorMessage}';
         throw ValidateException(message: message);
       }
       mapPrecios[key] = precio;

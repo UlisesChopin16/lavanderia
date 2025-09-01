@@ -25,22 +25,27 @@ class SelectSize extends HookConsumerWidget {
     }).toList();
   }
 
+  static const width = 200.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sizes = ref.watch(preciosViewModelProvider.select((state) => state.sizesRopa));
     final controller = useTextEditingController();
     controller.text = sizeRopa.nombre;
 
-    return DropdownMenuBase<SizesRopaEntity>(
-      label: 'Tamaño de ropa',
-      width: 200,
-      controller: controller,
-      items: _dropdownItems(sizes),
-      leadingIcon: const Icon(IconsManager.selectedSizesIcon),
-      value: sizeRopa,
-      onChanged: (value) {
-        onSizeChanged(value ?? const SizesRopaEntity());
-      },
+    return SizedBox(
+      width: width,
+      child: DropdownMenuBase<SizesRopaEntity>(
+        label: 'Tamaño de ropa',
+        width: width,
+        controller: controller,
+        items: _dropdownItems(sizes),
+        leadingIcon: const Icon(IconsManager.selectedSizesIcon),
+        value: sizeRopa,
+        onChanged: (value) {
+          onSizeChanged(value ?? const SizesRopaEntity());
+        },
+      ),
     );
   }
 }

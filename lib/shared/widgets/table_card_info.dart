@@ -30,7 +30,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
   final bool haveFilters;
 
   /// If true, the table will be displayed in a small view
-  final bool isSmall;
+  final bool? isSmall;
 
   final int sortColumnIndex;
 
@@ -60,7 +60,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
     required this.rows,
     required this.smallView,
     required this.ascending,
-    required this.isSmall,
+    this.isSmall,
     this.onAddButtonPressed,
     this.onClearFilters,
     this.onSearchChanged,
@@ -76,9 +76,10 @@ class TableCardInfo extends ConsumerStatefulWidget {
 }
 
 class _TableCardInfoState extends ConsumerState<TableCardInfo> {
+  final scrollController = ScrollController();
   final controller = TextEditingController();
   // late int sortColumnIndex = widget.sortColumnIndex;
-  bool get isSmall => widget.isSmall;
+  bool? get isSmall => widget.isSmall;
   bool get showActions => widget.showActions;
   bool get sortAscending => widget.ascending;
   bool get haveFilters => widget.haveFilters;
@@ -105,17 +106,27 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
     return _buildDataRows(widget.rows);
   }
 
-  DataTable get newDataTable {
-    return DataTable(
-      sortColumnIndex: sortColumnIndex,
-      sortAscending: sortAscending,
-      columns: columns,
-      rows: rows,
+  Widget get newDataTable {
+    return Center(
+      child: Scrollbar(
+        controller: scrollController,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            sortColumnIndex: sortColumnIndex,
+            sortAscending: sortAscending,
+            columns: columns,
+            rows: rows,
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isSmallSize = isSmall ?? MediaQuery.of(context).size.width < 800;
     return AnimatedSize(
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOutCubic,
@@ -137,7 +148,7 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
               haveFilters: haveFilters,
               filters: filters,
             ),
-            if (isSmall) widget.smallView else newDataTable,
+            if (isSmallSize) widget.smallView else newDataTable,
             if (widget.rows.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),

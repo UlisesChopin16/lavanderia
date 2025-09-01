@@ -5,7 +5,7 @@ enum ColumnPreciosName {
   sizeRopa(title: 'Tamaño'),
   tipoUnidad(title: 'Unidad'),
   diasEntrega(title: 'Días de Entrega'),
-  importe(title: 'Importe'),
+  importe(title: '\$ Importe'),
   estatus(title: 'Estatus'),
   fechaCreacion(title: 'Fecha de Creación'),
   fechaEliminacion(title: 'Fecha de Eliminación');

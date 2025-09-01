@@ -24,21 +24,26 @@ class SelectUnit extends HookWidget {
     }).toList();
   }
 
+  static const width = 180.0;
+
   @override
   Widget build(BuildContext context) {
     final controller = useTextEditingController();
     controller.text = unitType.value;
 
-    return DropdownMenuBase<UnitType>(
-      label: 'Tipo de unidad',
-      width: 200,
-      controller: controller,
-      items: _dropdownItems,
-      leadingIcon: const Icon(Icons.widgets_rounded),
-      value: unitType,
-      onChanged: (value) {
-        onUnitChanged(value ?? UnitType.pieza);
-      },
+    return SizedBox(
+      width: width,
+      child: DropdownMenuBase<UnitType>(
+        label: 'Tipo de unidad',
+        width: width,
+        controller: controller,
+        items: _dropdownItems,
+        leadingIcon: const Icon(Icons.widgets_rounded),
+        value: unitType,
+        onChanged: (value) {
+          onUnitChanged(value ?? UnitType.pieza);
+        },
+      ),
     );
   }
 }

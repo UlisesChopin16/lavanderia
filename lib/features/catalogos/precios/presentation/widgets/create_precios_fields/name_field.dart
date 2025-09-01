@@ -12,19 +12,24 @@ class NameField extends StatelessWidget {
     required this.name,
   });
 
+  static const width = 200.0;
+
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      initialValue: name,
-      decoration: const InputDecoration(
-        constraints: BoxConstraints(maxWidth: 300),
-        labelText: 'Nombre del concepto',
-        hintText: 'Ej: Playera, Pantalón, Camisa, etc.',
-        prefixIcon: Icon(IconsManager.clotheIcon),
+    return SizedBox(
+      width: width,
+      child: TextFormField(
+        initialValue: name,
+        decoration: const InputDecoration(
+          constraints: BoxConstraints(maxWidth: width),
+          labelText: 'Nombre del concepto',
+          hintText: 'Ej: Playera, Pantalón, Camisa, etc.',
+          prefixIcon: Icon(IconsManager.clotheIcon),
+        ),
+        onChanged: (value) {
+          onNameChanged(value.normalizeSpaces());
+        },
       ),
-      onChanged: (value) {
-        onNameChanged(value.normalizeSpaces());
-      },
     );
   }
 }

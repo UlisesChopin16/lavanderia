@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/core/types/callbacks_types.dart';
@@ -37,11 +36,32 @@ class RowFieldsPrecio extends ConsumerWidget {
       child: Column(
         spacing: 15,
         children: [
-          Text('Concepto #$newIndex'),
+          Row(
+            children: [
+              Text('Concepto #$newIndex'),
+              const Spacer(),
+              InkWell(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
           Wrap(
             spacing: 15,
             runSpacing: 10,
-
+            runAlignment: WrapAlignment.end,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            alignment: WrapAlignment.end,
             children: [
               NameField(
                 name: precio.nombreConcepto,
@@ -100,19 +120,6 @@ class RowFieldsPrecio extends ConsumerWidget {
                     precio.copyWith(importe: double.parse(value.isEmpty ? '0.0' : value)),
                   );
                 },
-              ),
-
-              const Gap(0),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: const CircleBorder(),
-                ),
-                onPressed: onRemove,
-                child: const Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
               ),
             ],
           ),

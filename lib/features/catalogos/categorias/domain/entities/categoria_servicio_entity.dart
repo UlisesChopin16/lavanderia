@@ -10,7 +10,7 @@ sealed class CategoriaServicioEntity with _$CategoriaServicioEntity {
   const factory CategoriaServicioEntity({
     @Default(-1) int id,
     @Default('') String nombre,
-    @Default(EstatusType.inactivo) EstatusType estatus,
+    @Default(EstatusType.activo) EstatusType estatus,
     @Default(null) DateTime? fechaCreacion,
     @Default(null) DateTime? fechaActualizacion,
     @Default(null) DateTime? fechaEliminacion,

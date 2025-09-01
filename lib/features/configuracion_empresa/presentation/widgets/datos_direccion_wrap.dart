@@ -15,6 +15,7 @@ class DatosDireccionWrap extends ConsumerWidget {
         (value) => (value.direccion),
       ),
     );
+    final codigoPostal = direccion.codigoPostal == -1 ? '' : direccion.codigoPostal.toString();
     return Wrap(
       spacing: 15,
       runSpacing: 15,
@@ -86,7 +87,7 @@ class DatosDireccionWrap extends ConsumerWidget {
           ),
         ),
         TextFormField(
-          initialValue: direccion.codigoPostal.toString(),
+          initialValue: codigoPostal,
           decoration: InputDecoration(
             constraints: BoxConstraints(maxWidth: widthField),
             labelText: 'Código Postal',

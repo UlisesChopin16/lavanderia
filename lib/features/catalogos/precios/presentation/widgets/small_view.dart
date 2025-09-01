@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 
 import 'actions_row.dart';
 
 class SmallView extends ConsumerWidget {
-  final List<SizesRopaEntity> rows;
+  final List<PrecioConDetallesEntity> rows;
   const SmallView({super.key, required this.rows});
 
   @override
@@ -34,11 +34,16 @@ class SmallView extends ConsumerWidget {
                   padding: const EdgeInsets.only(top: 30.0, bottom: 15.0),
                   child: ListTile(
                     leading: const CircleAvatar(
-                      child: Icon(IconsManager.selectedSizesIcon),
+                      child: Icon(IconsManager.clotheIcon),
                     ),
-                    trailing: blockUI ? null : ActionsRow(size: row, isSmall: true),
-                    title: Text(row.nombre),
-                    subtitle: Text('Fecha de creación: ${row.fechaCreacion.formatDate}'),
+                    trailing: blockUI ? null : ActionsRow(precio: row, isSmall: true),
+                    title: Text('${row.nombreConcepto} - ${row.categoria.nombre} - ${row.size.nombre}'),
+                    subtitle: Column(
+                      children: [
+                        Text('Precio: ${row.importe.toStringAsFixed(2)} por ${row.tipoUnidad.value}'),
+                        Text('Fecha de creación: ${row.fechaCreacion.formatDate}'),
+                      ],
+                    ),
                   ),
                 ),
                 Positioned(

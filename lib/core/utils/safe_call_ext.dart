@@ -13,14 +13,13 @@ extension SafeCallExt<T> on $Notifier<T> {
     try {
       await actionBefore?.call();
       await action?.call();
+      await actionAfter?.call();
     } catch (e, s) {
-      final message = await ExceptionManager.instance.getErrorMessage(
+      final message = await ExceptionManager.instance.handleException(
         exception: e,
         stackTrace: s,
       );
       await actionOnError?.call(e, message);
-    } finally {
-      await actionAfter?.call();
-    }
+    } 
   }
 }

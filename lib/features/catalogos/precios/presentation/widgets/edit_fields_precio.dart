@@ -22,11 +22,15 @@ class EditFieldsPrecio extends ConsumerWidget {
         (state) => (state.categoria, state.sizeRopa),
       ),
     );
+
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Wrap(
         spacing: 15,
         runSpacing: 10,
+        runAlignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.end,
+        alignment: WrapAlignment.end,
         children: [
           NameField(
             name: precio.nombreConcepto,

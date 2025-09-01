@@ -16,21 +16,24 @@ class ImporteField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = importe == '0.0' ? '' : importe;
-    return TextFormField(
-      initialValue: value,
-      decoration: const InputDecoration(
-        constraints: BoxConstraints(maxWidth: 150),
-        prefixIcon: Icon(IconsManager.selectedPreciosIcon),
-        labelText: 'Precio',
-        hintText: 'Ej: 55.50, 100, 300, etc.',
+    return SizedBox(
+      width: 150,
+      child: TextFormField(
+        initialValue: value,
+        decoration: const InputDecoration(
+          constraints: BoxConstraints(maxWidth: 150),
+          prefixIcon: Icon(IconsManager.selectedPreciosIcon),
+          labelText: 'Precio',
+          hintText: 'Ej: 55.50, 100, 300, etc.',
+        ),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+        ],
+        onChanged: (value) {
+          onPrecioChanged(value.normalizeSpaces());
+        },
       ),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-      ],
-      onChanged: (value) {
-        onPrecioChanged(value.normalizeSpaces());
-      },
     );
   }
 }

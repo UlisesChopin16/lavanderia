@@ -36,14 +36,14 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
     return ActionsButtons(
       isSmall: isSmall,
       actions: [
-        // DataAction(
-        //   // canPop: false,
-        //   callbackIndex: onViewConceptos,
-        //   icon: Icons.visibility,
-        //   isNotEnabled: false,
-        //   color: Colors.blue,
-        //   tooltip: 'Ver conceptos de ropa',
-        // ),
+        DataAction(
+          // canPop: false,
+          callbackIndex: (){},
+          icon: Icons.visibility,
+          isNotEnabled: false,
+          color: Colors.blue,
+          tooltip: 'Ver conceptos de ropa',
+        ),
         if (!isInactive)
           DataAction(
             color: Colors.yellow,
@@ -114,7 +114,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       message: '$question\n$message',
     );
     if (response == true) {
-      categoriaRopaNotifier.desactivateCategoria(categoria);
+      categoriaRopaNotifier.deactivateCategoria(categoria);
     }
   }
 

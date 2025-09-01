@@ -9,7 +9,6 @@ import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/widgets/actions_row.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/widgets/small_view.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 class SizesView extends ConsumerStatefulWidget {
@@ -30,15 +29,11 @@ class _SizesViewState extends ConsumerState<SizesView> {
     _addErrorListener();
     _addSuccessListener();
     final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    final blockUI = ref.watch(
-      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
-    );
     final filtros = ref.watch(
       sizesViewModelProvider.select(
         (value) => value.filtros,
       ),
     );
-    final isSmall = MediaQuery.of(context).size.width < 950;
 
     return Center(
       child: SizedBox(
@@ -50,10 +45,8 @@ class _SizesViewState extends ConsumerState<SizesView> {
               stream: sizeRopaNotifier.observeSizes(),
               builder: (context, asyncSnapshot) {
                 return TableCardInfo(
-                  isSmall: isSmall,
                   ascending: filtros.ascendente,
                   sortColumnIndex: filtros.ordenamiento.index,
-                  showActions: !blockUI,
                   haveFilters: filtros.haveFilters,
                   titleAddButton: 'Agregar tamaño de ropa',
                   onClearFilters: sizeRopaNotifier.clearFilters,
@@ -75,7 +68,7 @@ class _SizesViewState extends ConsumerState<SizesView> {
                       ascendente: filtros.ascendente,
                       onOrdenamientoChanged: sizeRopaNotifier.setOrden,
                       onAscendenteChanged: sizeRopaNotifier.setSort,
-                    )
+                    ),
                   ],
                   columns: [
                     ...List.generate(
@@ -105,9 +98,7 @@ class _SizesViewState extends ConsumerState<SizesView> {
                           DataCell(Text(size.estatus.value)),
                           DataCell(Text(size.fechaCreacion.formatFullDate)),
                           DataCell(Text(size.fechaEliminacion.formatFullDate)),
-                          DataCell(
-                            ActionsRow(size: size, isSmall: isSmall),
-                          ),
+                          DataCell(ActionsRow(size: size)),
                         ],
                       );
                     },

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
-import 'package:lavanderia/core/types/estatus_type.dart';
-import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
-import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
+import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
 
+import '../dialogs/edit_precio_dialog.dart';
+
 class ActionsRow extends ConsumerStatefulWidget {
-  final SizesRopaEntity size;
+  final PrecioConDetallesEntity precio;
   final bool isSmall;
+
   const ActionsRow({
     super.key,
-    required this.size,
+    required this.precio,
     this.isSmall = false,
   });
 
@@ -21,102 +22,78 @@ class ActionsRow extends ConsumerStatefulWidget {
 }
 
 class _ActionsRowState extends ConsumerState<ActionsRow> {
-  bool get isInactive => size.isInactive;
+  bool get isActive => precio.isActive;
   bool get isSmall => widget.isSmall;
-  SizesRopaEntity get size => widget.size;
-  String get nombre => size.nombre;
+  PrecioConDetallesEntity get precio => widget.precio;
+  String get nombre => precio.nombreConcepto;
 
   @override
   Widget build(BuildContext context) {
     return ActionsButtons(
       isSmall: isSmall,
       actions: [
-        if (!isInactive)
+        if (isActive)
           DataAction(
             color: Colors.blue,
-            callbackIndex: onEditSize,
+            callbackIndex: onEditConcepto,
             icon: Icons.edit,
             isNotEnabled: false,
-            tooltip: 'Editar tamaño de ropa',
+            tooltip: 'Editar concepto de ropa',
           ),
-        if (!isInactive)
+        if (isActive)
           DataAction(
             color: Colors.red,
-            callbackIndex: onDeleteSize,
+            callbackIndex: onDeleteConcepto,
             icon: Icons.delete,
             isNotEnabled: false,
-            tooltip: 'Eliminar tamaño de ropa',
+            tooltip: 'Eliminar concepto de ropa',
           ),
-        if (size.estatus == EstatusType.inactivo)
+        if (!isActive)
           DataAction(
             color: Colors.green,
-            callbackIndex: onRestoreSize,
+            callbackIndex: onRestoreConcepto,
             icon: Icons.restore,
             isNotEnabled: false,
-            tooltip: 'Activar tamaño de ropa',
+            tooltip: 'Activar concepto de ropa',
           ),
       ],
     );
   }
 
-  Future<String?> showNombreDialog() {
-    const title = 'Editar tamaño de ropa';
-    return showDialog<String?>(
+  Future<void> showEditDialog() async {
+    await showDialog(
       context: context,
       builder: (context) {
-        return NombreDialog(
-          title: title,
-          nombre: nombre,
-          label: 'Nombre del tamaño',
-          hintText: 'Ej: Chica, Mediana, Kingsize',
-        );
+        return EditPrecioDialog(precio: precio);
       },
     );
   }
 
-  void onEditSize() async {
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  void onEditConcepto() async {
     // Acción al presionar el botón de agregar tamaño
-    final nombre = await showNombreDialog();
+    await showEditDialog();
+  }
 
-    if (nombre == null) return;
-    if (nombre.isEmpty) return;
-    if (!mounted) return;
+  void onDeleteConcepto() async {
+    final question =
+        '¿Estás seguro de desactivar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?';
+    final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
 
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de editar este tamaño?',
-    );
+    final response = await context.showWarningDialog(message: question);
 
-    if (confirm == true) {
-      sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
+    if (response == true) {
+      preciosNotifier.desactivatePrecio(precio);
     }
   }
 
-  void onDeleteSize() async {
-    final question = '¿Estás seguro de desactivar el tamaño "${size.nombre}"?';
-    const message =
-        'Al desactivarlo, ya no estará disponible para su uso y se desactivarán todos los conceptos relacionados con él.';
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  void onRestoreConcepto() async {
+    final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
     final response = await context.showWarningDialog(
-      message: '$question\n$message',
+      message:
+          '¿Estás seguro de activar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?',
     );
     if (response == true) {
-      sizeRopaNotifier.desactivateSize(size);
-    }
-  }
-
-  void onRestoreSize() async {
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    final response = await context.showWarningDialog(
-      message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
-    );
-    if (response == true) {
-      sizeRopaNotifier.updateSize(
-        size.copyWith(
-          estatus: EstatusType.activo,
-          fechaEliminacion: null,
-        ),
-      );
+      preciosNotifier.activatePrecio(precio);
     }
   }
 }

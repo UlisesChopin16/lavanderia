@@ -40,24 +40,25 @@ sealed class PrecioConDetallesEntity with _$PrecioConDetallesEntity {
   bool get hasImporte => importe != 0.0 && importe > 0.0;
   bool get hasName => nombreConcepto.normalizeSpaces().isNotEmpty;
   bool get hasDays => diasEntrega != 0 && diasEntrega > 0;
+  bool get isActive => estatus == EstatusType.activo;
 
   String validate() {
     final errors = <String>[];
 
     if (!hasName) {
-      errors.add('El nombre del concepto es obligatorio');
+      errors.add(' - El nombre del concepto es obligatorio');
     }
     if (!hasCategoria) {
-      errors.add('La categoría es obligatoria');
+      errors.add(' - La categoría es obligatoria');
     }
     if (!hasSize) {
-      errors.add('El tamaño es obligatorio');
+      errors.add(' - El tamaño es obligatorio');
     }
     if (!hasImporte) {
-      errors.add('El importe es obligatorio');
+      errors.add(' - El importe es obligatorio');
     }
     if (!hasDays) {
-      errors.add('Los días de entrega son obligatorios');
+      errors.add(' - Los días de entrega son obligatorios');
     }
 
     return errors.join('\n');

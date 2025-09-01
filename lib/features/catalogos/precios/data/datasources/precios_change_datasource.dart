@@ -12,7 +12,7 @@ class PreciosChangeDatasource {
   }
 
   Future<void> deactivatePreciosBySize(int sizeId) async {
-    await preciosDao.desactivatePreciosBySize(sizeId);
+    await preciosDao.deactivatePreciosBySize(sizeId);
   }
 
   Future<void> activatePreciosByCategoria(int categoriaId) async {
@@ -20,6 +20,6 @@ class PreciosChangeDatasource {
   }
 
   Future<void> deactivatePreciosByCategoria(int categoriaId) async {
-    await preciosDao.desactivatePreciosByCategoria(categoriaId);
+    await preciosDao.deactivatePreciosByCategoria(categoriaId);
   }
 }

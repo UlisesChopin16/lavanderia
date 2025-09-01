@@ -3,6 +3,7 @@ import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/usecases/change_precios_status_by_categoria.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../domain/usecases/usecases.dart';
@@ -26,6 +27,7 @@ class CategoriaViewModel extends _$CategoriaViewModel {
   final _desactivateCase = instance<DesactivateCategoriaServicio>();
   final _observeCase = instance<ObserveCategoriasServicios>();
   final _updateCase = instance<UpdateCategoriaServicio>();
+  final _changeEstatusPrecio = instance<ChangePreciosStatusByCategoria>();
   // final _obtainCase = instance<ObtainAllSizesRopa>();
   // 92590007
 
@@ -45,15 +47,12 @@ class CategoriaViewModel extends _$CategoriaViewModel {
         isLoading: false,
         successMessage: 'Categoría creada con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
-        final entity = CategoriaServicioEntity(
-          nombre: nombre,
-          estatus: EstatusType.activo,
-        );
+        final entity = CategoriaServicioEntity(nombre: nombre);
         await _createCase.call(entity);
       },
     );
@@ -70,7 +69,7 @@ class CategoriaViewModel extends _$CategoriaViewModel {
         isLoading: false,
         successMessage: 'Categoría actualizada con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
@@ -80,7 +79,7 @@ class CategoriaViewModel extends _$CategoriaViewModel {
     );
   }
 
-  void desactivateCategoria(CategoriaServicioEntity entity) {
+  void deactivateCategoria(CategoriaServicioEntity entity) {
     safeCall(
       actionBefore: () async => state = state.copyWith(
         isLoading: true,
@@ -91,12 +90,40 @@ class CategoriaViewModel extends _$CategoriaViewModel {
         isLoading: false,
         successMessage: 'Categoría desactivada con éxito',
       ),
-      actionOnError: (error, message) async => state.copyWith(
+      actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
         await _desactivateCase.call(entity.copyWith(estatus: EstatusType.inactivo));
+        await _changeEstatusPrecio.deactivatePrecios(entity.id);
+      },
+    );
+  }
+
+  void activateCategoria(CategoriaServicioEntity entity) {
+    safeCall(
+      actionBefore: () async => state = state.copyWith(
+        isLoading: true,
+        errorMessage: '',
+        successMessage: '',
+      ),
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+        successMessage: 'Tamaño de ropa activado con éxito',
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
+        errorMessage: message,
+        isLoading: false,
+      ),
+      action: () async {
+        final newEntity = entity.copyWith(
+          estatus: EstatusType.activo,
+          fechaEliminacion: null,
+        );
+        await _updateCase.call(newEntity);
+
+        await _changeEstatusPrecio.activatePrecios(newEntity.id);
       },
     );
   }

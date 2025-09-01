@@ -7,8 +7,9 @@ import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog
 import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
-import 'view_model/categoria_view_model.dart';
+
 import '../widgets/widgets.dart';
+import 'view_model/categoria_view_model.dart';
 
 class CategoriaView extends ConsumerStatefulWidget {
   const CategoriaView({super.key});
@@ -28,13 +29,12 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
     _addErrorListener();
     _addSuccessListener();
     final categoriaNotifier = ref.read(categoriaViewModelProvider.notifier);
-    
+
     final filtros = ref.watch(
       categoriaViewModelProvider.select(
         (value) => value.filtros,
       ),
     );
-    final isSmall = MediaQuery.of(context).size.width < 950;
 
     return Center(
       child: SizedBox(
@@ -44,9 +44,8 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
             margin: const EdgeInsets.all(24.0),
             child: StreamBuilder(
               stream: categoriaNotifier.observeCategorias(),
-                builder: (context, asyncSnapshot) {
+              builder: (context, asyncSnapshot) {
                 return TableCardInfo(
-                    isSmall: isSmall,
                   ascending: filtros.ascendente,
                   sortColumnIndex: filtros.ordenamiento.index,
                   haveFilters: filtros.haveFilters,
@@ -70,7 +69,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
                       ascendente: filtros.ascendente,
                       onOrdenamientoChanged: categoriaNotifier.setOrden,
                       onAscendenteChanged: categoriaNotifier.setSort,
-                    )
+                    ),
                   ],
                   columns: [
                     ...List.generate(
@@ -104,9 +103,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
                           DataCell(Text(categoria.estatus.value)),
                           DataCell(Text(categoria.fechaCreacion.formatFullDate)),
                           DataCell(Text(categoria.fechaEliminacion.formatFullDate)),
-                          DataCell(
-                            ActionsRow(categoria: categoria, isSmall: isSmall),
-                          ),
+                          DataCell(ActionsRow(categoria: categoria)),
                         ],
                       );
                     },
@@ -132,7 +129,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
     final confirm = await context.showWarningDialog(
       message: '¿Estás seguro de agregar la categoría "$nombre"?',
     );
-    
+
     if (confirm == true) {
       categoriaNotifier.createCategoria(nombre);
     }
@@ -163,7 +160,10 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
   }
 
   void _addSuccessListener() {
-    ref.listen(categoriaViewModelProvider.select((state) => state.successMessage), (previous, next) {
+    ref.listen(categoriaViewModelProvider.select((state) => state.successMessage), (
+      previous,
+      next,
+    ) {
       // Acción al cambiar el estado del notifier
       if (next.isNotEmpty) {
         context.showSuccessDialog(next);

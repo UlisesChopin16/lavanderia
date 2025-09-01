@@ -11,7 +11,7 @@ class ChangePreciosStatusBySize {
     await repository.activatePreciosBySize(sizeId);
   }
 
-  Future<void> desactivatePrecios(int sizeId) async {
+  Future<void> deactivatePrecios(int sizeId) async {
     await repository.deactivatePreciosBySize(sizeId);
   }
 }
