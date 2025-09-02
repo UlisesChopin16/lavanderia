@@ -50,6 +50,7 @@ class FiltroOrden extends HookWidget {
 
     return DropdownMenuBase<ColumnPreciosName>(
       label: 'Ordenar por',
+      width: 200,
       leadingIcon: leadingIcon,
       controller: controller,
       items: _dropdownItems,

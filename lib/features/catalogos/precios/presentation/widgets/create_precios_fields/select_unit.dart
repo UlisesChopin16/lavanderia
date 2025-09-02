@@ -24,7 +24,7 @@ class SelectUnit extends HookWidget {
     }).toList();
   }
 
-  static const width = 180.0;
+  static const width = 200.0;
 
   @override
   Widget build(BuildContext context) {

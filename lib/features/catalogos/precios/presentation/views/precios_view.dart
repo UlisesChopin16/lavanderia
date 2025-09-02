@@ -11,16 +11,18 @@ import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 import '../dialogs/create_precio_dialog.dart';
 import '../widgets/actions_row.dart';
-import '../widgets/filtro_orden.dart';
-import '../widgets/small_view.dart';
+import '../widgets/filtros/filtros.dart';
+import 'small_view.dart';
 
 class PreciosView extends ConsumerStatefulWidget {
   final CategoriaServicioEntity? categoria;
   final SizesRopaEntity? sizeRopa;
+  final bool showInCard;
   const PreciosView({
     super.key,
     this.categoria,
     this.sizeRopa,
+    this.showInCard = true,
   });
 
   @override
@@ -28,6 +30,8 @@ class PreciosView extends ConsumerStatefulWidget {
 }
 
 class _PreciosViewState extends ConsumerState<PreciosView> {
+  final scrollController = ScrollController();
+
   int index = 0;
 
   final listEstatus = EstatusType.values;
@@ -36,7 +40,7 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
   SizesRopaEntity? get sizeRopa => widget.sizeRopa;
 
   List<ColumnPreciosName> get columns {
-    const values = ColumnPreciosName.values;
+    List<ColumnPreciosName> values = List.from(ColumnPreciosName.values);
 
     if (categoria != null) {
       values.remove(ColumnPreciosName.categoria);
@@ -58,6 +62,8 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
 
       await preciosNotifier.getCategorias();
       await preciosNotifier.getSizesRopa();
+
+      setState(() {});
     });
   }
 
@@ -88,6 +94,7 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
           onAddButtonPressed: onAddConcepto,
           onSearchChanged: preciosNotifier.setNombre,
           onSortChange: preciosNotifier.setSort,
+          // scrollController: scrollController,
           filters: [
             for (var estatus in listEstatus)
               FilterChip(
@@ -98,6 +105,8 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
                   preciosNotifier.setEstatus(estatus);
                 },
               ),
+            if (categoria == null) FiltroCategoria(categoriaValue: filtros.categoria),
+            if (sizeRopa == null) FiltroSize(sizeRopaValue: filtros.sizeRopa),
             FiltroOrden(
               ordenamiento: filtros.ordenamiento,
               ascendente: filtros.ascendente,
@@ -149,20 +158,17 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       },
     );
 
-    final areNull = categoria == null && sizeRopa == null;
-
-    final newChild = !areNull
-        ? child
-        : Card(
-            margin: const EdgeInsets.all(24),
-            child: child,
-          );
+    final newChild = !widget.showInCard ? child : Card(child: child);
 
     return Center(
-      child: SizedBox(
-        width: 1400,
-        child: SingleChildScrollView(
-          child: newChild,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SizedBox(
+            width: 1400,
+            child: newChild,
+          ),
         ),
       ),
     );

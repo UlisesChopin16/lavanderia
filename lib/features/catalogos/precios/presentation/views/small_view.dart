@@ -6,7 +6,7 @@ import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 
-import 'actions_row.dart';
+import '../widgets/actions_row.dart';
 
 class SmallView extends ConsumerWidget {
   final List<PrecioConDetallesEntity> rows;
@@ -37,10 +37,15 @@ class SmallView extends ConsumerWidget {
                       child: Icon(IconsManager.clotheIcon),
                     ),
                     trailing: blockUI ? null : ActionsRow(precio: row, isSmall: true),
-                    title: Text('${row.nombreConcepto} - ${row.categoria.nombre} - ${row.size.nombre}'),
+                    title: Text(
+                      '${row.nombreConcepto} - ${row.size.nombre} - ${row.categoria.nombre}',
+                    ),
                     subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Precio: ${row.importe.toStringAsFixed(2)} por ${row.tipoUnidad.value}'),
+                        Text(
+                          'Precio: \$${row.importe.toStringAsFixed(2)} por ${row.tipoUnidad.value}',
+                        ),
                         Text('Fecha de creación: ${row.fechaCreacion.formatDate}'),
                       ],
                     ),

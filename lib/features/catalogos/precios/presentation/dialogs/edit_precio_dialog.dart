@@ -5,9 +5,10 @@ import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
-import 'package:lavanderia/features/catalogos/precios/presentation/widgets/edit_fields_precio.dart';
 import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 import 'package:lavanderia/shared/widgets/block_progress.dart';
+
+import '../widgets/row_fields_precio.dart';
 
 class EditPrecioDialog extends ConsumerStatefulWidget {
   final PrecioConDetallesEntity precio;
@@ -32,15 +33,18 @@ class _EditPrecioDialogState extends ConsumerState<EditPrecioDialog> {
         BaseDialog(
           title: 'Editar concepto de ropa',
           icon: const Icon(IconsManager.clotheIcon),
-          onActionPressed: validateNombre,
-          content: SingleChildScrollView(
-            child: EditFieldsPrecio(
-              precio: precio,
-              onChangePrecio: (newPrecio) {
-                setState(() {
-                  precio = newPrecio;
-                });
-              },
+          onActionPressed: validateFields,
+          content: SizedBox(
+            width: 800,
+            child: SingleChildScrollView(
+              child: RowFieldsPrecio(
+                precio: precio,
+                onChangePrecio: (newPrecio) {
+                  setState(() {
+                    precio = newPrecio;
+                  });
+                },
+              ),
             ),
           ),
         ),
@@ -49,7 +53,7 @@ class _EditPrecioDialogState extends ConsumerState<EditPrecioDialog> {
     );
   }
 
-  void validateNombre() async {
+  void validateFields() async {
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
 
     final message =

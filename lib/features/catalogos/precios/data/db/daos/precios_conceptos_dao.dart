@@ -84,6 +84,15 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     final query = queryJoined();
     if (filtros == null) return query;
 
+    if (filtros.categoria.id != -1 && filtros.categoria.id != 0) {
+      query.where(categoriaServicio.id.equals(filtros.categoria.id));
+    }
+
+    if (filtros.sizeRopa.id != -1 && filtros.sizeRopa.id != 0) {
+      query.where(sizesRopa.id.equals(filtros.sizeRopa.id));
+    }
+    
+
     if (filtros.estatus != EstatusType.todos) {
       // query.where((tbl) => tbl.estatus.equals(filtros.estatus.value));
       query.where(preciosConceptos.estatus.equals(filtros.estatus.value));
@@ -92,7 +101,8 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     if (filtros.nombre.isNotEmpty) {
       // Se buscara por nombre de categoria, nombre de concepto o Nombre de tamaño
       query.where(
-        categoriaServicio.nombre.like('%${filtros.nombre}%') |
+        preciosConceptos.nombreConcepto.like('%${filtros.nombre}%') |
+            categoriaServicio.nombre.like('%${filtros.nombre}%') |
             sizesRopa.nombre.like('%${filtros.nombre}%'),
       );
       // query.where((tbl) => tbl.nombre.like('%${filtros.nombre}%'));
@@ -323,6 +333,8 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
+    if (dataRow.isEmpty) return;
+
     final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto.value;
     final isInactive = detallesRow.estatus == EstatusType.inactivo.value;
@@ -348,6 +360,8 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
+    if (dataRow.isEmpty) return;
+
     final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto;
     final categoria = detallesRow.nombre;
@@ -374,6 +388,8 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
+    if (dataRow.isEmpty) return;
+
     final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto.value;
     final size = detallesRow.nombre;
@@ -394,6 +410,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     );
 
     final dataRow = await query.get();
+    if (dataRow.isEmpty) return;
     final detallesRow = dataRow.first;
     final nombreConcepto = row.nombreConcepto;
     final size = detallesRow.nombre;

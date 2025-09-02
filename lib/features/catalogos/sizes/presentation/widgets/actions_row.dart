@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
+import 'package:lavanderia/features/catalogos/precios/presentation/dialogs/show_precios_dialog.dart';
 import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
@@ -37,7 +38,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       actions: [
         DataAction(
           // canPop: false,
-          callbackIndex: () {},
+          callbackIndex: onShowConceptos,
           icon: Icons.visibility,
           isNotEnabled: false,
           color: Colors.blue,
@@ -85,6 +86,17 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       },
     );
   }
+
+  void onShowConceptos() async {
+    // Acción al presionar el botón de ver conceptos
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return ShowPreciosDialog(sizeRopa: size);
+      },
+    );
+  }
+
 
   void onEditSize() async {
     final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);

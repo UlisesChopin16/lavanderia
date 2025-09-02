@@ -13,15 +13,17 @@ class ImporteField extends StatelessWidget {
     required this.importe,
   });
 
+  static const width = 200.0;
+
   @override
   Widget build(BuildContext context) {
     final value = importe == '0.0' ? '' : importe;
     return SizedBox(
-      width: 150,
+      width: width,
       child: TextFormField(
         initialValue: value,
         decoration: const InputDecoration(
-          constraints: BoxConstraints(maxWidth: 150),
+          constraints: BoxConstraints(maxWidth: width),
           prefixIcon: Icon(IconsManager.selectedPreciosIcon),
           labelText: 'Precio',
           hintText: 'Ej: 55.50, 100, 300, etc.',

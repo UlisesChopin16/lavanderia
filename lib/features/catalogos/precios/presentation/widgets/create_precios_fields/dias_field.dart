@@ -12,7 +12,7 @@ class DiasField extends StatelessWidget {
     required this.dias,
   });
 
-  static const width = 180.0;
+  static const width = 200.0;
 
   @override
   Widget build(BuildContext context) {

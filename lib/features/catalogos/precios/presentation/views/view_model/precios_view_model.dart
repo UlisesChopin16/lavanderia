@@ -94,8 +94,8 @@ class PreciosViewModel extends _$PreciosViewModel {
     );
   }
 
-  void createPrecios({
-    required List<PrecioConDetallesEntity> precios,
+  void createPrecio({
+    required PrecioConDetallesEntity precio,
     required VoidCallback onSuccess,
     required Future<bool?> Function() onConfirm,
   }) {
@@ -116,12 +116,9 @@ class PreciosViewModel extends _$PreciosViewModel {
         );
       },
       action: () async {
-        final nuevosPrecios = applyCategoriaOrSize(precios);
-        validatePrecios(nuevosPrecios);
+        final nuevoPrecio = applyCategoriaOrSize(precio);
 
-        for (final precio in nuevosPrecios) {
-          await _verifyExistCase.call(precio);
-        }
+        await _verifyExistCase.call(nuevoPrecio);
 
         final confirm = await onConfirm();
 
@@ -130,9 +127,7 @@ class PreciosViewModel extends _$PreciosViewModel {
           return;
         }
 
-        for (final precio in nuevosPrecios) {
-          await _createCase.call(precio);
-        }
+        await _createCase.call(nuevoPrecio);
 
         onSuccess();
       },
@@ -223,26 +218,6 @@ class PreciosViewModel extends _$PreciosViewModel {
     );
   }
 
-  void validatePrecios(List<PrecioConDetallesEntity> precios) {
-    final mapPrecios = <String, PrecioConDetallesEntity>{};
-    for (int i = 0; i < precios.length; i++) {
-      final precio = precios[i];
-      final key = precio.key;
-      final index = i + 1;
-      final indexMessage = 'Error en el Concepto #$index:';
-      final messageValidate = precio.validate();
-      if (messageValidate.isNotEmpty) {
-        throw ValidateException(message: '$indexMessage\n$messageValidate');
-      }
-
-      if (mapPrecios.containsKey(key)) {
-        final message = '$indexMessage\n - ${precio.errorMessage}';
-        throw ValidateException(message: message);
-      }
-      mapPrecios[key] = precio;
-    }
-  }
-
   void clearAll() {
     state = state.copyWith(
       filtros: const FiltrosPrecios(),
@@ -254,20 +229,27 @@ class PreciosViewModel extends _$PreciosViewModel {
     );
   }
 
-  List<PrecioConDetallesEntity> applyCategoriaOrSize(List<PrecioConDetallesEntity> precios) {
-    List<PrecioConDetallesEntity> nuevosPrecios = List.from(precios);
+  PrecioConDetallesEntity applyCategoriaOrSize(PrecioConDetallesEntity precio) {
+    PrecioConDetallesEntity precioModificado = precio;
+
     final categoria = state.categoria;
     final size = state.sizeRopa;
 
     if (categoria != null) {
-      nuevosPrecios = nuevosPrecios.map((p) => p.copyWith(categoria: categoria)).toList();
+      precioModificado = precio.copyWith(categoria: categoria);
     }
 
     if (size != null) {
-      nuevosPrecios = nuevosPrecios.map((p) => p.copyWith(size: size)).toList();
+      precioModificado = precio.copyWith(size: size);
     }
 
-    return nuevosPrecios;
+    final validate = precioModificado.validate();
+
+    if (validate.isNotEmpty) {
+      throw ValidateException(message: 'Error en el Concepto:\n$validate');
+    }
+
+    return precioModificado;
   }
 
   void setNombre(String nombre) {
@@ -288,6 +270,14 @@ class PreciosViewModel extends _$PreciosViewModel {
 
   void setOrden(ColumnPreciosName orden) {
     state = state.copyWith(filtros: state.filtros.copyWith(ordenamiento: orden));
+  }
+
+  void setCategoria(CategoriaServicioEntity categoria) {
+    state = state.copyWith(filtros: state.filtros.copyWith(categoria: categoria));
+  }
+
+  void setSizeRopa(SizesRopaEntity sizeRopa) {
+    state = state.copyWith(filtros: state.filtros.copyWith(sizeRopa: sizeRopa));
   }
 
   void setOrdenAndSort(ColumnPreciosName orden, bool sort) {

@@ -4,6 +4,7 @@ import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/categorias/presentation/views/view_model/categoria_view_model.dart';
+import 'package:lavanderia/features/catalogos/precios/presentation/dialogs/show_precios_dialog.dart';
 // import 'package:lavanderia/features/catalogos/categorias/conceptos/presentation/views/conceptos_view.dart';
 import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
@@ -38,7 +39,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       actions: [
         DataAction(
           // canPop: false,
-          callbackIndex: (){},
+          callbackIndex: onShowConceptos,
           icon: Icons.visibility,
           isNotEnabled: false,
           color: Colors.blue,
@@ -87,6 +88,16 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
     );
   }
 
+  void onShowConceptos() async {
+    // Acción al presionar el botón de ver conceptos
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return ShowPreciosDialog(categoria: categoria);
+      },
+    );
+  }
+
   void onEditCategoria() async {
     final categoriaRopaNotifier = ref.read(categoriaViewModelProvider.notifier);
     // Acción al presionar el botón de agregar tamaño
@@ -124,12 +135,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       message: '¿Estás seguro de activar la categoría "${categoria.nombre}"?',
     );
     if (response == true) {
-      categoriaRopaNotifier.updateCategoria(
-        categoria.copyWith(
-          estatus: EstatusType.activo,
-          fechaEliminacion: null,
-        ),
-      );
+      categoriaRopaNotifier.activateCategoria(categoria);
     }
   }
 

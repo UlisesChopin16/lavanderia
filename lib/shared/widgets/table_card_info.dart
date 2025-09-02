@@ -42,6 +42,9 @@ class TableCardInfo extends ConsumerStatefulWidget {
   /// Each filter should be a widget that can be used to filter the data in the table
   final List<Widget> filters;
 
+  /// Scroll controller for horizontal scrolling
+  // final ScrollController? scrollController;
+
   final String titleAddButton;
 
   /// Callback to be called when the search text changes
@@ -60,6 +63,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
     required this.rows,
     required this.smallView,
     required this.ascending,
+    // this.scrollController,
     this.isSmall,
     this.onAddButtonPressed,
     this.onClearFilters,
@@ -107,9 +111,10 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
   }
 
   Widget get newDataTable {
-    return Center(
+    return Flexible(
       child: Scrollbar(
         controller: scrollController,
+        thumbVisibility: true,
         child: SingleChildScrollView(
           controller: scrollController,
           scrollDirection: Axis.horizontal,

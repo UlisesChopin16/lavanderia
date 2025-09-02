@@ -1,10 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/types/column_precios_name.dart';
-import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
-export 'package:lavanderia/features/catalogos/precios/presentation/types/column_precios_name.dart';
-export 'package:lavanderia/core/types/estatus_type.dart';
+import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 
+export 'package:lavanderia/core/types/estatus_type.dart';
+export 'package:lavanderia/features/catalogos/precios/presentation/types/column_precios_name.dart';
 
 part 'filtros_precios.freezed.dart';
 
@@ -15,12 +16,16 @@ sealed class FiltrosPrecios with _$FiltrosPrecios {
     @Default('') String nombre,
     @Default(EstatusType.activo) EstatusType estatus,
     @Default(false) bool ascendente,
+    @Default(CategoriaServicioEntity()) CategoriaServicioEntity categoria,
+    @Default(SizesRopaEntity()) SizesRopaEntity sizeRopa,
     @Default(ColumnPreciosName.fechaCreacion) ColumnPreciosName ordenamiento,
   }) = _FiltrosPrecios;
 
   bool get haveFilters {
     return nombre.isNotEmpty ||
         estatus != EstatusType.activo ||
-        ordenamiento != ColumnNamesType.fechaCreacion;
+        ordenamiento != ColumnPreciosName.fechaCreacion ||
+        sizeRopa.id != -1 ||
+        categoria.id != -1;
   }
 }
