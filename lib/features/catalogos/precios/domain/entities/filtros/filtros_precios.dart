@@ -17,7 +17,7 @@ sealed class FiltrosPrecios with _$FiltrosPrecios {
     @Default(EstatusType.activo) EstatusType estatus,
     @Default(false) bool ascendente,
     @Default(CategoriaServicioEntity()) CategoriaServicioEntity categoria,
-    @Default(SizesRopaEntity()) SizesRopaEntity sizeRopa,
+    @Default(null) SizesRopaEntity? sizeRopa,
     @Default(ColumnPreciosName.fechaCreacion) ColumnPreciosName ordenamiento,
   }) = _FiltrosPrecios;
 
@@ -25,7 +25,7 @@ sealed class FiltrosPrecios with _$FiltrosPrecios {
     return nombre.isNotEmpty ||
         estatus != EstatusType.activo ||
         ordenamiento != ColumnPreciosName.fechaCreacion ||
-        sizeRopa.id != -1 ||
+        sizeRopa != null ||
         categoria.id != -1;
   }
 }

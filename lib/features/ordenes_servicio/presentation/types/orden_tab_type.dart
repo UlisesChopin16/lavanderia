@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/view/orden_servicio_view.dart';
 
 enum OrdenTabType {
   crearOrden(
     title: 'Crear orden',
     icon: Icons.add_circle_rounded,
     unselectedIcon: Icons.add_circle_outline_rounded,
-    view: Scaffold(body: Center(child: Text('Vista para crear una nueva orden'))),
+    view: OrdenServicioView(),
   ),
   listaOrdenes(
     title: 'Lista de órdenes',

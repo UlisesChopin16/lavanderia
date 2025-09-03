@@ -51,9 +51,9 @@ sealed class PrecioConDetallesEntity with _$PrecioConDetallesEntity {
     if (!hasCategoria) {
       errors.add(' - La categoría es obligatoria');
     }
-    if (!hasSize) {
-      errors.add(' - El tamaño es obligatorio');
-    }
+    // if (!hasSize) {
+    //   errors.add(' - El tamaño es obligatorio');
+    // }
     if (!hasImporte) {
       errors.add(' - El importe es obligatorio');
     }

@@ -6,12 +6,15 @@ import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   await SharedPreferencesModule.init();
   await initializeDateFormatting('es_ES');
+  await dotenv.load(fileName: ".env");
+
 
 
   runApp(const ProviderScope(child: MyApp()));

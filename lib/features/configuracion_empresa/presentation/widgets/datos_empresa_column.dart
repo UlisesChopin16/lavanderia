@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-final phoneMask = MaskTextInputFormatter(
-  mask: '### ### ####',
-  filter: {"#": RegExp(r'[0-9]')},
-);
+// final phoneMask = MaskTextInputFormatter(
+//   mask: '### ### ####',
+//   filter: {"#": RegExp(r'[0-9]')},
+//   type: MaskAutoCompletionType.lazy,
+// );
 
 class DatosEmpresaColumn extends ConsumerWidget {
   final double widthField;
@@ -41,8 +41,8 @@ class DatosEmpresaColumn extends ConsumerWidget {
           initialValue: configuracion.telefono,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(12),
-            phoneMask,
+            LengthLimitingTextInputFormatter(10),
+            // phoneMask,
           ],
           decoration: InputDecoration(
             constraints: BoxConstraints(maxWidth: widthField),

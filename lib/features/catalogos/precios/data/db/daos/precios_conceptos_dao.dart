@@ -1,8 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/error/s_q_l_exception.dart';
+import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/catalogos/precios/data/db/precios_conceptos.dart';
 import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/filtros/filtros_precios.dart';
+import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
 
 import '../../../../../../core/database/app_database.dart';
 
@@ -25,13 +27,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
 
     // query.where();
     return query.watch().map((rows) {
-      return rows.map((row) {
-        return PrecioConDetallesEntry(
-          row.readTable(preciosConceptos),
-          row.readTable(sizesRopa),
-          row.readTable(categoriaServicio),
-        );
-      }).toList();
+      return convertToDetalles(rows);
     });
   }
 
@@ -44,13 +40,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
 
     // query.where();
     return query.watch().map((rows) {
-      return rows.map((row) {
-        return PrecioConDetallesEntry(
-          row.readTable(preciosConceptos),
-          row.readTable(sizesRopa),
-          row.readTable(categoriaServicio),
-        );
-      }).toList();
+      return convertToDetalles(rows);
     });
   }
 
@@ -58,19 +48,13 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     final query = queryWithFilters(filtros);
     // query.where();
     return query.watch().map((rows) {
-      return rows.map((row) {
-        return PrecioConDetallesEntry(
-          row.readTable(preciosConceptos),
-          row.readTable(sizesRopa),
-          row.readTable(categoriaServicio),
-        );
-      }).toList();
+      return convertToDetalles(rows);
     });
   }
 
   JoinedSelectStatement queryJoined() {
     final query = select(preciosConceptos).join([
-      innerJoin(sizesRopa, sizesRopa.id.equalsExp(preciosConceptos.sizeRopaId)),
+      leftOuterJoin(sizesRopa, sizesRopa.id.equalsExp(preciosConceptos.sizeRopaId)),
       innerJoin(
         categoriaServicio,
         categoriaServicio.id.equalsExp(preciosConceptos.categoriaId),
@@ -88,8 +72,10 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
       query.where(categoriaServicio.id.equals(filtros.categoria.id));
     }
 
-    if (filtros.sizeRopa.id != -1 && filtros.sizeRopa.id != 0) {
-      query.where(sizesRopa.id.equals(filtros.sizeRopa.id));
+    final sizeRopa = filtros.sizeRopa;
+
+    if (sizeRopa != null) {
+      query.where(preciosConceptos.sizeRopaId.equals(sizeRopa.id));
     }
     
 
@@ -428,7 +414,7 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     return rows.map((row) {
       return PrecioConDetallesEntry(
         row.readTable(preciosConceptos),
-        row.readTable(sizesRopa),
+        row.readTableOrNull(sizesRopa) ?? ConstantsManager.defaultSizeRopa.toModel().toEntry(),
         row.readTable(categoriaServicio),
       );
     }).toList();

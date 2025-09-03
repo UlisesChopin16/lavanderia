@@ -47,7 +47,7 @@ const DataRoute configuracionEmpresaR = DataRoute(
 const DataRoute ordenServicioR = DataRoute(
   path: AppRoutes.ordenServicio,
   name: 'OrdenServicio',
-  view: OrdenServicioView(),
+  view: HomeOrdenesView(),
 );
 const DataRoute configuracionGeneralR = DataRoute(
   path: AppRoutes.catalogos,

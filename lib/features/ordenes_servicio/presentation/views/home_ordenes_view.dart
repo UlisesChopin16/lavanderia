@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/features/ordenes_servicio/presentation/types/orden_tab_type.dart';
 import 'package:lavanderia/features/ordenes_servicio/presentation/views/view_model/home_ordenes_view_model.dart';
 
-class OrdenServicioView extends ConsumerStatefulWidget {
-  const OrdenServicioView({super.key});
+class HomeOrdenesView extends ConsumerStatefulWidget {
+  const HomeOrdenesView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _OrdenServicioViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeOrdenesViewState();
 }
 
-class _OrdenServicioViewState extends ConsumerState<OrdenServicioView>
+class _HomeOrdenesViewState extends ConsumerState<HomeOrdenesView>
     with TickerProviderStateMixin {
   // final controller = TabController(length: length, vsync: vsync)
   late TabController tabController;

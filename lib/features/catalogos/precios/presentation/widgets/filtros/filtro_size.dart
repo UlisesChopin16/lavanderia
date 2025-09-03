@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:lavanderia/shared/widgets/dropdown_menu_base.dart';
 
 class FiltroSize extends HookConsumerWidget {
-  final SizesRopaEntity sizeRopaValue;
+  final SizesRopaEntity? sizeRopaValue;
 
   const FiltroSize({
     super.key,
@@ -37,8 +38,11 @@ class FiltroSize extends HookConsumerWidget {
       ),
     );
 
+    final List<SizesRopaEntity> newList = List.from(sizesRopa)
+      ..add(ConstantsManager.defaultSizeRopa);
+
     final controller = useTextEditingController();
-    controller.text = sizeRopaValue.nombre;
+    controller.text = sizeRopaValue?.nombre ?? '';
 
     return SizedBox(
       width: width,
@@ -46,8 +50,8 @@ class FiltroSize extends HookConsumerWidget {
         label: 'Filtrar por tamaño',
         width: width,
         controller: controller,
-        items: _dropdownItems(sizesRopa),
-        leadingIcon: const Icon(IconsManager.selectedCategoriasIcon),
+        items: _dropdownItems(newList),
+        leadingIcon: const Icon(IconsManager.selectedSizesIcon),
         value: sizeRopaValue,
         onChanged: (value) {
           preciosNotifier.setSizeRopa(value ?? const SizesRopaEntity());

@@ -18,11 +18,13 @@ class PreciosView extends ConsumerStatefulWidget {
   final CategoriaServicioEntity? categoria;
   final SizesRopaEntity? sizeRopa;
   final bool showInCard;
+  final bool? blockUI;
   const PreciosView({
     super.key,
     this.categoria,
     this.sizeRopa,
     this.showInCard = true,
+    this.blockUI,
   });
 
   @override
@@ -73,7 +75,7 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
     _addSuccessListener();
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
     final blockUI = ref.watch(
-      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+      configuracionEmpresaViewModelProvider.select((value) => widget.blockUI ?? value.blockUI),
     );
     final filtros = ref.watch(
       preciosViewModelProvider.select(
@@ -81,13 +83,15 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       ),
     );
 
+
     final child = StreamBuilder(
       stream: preciosNotifier.observePrecios(),
       builder: (context, asyncSnapshot) {
         return TableCardInfo(
+          showActions: !blockUI,
+          showAddButton: !blockUI,
           ascending: filtros.ascendente,
           sortColumnIndex: filtros.ordenamiento.index,
-          showActions: !blockUI,
           haveFilters: filtros.haveFilters,
           titleAddButton: 'Agregar conceptos de ropa',
           onClearFilters: preciosNotifier.clearFilters,

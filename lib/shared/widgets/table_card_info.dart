@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
 
 import 'button_clear_filters.dart';
@@ -31,6 +30,8 @@ class TableCardInfo extends ConsumerStatefulWidget {
 
   /// If true, the table will be displayed in a small view
   final bool? isSmall;
+
+  final bool showAddButton;
 
   final int sortColumnIndex;
 
@@ -69,6 +70,7 @@ class TableCardInfo extends ConsumerStatefulWidget {
     this.onClearFilters,
     this.onSearchChanged,
     this.onSortChange,
+    required this.showAddButton,
     this.showActions = true,
     this.filters = const [],
     this.haveFilters = false,
@@ -118,11 +120,14 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
         child: SingleChildScrollView(
           controller: scrollController,
           scrollDirection: Axis.horizontal,
-          child: DataTable(
-            sortColumnIndex: sortColumnIndex,
-            sortAscending: sortAscending,
-            columns: columns,
-            rows: rows,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: DataTable(
+              sortColumnIndex: sortColumnIndex,
+              sortAscending: sortAscending,
+              columns: columns,
+              rows: rows,
+            ),
           ),
         ),
       ),
@@ -299,11 +304,13 @@ class _SearchAndAdd extends HookConsumerWidget {
   final TableCardInfo widget;
   final TextEditingController controller;
 
+  bool get showButton => widget.showAddButton;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blockUI = ref.watch(
-      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
-    );
+    // final blockUI = ref.watch(
+    //   configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    // );
 
     return Wrap(
       // mainAxisSize: MainAxisSize.min,
@@ -326,7 +333,7 @@ class _SearchAndAdd extends HookConsumerWidget {
             ),
           ),
         ),
-        if (!blockUI)
+        if (showButton)
           _AddRow(
             titleAddButton: widget.titleAddButton,
             onAddButtonPressed: widget.onAddButtonPressed,

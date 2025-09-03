@@ -9,6 +9,7 @@ import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.
 import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/widgets/actions_row.dart';
 import 'package:lavanderia/features/catalogos/sizes/presentation/widgets/small_view.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 class SizesView extends ConsumerStatefulWidget {
@@ -34,6 +35,9 @@ class _SizesViewState extends ConsumerState<SizesView> {
         (value) => value.filtros,
       ),
     );
+    final blockUI = ref.watch(
+      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    );
 
     return Center(
       child: SizedBox(
@@ -45,6 +49,7 @@ class _SizesViewState extends ConsumerState<SizesView> {
               stream: sizeRopaNotifier.observeSizes(),
               builder: (context, asyncSnapshot) {
                 return TableCardInfo(
+                  showAddButton: !blockUI,
                   ascending: filtros.ascendente,
                   sortColumnIndex: filtros.ordenamiento.index,
                   haveFilters: filtros.haveFilters,

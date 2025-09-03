@@ -6,6 +6,13 @@ extension StringExtensions on String {
     if (isEmpty) return this;
     return this[0].toUpperCase() + substring(1);
   }
+
+  bool get isEmail {
+    final regex = RegExp(
+      r'^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$',
+    );
+    return regex.hasMatch(this);
+  }
 }
 
 extension StringNullExtensions on String? {
@@ -19,5 +26,14 @@ extension StringNullExtensions on String? {
   String capitalize() {
     if (this == null || this!.isEmpty) return '';
     return this![0].toUpperCase() + this!.substring(1);
+  }
+
+  bool get isEmail {
+    if (this == null) return false;
+    
+    final regex = RegExp(
+      r'^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$',
+    );
+    return regex.hasMatch(this!);
   }
 }

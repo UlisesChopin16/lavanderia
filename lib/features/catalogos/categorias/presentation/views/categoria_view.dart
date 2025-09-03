@@ -6,6 +6,7 @@ import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.dart';
+import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 import '../widgets/widgets.dart';
@@ -36,6 +37,9 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
       ),
     );
 
+    final blockUI = ref.watch(
+      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
+    );
     return Center(
       child: SizedBox(
         width: 1000,
@@ -46,6 +50,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
               stream: categoriaNotifier.observeCategorias(),
               builder: (context, asyncSnapshot) {
                 return TableCardInfo(
+                  showAddButton: !blockUI,
                   ascending: filtros.ascendente,
                   sortColumnIndex: filtros.ordenamiento.index,
                   haveFilters: filtros.haveFilters,

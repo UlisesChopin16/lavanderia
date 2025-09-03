@@ -107,7 +107,7 @@ class PreciosViewModel extends _$PreciosViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Conceptos creados con éxito',
+        successMessage: 'Concepto creado con éxito',
       ),
       actionOnError: (error, message) async {
         state = state.copyWith(
