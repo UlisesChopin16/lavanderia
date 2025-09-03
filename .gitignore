@@ -187,3 +187,6 @@ app.*.symbols
 # Generated files injectable
 **/lib/**/injector.config.dart
 *.gen.dart
+
+# Env files
+.env
