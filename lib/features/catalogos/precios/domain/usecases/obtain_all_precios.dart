@@ -1,0 +1,12 @@
+import 'package:injectable/injectable.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
+import 'package:lavanderia/features/catalogos/precios/domain/repositories/precios_read_repository.dart';
+
+@lazySingleton
+class ObtainAllPrecios {
+  final PreciosReadRepository repository;
+
+  ObtainAllPrecios(this.repository);
+
+  Future<List<PrecioConDetallesEntity>> call() async => await repository.getAll();
+}

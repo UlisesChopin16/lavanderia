@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:lavanderia/core/database/tables/orden_servicio.dart';
-import '../app_database.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/orden_servicio.dart';
+import '../../../../../../core/database/app_database.dart';
 
 part 'orden_servicio_dao.g.dart';
 

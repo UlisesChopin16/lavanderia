@@ -15,4 +15,6 @@ abstract class PreciosReadRepository {
   Stream<List<PrecioConDetallesEntity>> watchAll({
     required FiltrosPrecios filtros
   });
+  
+  Future<List<PrecioConDetallesEntity>> getAll();
 }

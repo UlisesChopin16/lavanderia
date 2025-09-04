@@ -24,7 +24,7 @@ extension PrecioConDetallesEntityX on PrecioConDetallesEntity {
   }
 }
 
-extension SizesRopaModelX on PrecioConDetallesModel {
+extension PrecioConDetallesModelX on PrecioConDetallesModel {
   PrecioConDetallesEntity toEntity() {
     return PrecioConDetallesEntity(
       idPrecio: idPrecio,

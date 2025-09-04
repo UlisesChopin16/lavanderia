@@ -48,4 +48,10 @@ class PreciosReadRepositoryImpl implements PreciosReadRepository {
   List<PrecioConDetallesEntity> convertToEntityList(List<PrecioConDetallesModel> entries) {
     return entries.map((e) => e.toEntity()).toList();
   }
+  
+  @override
+  Future<List<PrecioConDetallesEntity>> getAll() async {
+    final data = await datasource.getAll();
+    return convertToEntityList(data);
+  }
 }

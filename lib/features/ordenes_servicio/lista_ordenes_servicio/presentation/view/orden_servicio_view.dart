@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/select_price_dialog.dart';
 import 'package:mailer/mailer.dart';
 
 class OrdenServicioView extends StatefulWidget {
@@ -12,34 +10,12 @@ class OrdenServicioView extends StatefulWidget {
 }
 
 class _OrdenServicioViewState extends State<OrdenServicioView> {
-  List<ItemConPrecioEntity> itemsSelected = [];
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              final result = await showDialog<List<ItemConPrecioEntity>>(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return SelectPriceDialog(itemsSelected: itemsSelected);
-                },
-              );
-              if (result != null) {
-                setState(() {
-                  itemsSelected = result;
-                });
-              }
-            },
-            child: const Text('Mostrar diálogo'),
-          ),
-          ElevatedButton(
-            onPressed: sendMail,
-            child: const Text('Enviar correo'),
-          ),
-        ],
+      child: ElevatedButton(
+        onPressed: sendMail,
+        child: const Text('Enviar correo'),
       ),
     );
   }

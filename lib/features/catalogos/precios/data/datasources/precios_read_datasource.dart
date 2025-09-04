@@ -10,6 +10,11 @@ class PreciosReadDatasource {
 
   PreciosReadDatasource(this.preciosDao);
 
+  Future<List<PrecioConDetallesModel>> getAll() async {
+    final precios = await preciosDao.getAll();
+    return convertToModelList(precios);
+  }
+
   Stream<List<PrecioConDetallesModel>> watchAllBySize({
     required int sizeId,
     required FiltrosPrecios filtros,

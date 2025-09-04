@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/app/inject/injector.dart';
@@ -7,6 +8,7 @@ import 'package:lavanderia/features/configuracion_empresa/presentation/views/vie
 import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_single_instance/flutter_single_instance.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,10 +16,25 @@ Future<void> main() async {
   await SharedPreferencesModule.init();
   await initializeDateFormatting('es_ES');
   await dotenv.load(fileName: ".env");
+  await windowManager.ensureInitialized();
+  final isFirstInstance = await FlutterSingleInstance().isFirstInstance();
+
+  if (isFirstInstance) {
+    runApp(const ProviderScope(child: MyApp()));
+  } else {
+    print("App is already running");
+
+    final err = await FlutterSingleInstance().focus();
+
+    if (err != null) {
+      print("Error focusing running instance: $err");
+    }
+
+    exit(0);
+  }
 
 
-
-  runApp(const ProviderScope(child: MyApp()));
+  // runApp(const ProviderScope(child: MyApp()));
 }
 
 // class MyApp extends StatelessWidget {

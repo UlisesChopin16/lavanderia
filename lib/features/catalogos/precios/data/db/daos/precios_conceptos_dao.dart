@@ -18,6 +18,14 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
 
   // Future<List<PreciosConceptosEntry>> getAll() => select(preciosConceptos).get();
 
+  Future<List<PrecioConDetallesEntry>> getAll() async {
+    final query = queryJoined();
+    query.where(preciosConceptos.estatus.equals(EstatusType.activo.value));
+
+    final data = await query.get();
+    return convertToDetalles(data);
+  }
+
   Stream<List<PrecioConDetallesEntry>> watchAllBySize({
     required int sizeId,
     required FiltrosPrecios filtros,
