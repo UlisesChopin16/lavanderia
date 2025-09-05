@@ -10,7 +10,7 @@ sealed class ItemConPrecioModel with _$ItemConPrecioModel {
     required int id,
     required int ordenId,
     required PrecioConDetallesModel precio,
-    required int cantidad,
+    required double cantidad,
     required double importe,
     required bool estaEntregado,
     required DateTime fechaEntrega,

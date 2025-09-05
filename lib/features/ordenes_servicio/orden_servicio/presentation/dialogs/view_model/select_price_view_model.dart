@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
@@ -20,6 +21,7 @@ sealed class SelectPriceModel with _$SelectPriceModel {
     @Default('') String errorMessage,
     @Default('') String successMessage,
     @Default([]) List<ItemConPrecioEntity> items,
+    @Default([]) List<ItemConPrecioEntity> filteredItems,
     @Default([]) List<CategoriaServicioEntity> categorias,
     @Default([]) List<SizesRopaEntity> sizesRopa,
     @Default(FiltrosPrecios()) FiltrosPrecios filtros,
@@ -37,7 +39,9 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
     return const SelectPriceModel();
   }
 
-  Future<void> init(List<ItemConPrecioEntity> itemsSelected) async {
+  Future<void> init(
+    List<ItemConPrecioEntity> itemsSelected,
+  ) async {
     await safeCall(
       actionBefore: () async => state = state.copyWith(
         errorMessage: '',
@@ -56,14 +60,24 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
         final items = precios.map(ItemConPrecioEntity.fromPrecio).toList();
         final filteredItems = filtrarItems(items: items, itemsSelected: itemsSelected);
 
+        // gridKey.currentState?.insertAllItems(
+        //   0,
+        //   filteredItems.length,
+        // );
+
         final categorias = await _obtainCategoriasCase.call();
         final sizesRopa = await _obtainSizesCase.call();
 
         state = state.copyWith(
           items: filteredItems,
+          filteredItems: filteredItems,
           categorias: categorias,
           sizesRopa: sizesRopa,
         );
+        // for (var i = 0; i < filteredItems.length; i++) {
+        //   gridKey.currentState?.insertItem(i);
+        //   await Future.delayed(const Duration(milliseconds: 50));
+        // }
       },
     );
   }
@@ -78,8 +92,10 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
     return items.where((item) => !idsSeleccionados.contains(item.precio.idPrecio)).toList();
   }
 
-  void setCantidad(int cantidad, int index) {
-    final item = state.items[index];
+  void setCantidad(int filteredIndex, double cantidad) {
+    final item = state.filteredItems[filteredIndex];
+    final index = state.items.indexWhere((i) => i.precio.idPrecio == item.precio.idPrecio);
+    if (index == -1) return;
     final importe = item.precio.importe * cantidad;
     final updatedItem = item.copyWith(
       cantidad: cantidad,
@@ -87,31 +103,77 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
     );
 
     final updatedItems = List<ItemConPrecioEntity>.from(state.items)..[index] = updatedItem;
+    final updatedFilteredItems = List<ItemConPrecioEntity>.from(state.filteredItems)
+      ..[filteredIndex] = updatedItem;
 
-    state = state.copyWith(items: updatedItems);
+    state = state.copyWith(items: updatedItems, filteredItems: updatedFilteredItems);
+    // gridKey.currentState?.insertItem(index);
   }
 
-  void setSelected(int index, bool isSelected) {
-    final item = state.items[index];
+  void setSelected(int filteredIndex, bool isSelected) {
+    final item = state.filteredItems[filteredIndex];
+    final index = state.items.indexWhere((i) => i.precio.idPrecio == item.precio.idPrecio);
+    if (index == -1) return;
+
     final updatedItem = item.copyWith(isSelected: isSelected);
     final updatedItems = List<ItemConPrecioEntity>.from(state.items)..[index] = updatedItem;
-    state = state.copyWith(items: updatedItems);
+    final updatedFilteredItems = List<ItemConPrecioEntity>.from(state.filteredItems)
+      ..[filteredIndex] = updatedItem;
+
+    state = state.copyWith(items: updatedItems, filteredItems: updatedFilteredItems);
   }
 
   void clearFilters() {
     state = state.copyWith(filtros: const FiltrosPrecios());
+    applyFilters();
   }
 
   void setCategoria(CategoriaServicioEntity categoria) {
-    state = state.copyWith(filtros: state.filtros.copyWith(categoria: categoria));
+    state = state.copyWith(
+      filtros: state.filtros.copyWith(
+        categoria: categoria,
+      ),
+    );
+    applyFilters();
   }
 
   void setSizeRopa(SizesRopaEntity sizeRopa) {
     state = state.copyWith(filtros: state.filtros.copyWith(sizeRopa: sizeRopa));
+    applyFilters();
   }
 
   void setSearchTerm(String searchTerm) {
     state = state.copyWith(filtros: state.filtros.copyWith(nombre: searchTerm));
+    applyFilters();
+  }
+
+  void applyFilters() async {
+    // Aquí aplicas los filtros al listado de items
+    List<ItemConPrecioEntity> filteredItems = List.from(state.items);
+
+    final filtros = state.filtros;
+
+    if (filtros.categoria.id != -1) {
+      filteredItems = filteredItems
+          .where((item) => item.precio.categoria.id == filtros.categoria.id)
+          .toList();
+    }
+
+    if (filtros.sizeRopa?.nombre.isNotEmpty == true) {
+      filteredItems = filteredItems
+          .where((item) => item.precio.size.id == filtros.sizeRopa?.id)
+          .toList();
+    }
+
+    if (filtros.nombre.isNotEmpty) {
+      filteredItems = filteredItems
+          .where(
+            (item) =>
+                item.precio.nombreConcepto.toLowerCase().contains(filtros.nombre.toLowerCase()),
+          )
+          .toList();
+    }
+    state = state.copyWith(filteredItems: filteredItems);
   }
 
   List<ItemConPrecioEntity> getSelectedItems() {

@@ -107,7 +107,6 @@ class PreciosViewModel extends _$PreciosViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Concepto creado con éxito',
       ),
       actionOnError: (error, message) async {
         state = state.copyWith(
@@ -128,8 +127,10 @@ class PreciosViewModel extends _$PreciosViewModel {
         }
 
         await _createCase.call(nuevoPrecio);
-
         onSuccess();
+        state = state.copyWith(
+          successMessage: 'Concepto creado con éxito',
+        );
       },
     );
   }
@@ -147,7 +148,6 @@ class PreciosViewModel extends _$PreciosViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Concepto actualizado con éxito',
       ),
       actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
@@ -167,6 +167,9 @@ class PreciosViewModel extends _$PreciosViewModel {
 
         await _updateCase.call(entity);
         onSuccess();
+          state = state.copyWith(
+            successMessage: 'Concepto actualizado con éxito',
+          );
       },
     );
   }

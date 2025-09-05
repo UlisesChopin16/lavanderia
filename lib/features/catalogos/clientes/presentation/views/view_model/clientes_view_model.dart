@@ -48,7 +48,7 @@ class ClientesViewModel extends _$ClientesViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Cliente registrado con éxito',
+        
       ),
       actionOnError: (error, message) async {
         state = state.copyWith(
@@ -70,8 +70,11 @@ class ClientesViewModel extends _$ClientesViewModel {
         }
 
         await _createCase.call(cliente);
-
+        
         onSuccess();
+        state = state.copyWith(
+          successMessage: 'Cliente registrado con éxito',
+        );
       },
     );
   }
@@ -89,7 +92,6 @@ class ClientesViewModel extends _$ClientesViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Cliente actualizado con éxito',
       ),
       actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
@@ -109,6 +111,9 @@ class ClientesViewModel extends _$ClientesViewModel {
 
         await _updateCase.call(entity);
         onSuccess();
+        state = state.copyWith(
+          successMessage: 'Cliente actualizado con éxito',
+        );
       },
     );
   }

@@ -18,6 +18,8 @@ sealed class ClienteEntity with _$ClienteEntity {
     DateTime? fechaEliminacion,
   }) = _ClienteEntity;
 
+  String get fullName => '$nombres $apellidos';
+
   String validate() {
     final errors = <String>[];
 

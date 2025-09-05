@@ -11,7 +11,7 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
     @Default(-1) int id,
     @Default(-1) int ordenId,
     @Default(PrecioConDetallesEntity()) PrecioConDetallesEntity precio,
-    @Default(0) int cantidad,
+    @Default(1.0) double cantidad,
     @Default(0.0) double importe,
     @Default(false) bool estaEntregado,
     @Default(false) bool isSelected,

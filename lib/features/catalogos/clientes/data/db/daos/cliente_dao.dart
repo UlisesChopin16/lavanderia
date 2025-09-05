@@ -105,9 +105,7 @@ class ClientesDao extends DatabaseAccessor<AppDatabase> with _$ClientesDaoMixin 
     // y el mismo tamaño
     query.where(
       (tbl) =>
-          tbl.nombres.lower().equals(row.nombres.value.toLowerCase()) &
-          tbl.apellidos.lower().equals(row.apellidos.value.toLowerCase()) &
-          tbl.correo.lower().equals(row.correo.value.toLowerCase()) &
+          tbl.correo.equals(row.correo.value) |
           tbl.telefono.lower().equals(row.telefono.value.toLowerCase()),
     );
 
@@ -126,10 +124,8 @@ class ClientesDao extends DatabaseAccessor<AppDatabase> with _$ClientesDaoMixin 
     // y el mismo tamaño
     query.where(
       (tbl) =>
-          tbl.nombres.lower().equals(row.nombres.toLowerCase()) &
-          tbl.apellidos.lower().equals(row.apellidos.toLowerCase()) &
-          tbl.correo.lower().equals(row.correo.toLowerCase()) &
-          tbl.telefono.lower().equals(row.telefono.toLowerCase()) &
+          (tbl.correo.lower().equals(row.correo.toLowerCase()) |
+              tbl.telefono.lower().equals(row.telefono.toLowerCase())) &
           tbl.id.isNotIn([row.id]),
     );
 

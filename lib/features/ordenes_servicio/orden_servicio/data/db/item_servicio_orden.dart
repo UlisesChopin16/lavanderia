@@ -7,7 +7,7 @@ class ItemServicioOrden extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get ordenId => integer().references(OrdenServicio, #id)();
   IntColumn get precioConceptoId => integer().references(PreciosConceptos, #id)();
-  IntColumn get cantidad => integer()();
+  RealColumn get cantidad => real()();
   RealColumn get importe => real()();
   BoolColumn get estaEntregado => boolean().withDefault(const Constant(false))();
   DateTimeColumn get fechaEntrega => dateTime()();

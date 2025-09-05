@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/app/theme/color_row_theme.dart';
-import 'package:lavanderia/core/extensions/date_time_ext.dart';
-import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
-
-import 'actions_row.dart';
+import 'item_cliente.dart';
 
 class SmallView extends ConsumerWidget {
   final List<ClienteEntity> rows;
@@ -22,35 +19,9 @@ class SmallView extends ConsumerWidget {
 
           return Card(
             color: color,
-            child: Stack(
-              // mainAxisSize: MainAxisSize.min,
-              // crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 15.0),
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(IconsManager.clotheIcon),
-                    ),
-                    trailing: ActionsRow(cliente: row, isSmall: true),
-                    title: Text('${row.nombres} ${row.apellidos}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Teléfono: ${row.telefono}',
-                        ),
-                        Text('Correo: ${row.correo}'),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 25,
-                  top: 8,
-                  child: Text(row.fechaCreacion.formatDate),
-                ),
-              ],
+            child: ItemCliente(
+              row: row,
+              showActions: true,
             ),
           );
         }),
