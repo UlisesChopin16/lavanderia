@@ -26,11 +26,12 @@ sealed class OrdenServicioModel with _$OrdenServicioModel {
     @Default('') String filtro,
     @Default(0.0) double adelanto,
   }) = _OrdenServicioModel;
-  
+
   double get total {
     if (selectedItems.isEmpty) return 0.0;
     return selectedItems.fold(0.0, (sum, item) => sum + item.importe);
   }
+
   double get restante {
     return total - (adelanto);
   }
@@ -114,6 +115,14 @@ class OrdenServicioView extends _$OrdenServicioView {
   void setSelectedItems(List<ItemConPrecioEntity> items) {
     final selectedItems = state.selectedItems;
     final allItems = [...items, ...selectedItems];
+
+    // ordenar por fecha de entrega
+    allItems.sort((a, b) {
+      final dateA = a.fechaEntrega ?? DateTime.now();
+      final dateB = b.fechaEntrega ?? DateTime.now();
+      return dateA.compareTo(dateB);
+    });
+
     state = state.copyWith(selectedItems: allItems);
   }
 
@@ -146,6 +155,10 @@ class OrdenServicioView extends _$OrdenServicioView {
   void setAdelanto(String value) {
     final adelanto = double.tryParse(value) ?? 0.0;
     state = state.copyWith(adelanto: adelanto);
+  }
+
+  void setIsLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
   }
 
   // void setSelectedItems(List<ItemConPrecioEntity> items) {
@@ -194,7 +207,7 @@ class OrdenServicioView extends _$OrdenServicioView {
   //   if (existingIndex != -1) {
   //     // Si existe, actualizamos los items de esa posición
   //     final existingDateItems = selectedItems[existingIndex];
-      
+
   //     final updatedExistingDateItems = existingDateItems.copyWith(
   //       date: date,
   //       items: [...existingDateItems.items, ...updatedItems],
@@ -203,7 +216,7 @@ class OrdenServicioView extends _$OrdenServicioView {
 
   //     // Removemos la posición actual para evitar duplicados
   //     selectedItems.removeAt(index);
-      
+
   //     state = state.copyWith(selectedItems: [...selectedItems]);
 
   //     return;
@@ -252,7 +265,7 @@ class OrdenServicioView extends _$OrdenServicioView {
   //   if (existingIndex != -1) {
   //     // Si existe, actualizamos los items de esa posición
   //     final existingDateItems = selectedItems[existingIndex];
-      
+
   //     final updatedExistingDateItems = existingDateItems.copyWith(
   //       items: [...existingDateItems.items, updatedItem],
   //     );
@@ -260,10 +273,9 @@ class OrdenServicioView extends _$OrdenServicioView {
 
   //     // Removemos el item de la posición actual
   //     items.removeAt(itemIndex);
-      
+
   //     selectedItems[dateIndex] = dateItems.copyWith(items: items);
-      
-      
+
   //     state = state.copyWith(selectedItems: [...selectedItems]);
   //     return;
   //   }
@@ -283,7 +295,6 @@ class OrdenServicioView extends _$OrdenServicioView {
   //     importe: importe,
   //   );
 
-    
   //   items[itemIndex] = updatedItem;
   //   selectedItems[dateIndex] = dateItems.copyWith(items: items);
 

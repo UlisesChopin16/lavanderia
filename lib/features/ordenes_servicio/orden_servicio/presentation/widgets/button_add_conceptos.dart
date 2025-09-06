@@ -31,13 +31,16 @@ class ButtonAddConceptos extends ConsumerWidget {
               ordenNotifier.setSelectedItems(result);
             }
           },
-          child: const Row(
-            spacing: 5,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.add),
-              Text('Agregar conceptos'),
-            ],
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              spacing: 5,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add),
+                Flexible(child: Text('Agregar conceptos')),
+              ],
+            ),
           ),
         ),
       ),

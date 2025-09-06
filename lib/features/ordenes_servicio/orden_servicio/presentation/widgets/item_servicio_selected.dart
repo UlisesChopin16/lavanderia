@@ -17,6 +17,12 @@ class ItemServicioSelected extends ConsumerWidget {
     required this.index,
   });
 
+  static const double sizeIcon = 16.0;
+  static const double textSize = 12.0;
+  static const crossAxis = CrossAxisAlignment.center;
+  static const minSize = MainAxisSize.min;
+  static const mainAlignment = MainAxisAlignment.start;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.of(context).size.width;
@@ -38,20 +44,79 @@ class ItemServicioSelected extends ConsumerWidget {
               child: Icon(IconsManager.clotheIcon),
             ),
             title: Text(item.precio.nombreConcepto),
-            subtitle: Column(
+            subtitle: Wrap(
+              spacing: 15,
+              runSpacing: 10,
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runAlignment: WrapAlignment.start,
               children: [
-                Row(
-                  spacing: 10,
+                Column(
+                  spacing: 5,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(IconsManager.selectedSizesIcon),
-                    Flexible(child: Text(item.precio.size.nombre)),
+                    Row(
+                      spacing: 10,
+                      crossAxisAlignment: crossAxis,
+                      mainAxisSize: minSize,
+                      children: [
+                        const Icon(IconsManager.selectedSizesIcon, size: sizeIcon),
+                        Flexible(
+                          child: Text(
+                            item.precio.size.nombre,
+                            style: const TextStyle(fontSize: textSize),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      crossAxisAlignment: crossAxis,
+                      mainAxisSize: minSize,
+                      children: [
+                        const Icon(IconsManager.selectedCategoriasIcon, size: sizeIcon),
+                        Flexible(
+                          child: Text(
+                            item.precio.categoria.nombre,
+                            style: const TextStyle(fontSize: textSize),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                Row(
-                  spacing: 10,
+                Column(
+                  spacing: 5,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(IconsManager.selectedCategoriasIcon),
-                    Flexible(child: Text(item.precio.categoria.nombre)),
+                    Row(
+                      spacing: 10,
+                      crossAxisAlignment: crossAxis,
+                      mainAxisSize: minSize,
+                      children: [
+                        const Icon(IconsManager.selectedPreciosIcon, size: sizeIcon),
+                        Flexible(
+                          child: Text(
+                            item.precio.importe.toStringAsFixed(2),
+                            style: const TextStyle(fontSize: textSize),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      crossAxisAlignment: crossAxis,
+                      mainAxisSize: minSize,
+                      children: [
+                        const Icon(Icons.event, size: sizeIcon),
+                        Flexible(
+                          child: Text(
+                            item.precio.daysText,
+                            style: const TextStyle(fontSize: textSize),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],

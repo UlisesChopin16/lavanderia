@@ -42,6 +42,8 @@ sealed class PrecioConDetallesEntity with _$PrecioConDetallesEntity {
   bool get hasDays => diasEntrega != 0 && diasEntrega > 0;
   bool get isActive => estatus == EstatusType.activo;
 
+  String get daysText => diasEntrega == 1 ? '$diasEntrega día' : '$diasEntrega días';
+
   String validate() {
     final errors = <String>[];
 

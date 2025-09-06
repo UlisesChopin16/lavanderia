@@ -16,6 +16,10 @@ class ItemServicioList extends ConsumerWidget {
   final ItemConPrecioEntity item;
   final int index;
 
+  static const double sizeIcon = 16.0;
+  static const double textSize = 12.0;
+  static const crossAxis = CrossAxisAlignment.center;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final backgroundColor = Theme.of(context).colorScheme.surfaceContainerHighest;
@@ -60,28 +64,48 @@ class ItemServicioList extends ConsumerWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  spacing: 10,
+                  spacing: 5,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Row(
                       spacing: 10,
+                      crossAxisAlignment: crossAxis,
                       children: [
-                        const Icon(IconsManager.selectedSizesIcon),
-                        Text(item.precio.size.nombre),
+                        const Icon(IconsManager.selectedSizesIcon, size: sizeIcon),
+                        Text(item.precio.size.nombre, style: const TextStyle(fontSize: textSize)),
                       ],
                     ),
                     Row(
                       spacing: 10,
+                      crossAxisAlignment: crossAxis,
                       children: [
-                        const Icon(IconsManager.selectedCategoriasIcon),
-                        Text(item.precio.categoria.nombre),
+                        const Icon(IconsManager.selectedCategoriasIcon, size: sizeIcon),
+                        Text(
+                          item.precio.categoria.nombre,
+                          style: const TextStyle(fontSize: textSize),
+                        ),
                       ],
                     ),
                     Row(
                       spacing: 10,
+                      crossAxisAlignment: crossAxis,
                       children: [
-                        const Icon(IconsManager.selectedPreciosIcon),
-                        Text(item.importe.toStringAsFixed(2)),
+                        const Icon(IconsManager.selectedPreciosIcon, size: sizeIcon),
+                        Text(
+                          item.importe.toStringAsFixed(2),
+                          style: const TextStyle(fontSize: textSize),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      crossAxisAlignment: crossAxis,
+                      children: [
+                        const Icon(Icons.event, size: sizeIcon),
+                        Text(
+                          item.precio.daysText,
+                          style: const TextStyle(fontSize: textSize),
+                        ),
                       ],
                     ),
                   ],

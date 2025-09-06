@@ -6,9 +6,7 @@ class BlockProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withValues(
-        alpha: 128,
-      ),
+      color: Colors.black.withOpacity(0.5),
       child: Center(
         child: CircularProgressIndicator(
           color: Theme.of(context).colorScheme.primary,
