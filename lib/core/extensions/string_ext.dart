@@ -13,6 +13,11 @@ extension StringExtensions on String {
     );
     return regex.hasMatch(this);
   }
+
+  bool get isOnlyNumbers {
+    final regex = RegExp(r'^[0-9]+$');
+    return regex.hasMatch(this);
+  }
 }
 
 extension StringNullExtensions on String? {
@@ -34,6 +39,13 @@ extension StringNullExtensions on String? {
     final regex = RegExp(
       r'^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$',
     );
+    return regex.hasMatch(this!);
+  }
+  
+  bool get isOnlyNumbers {
+    if (this == null) return false;
+
+    final regex = RegExp(r'^[0-9]+$');
     return regex.hasMatch(this!);
   }
 }

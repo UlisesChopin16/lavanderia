@@ -7,10 +7,17 @@ import 'actions_row.dart';
 class ItemCliente extends StatelessWidget {
   final ClienteEntity row;
   final bool showActions;
-  const ItemCliente({super.key, required this.row, this.showActions = true});
+  final Widget? action;
+  const ItemCliente({
+    super.key,
+    required this.row,
+    this.showActions = true,
+    this.action,
+  });
 
   Widget? get actions {
     if (!showActions) return null;
+    if (action != null) return action;
     return ActionsRow(cliente: row, isSmall: true);
   }
 
@@ -25,7 +32,7 @@ class ItemCliente extends StatelessWidget {
               child: Icon(Icons.person),
             ),
             trailing: actions,
-            title: Text('${row.nombres} ${row.apellidos}'),
+            title: Text(row.fullName),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

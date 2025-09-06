@@ -34,7 +34,7 @@ class _EditClienteDialogState extends ConsumerState<EditClienteDialog> {
           icon: const Icon(Icons.person),
           onActionPressed: validateFields,
           content: SizedBox(
-            width: 500,
+            width: 350,
             child: SingleChildScrollView(
               child: RowFieldsCliente(
                 cliente: cliente,

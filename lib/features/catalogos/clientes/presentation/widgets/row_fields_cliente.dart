@@ -16,62 +16,43 @@ class RowFieldsCliente extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
         spacing: 20,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Wrap(
-            spacing: 20,
-            runSpacing: 10,
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runAlignment: WrapAlignment.center,
-            children: [
-              NombresCliente(
-                nombres: cliente.nombres,
-                onNombresChanged: (value) {
-                  onChangeCliente(
-                    cliente.copyWith(nombres: value),
-                  );
-                },
-              ),
-              ApellidosCliente(
-                apellidos: cliente.apellidos,
-                onApellidosChanged: (value) {
-                  onChangeCliente(
-                    cliente.copyWith(apellidos: value),
-                  );
-                },
-              ),
-            ],
+          NombresCliente(
+            nombres: cliente.nombres,
+            onNombresChanged: (value) {
+              onChangeCliente(
+                cliente.copyWith(nombres: value),
+              );
+            },
           ),
-          Wrap(
-            spacing: 20,
-            runSpacing: 10,
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runAlignment: WrapAlignment.center,
-            children: [
-                TelefonoCliente(
-                  telefono: cliente.telefono,
-                  onTelefonoChanged: (value) {
-                    onChangeCliente(
-                      cliente.copyWith(telefono: value),
-                    );
-                  },
-                ),
-                CorreoCliente(
-                  correo: cliente.correo,
-                  onCorreoChanged: (value) {
-                    onChangeCliente(
-                      cliente.copyWith(correo: value),
-                    );
-                  },
-                ),
-            ],
+          ApellidosCliente(
+            apellidos: cliente.apellidos,
+            onApellidosChanged: (value) {
+              onChangeCliente(
+                cliente.copyWith(apellidos: value),
+              );
+            },
+          ),
+          TelefonoCliente(
+            telefono: cliente.telefono,
+            onTelefonoChanged: (value) {
+              onChangeCliente(
+                cliente.copyWith(telefono: value),
+              );
+            },
+          ),
+          CorreoCliente(
+            correo: cliente.correo,
+            onCorreoChanged: (value) {
+              onChangeCliente(
+                cliente.copyWith(correo: value),
+              );
+            },
           ),
         ],
       ),

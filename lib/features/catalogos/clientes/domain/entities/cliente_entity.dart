@@ -18,6 +18,11 @@ sealed class ClienteEntity with _$ClienteEntity {
     DateTime? fechaEliminacion,
   }) = _ClienteEntity;
 
+  String get firstName {
+    if (nombres.trim().isEmpty) return '';
+    return nombres.trim().split(' ').first;
+  }
+  
   String get fullName => '$nombres $apellidos';
 
   String validate() {

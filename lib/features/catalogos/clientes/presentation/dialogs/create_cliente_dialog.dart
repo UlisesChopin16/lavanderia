@@ -10,14 +10,15 @@ import 'package:lavanderia/shared/widgets/block_progress.dart';
 import '../widgets/row_fields_cliente.dart';
 
 class CreateClienteDialog extends ConsumerStatefulWidget {
-  const CreateClienteDialog({super.key});
+  final ClienteEntity? cliente;
+  const CreateClienteDialog({super.key, this.cliente});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CreateClienteDialogState();
 }
 
 class _CreateClienteDialogState extends ConsumerState<CreateClienteDialog> {
-  late ClienteEntity cliente = const ClienteEntity();
+  late ClienteEntity cliente = widget.cliente ?? const ClienteEntity();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class _CreateClienteDialogState extends ConsumerState<CreateClienteDialog> {
           icon: const Icon(Icons.person_add),
           onActionPressed: validateFields,
           content: SizedBox(
-            width: 500,
+            width: 350,
             child: SingleChildScrollView(
               child: RowFieldsCliente(
                 cliente: cliente,

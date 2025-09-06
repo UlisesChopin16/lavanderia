@@ -11,7 +11,14 @@ part 'cliente_dao.g.dart';
 class ClientesDao extends DatabaseAccessor<AppDatabase> with _$ClientesDaoMixin {
   ClientesDao(super.db);
 
-  Future<List<ClienteEntry>> getAll() async => await select(cliente).get();
+  Future<List<ClienteEntry>> getAll() async {
+    final query = select(cliente);
+    query.orderBy([(tbl) => OrderingTerm(expression: tbl.nombres, mode: OrderingMode.asc)]);
+
+    final clientes = await query.get();
+
+    return clientes;
+  }
 
   Stream<List<ClienteEntry>> watchAll(FiltrosClientes filtros) {
     final query = select(cliente);

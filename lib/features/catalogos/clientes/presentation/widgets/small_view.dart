@@ -21,7 +21,6 @@ class SmallView extends ConsumerWidget {
             color: color,
             child: ItemCliente(
               row: row,
-              showActions: true,
             ),
           );
         }),

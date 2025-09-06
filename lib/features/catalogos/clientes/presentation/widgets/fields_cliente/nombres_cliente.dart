@@ -11,7 +11,7 @@ class NombresCliente extends StatelessWidget {
     required this.nombres,
   });
 
-  static const width = 200.0;
+  static const width = 300.0;
 
   @override
   Widget build(BuildContext context) {

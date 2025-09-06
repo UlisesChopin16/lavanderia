@@ -12,7 +12,7 @@ class TelefonoCliente extends StatelessWidget {
     required this.telefono,
   });
 
-  static const width = 200.0;
+  static const width = 250.0;
 
   @override
   Widget build(BuildContext context) {

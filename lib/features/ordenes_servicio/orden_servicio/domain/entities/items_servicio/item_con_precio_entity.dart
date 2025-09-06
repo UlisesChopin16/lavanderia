@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 
 part 'item_con_precio_entity.freezed.dart';
@@ -22,9 +23,13 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
   }) = _ItemConPrecioEntity;
 
   factory ItemConPrecioEntity.fromPrecio(PrecioConDetallesEntity precio) {
-    final fechaEntrega = DateTime.now();
+    DateTime fechaEntrega = DateTime.now();
 
-    if(precio.diasEntrega > 1) fechaEntrega.add(Duration(days: precio.diasEntrega));
+    if(precio.diasEntrega > 1) {
+      Printer.i('Dias de Entrega: ${precio.diasEntrega}');
+      fechaEntrega = fechaEntrega.add(Duration(days: precio.diasEntrega));
+    }
+    Printer.i('Fecha Entrega: $fechaEntrega');
     
     return ItemConPrecioEntity(
       precio: precio,

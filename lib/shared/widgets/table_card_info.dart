@@ -122,11 +122,16 @@ class _TableCardInfoState extends ConsumerState<TableCardInfo> {
           scrollDirection: Axis.horizontal,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 12.0),
-            child: DataTable(
-              sortColumnIndex: sortColumnIndex,
-              sortAscending: sortAscending,
-              columns: columns,
-              rows: rows,
+            child: GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                scrollController.jumpTo(scrollController.offset - details.delta.dx);
+              },
+              child: DataTable(
+                sortColumnIndex: sortColumnIndex,
+                sortAscending: sortAscending,
+                columns: columns,
+                rows: rows,
+              ),
             ),
           ),
         ),
