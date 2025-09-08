@@ -83,7 +83,6 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       ),
     );
 
-
     final child = StreamBuilder(
       stream: preciosNotifier.observePrecios(),
       builder: (context, asyncSnapshot) {
@@ -193,12 +192,12 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       return;
     }
 
-    if (sizes.isEmpty) {
-      context.showErrorDialog(
-        'No hay tamaños de ropa disponibles. Por favor, agrega un tamaño primero.',
-      );
-      return;
-    }
+    // if (sizes.isEmpty) {
+    //   context.showErrorDialog(
+    //     'No hay tamaños de ropa disponibles. Por favor, agrega un tamaño primero.',
+    //   );
+    //   return;
+    // }
 
     await showCreateDialog();
   }

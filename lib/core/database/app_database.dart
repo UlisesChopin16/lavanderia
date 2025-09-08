@@ -22,6 +22,7 @@ part 'app_database.g.dart';
     SizesRopa,
     CategoriaServicio,
     PreciosConceptos,
+    OrdenHistory,
   ],
   daos: [
     ClientesDao,
@@ -32,6 +33,7 @@ part 'app_database.g.dart';
     SizesRopaDao,
     CategoriaServicioDao,
     PreciosConceptosDao,
+    OrdenHistoryDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

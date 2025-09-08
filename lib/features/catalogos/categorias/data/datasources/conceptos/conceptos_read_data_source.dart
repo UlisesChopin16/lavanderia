@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:lavanderia/core/database/daos/daos.dart';
 import 'package:lavanderia/features/catalogos/categorias/data/models/categoria_servicio_model.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/entities/filtros/filtros_categoria.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/extensions/categoria_servicio_ext.dart';
-import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 
 @lazySingleton
 class CategoriaServicioReadDataSource {
@@ -20,7 +20,7 @@ class CategoriaServicioReadDataSource {
     return categoria?.toModel();
   }
 
-  Stream<List<CategoriaServicioModel>> watchAllCategorias(FiltrosBase filtros) {
+  Stream<List<CategoriaServicioModel>> watchAllCategorias(FiltrosCategoria filtros) {
     final categoriasStream = categoriaDao.watchAll(filtros);
     return categoriasStream.map((categorias) => categorias.map((e) => e.toModel()).toList());
   }

@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
-import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/entities/filtros/filtros_categoria.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/usecases/change_precios_status_by_categoria.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,7 +18,7 @@ sealed class CategoriaModel with _$CategoriaModel {
     @Default(false) bool isLoading,
     @Default('') String errorMessage,
     @Default('') String successMessage,
-    @Default(FiltrosBase()) FiltrosBase filtros,
+    @Default(FiltrosCategoria()) FiltrosCategoria filtros,
   }) = _CategoriaModel;
 }
 
@@ -36,7 +37,11 @@ class CategoriaViewModel extends _$CategoriaViewModel {
     return const CategoriaModel();
   }
 
-  void createCategoria(String nombre) {
+  void createCategoria({
+    required CategoriaServicioEntity categoria,
+    required VoidCallback onSuccess,
+    required Future<bool?> Function() onConfirm,
+  }) {
     safeCall(
       actionBefore: () async => state = state.copyWith(
         isLoading: true,
@@ -45,20 +50,36 @@ class CategoriaViewModel extends _$CategoriaViewModel {
       ),
       actionAfter: () async => state = state.copyWith(
         isLoading: false,
-        successMessage: 'Categoría creada con éxito',
       ),
       actionOnError: (error, message) async => state = state.copyWith(
         errorMessage: message,
         isLoading: false,
       ),
       action: () async {
-        final entity = CategoriaServicioEntity(nombre: nombre);
-        await _createCase.call(entity);
+        categoria.validate();
+
+        final confirm = await onConfirm();
+        if (confirm != true) {
+          state = state.copyWith(isLoading: false);
+          return;
+        }
+
+        await _createCase.call(categoria);
+        onSuccess();
+        state = state.copyWith(
+          successMessage: 'Categoría creada con éxito',
+        );
       },
     );
   }
 
-  void updateCategoria(CategoriaServicioEntity entity) {
+  void updateCategoria({
+    required CategoriaServicioEntity categoriaBefore,
+    required CategoriaServicioEntity categoria,
+    required VoidCallback onSuccess,
+    required Future<bool?> Function() onConfirm,
+    required Future<bool?> Function() onConfirmUpdatePrecios,
+  }) {
     safeCall(
       actionBefore: () async => state = state.copyWith(
         isLoading: true,
@@ -74,7 +95,26 @@ class CategoriaViewModel extends _$CategoriaViewModel {
         isLoading: false,
       ),
       action: () async {
-        await _updateCase.call(entity);
+        categoria.validate();
+
+        final confirm = await onConfirm();
+        if (confirm != true) {
+          state = state.copyWith(isLoading: false);
+          return;
+        }
+
+        if (categoriaBefore.diasEntrega != categoria.diasEntrega) {
+          final confirmUpdatePrecios = await onConfirmUpdatePrecios();
+          if (confirmUpdatePrecios == true) {
+            await _changeEstatusPrecio.changeDiasPrecios(categoria);
+          }
+        }
+
+        await _updateCase.call(categoria);
+        onSuccess();
+        state = state.copyWith(
+          successMessage: 'Categoría actualizada con éxito',
+        );
       },
     );
   }
@@ -137,18 +177,18 @@ class CategoriaViewModel extends _$CategoriaViewModel {
   }
 
   void clearFilters() {
-    state = state.copyWith(filtros: const FiltrosBase());
+    state = state.copyWith(filtros: const FiltrosCategoria());
   }
 
   void setSort(bool sort) {
     state = state.copyWith(filtros: state.filtros.copyWith(ascendente: sort));
   }
 
-  void setOrden(ColumnNamesType orden) {
+  void setOrden(ColumnsCategoriaType orden) {
     state = state.copyWith(filtros: state.filtros.copyWith(ordenamiento: orden));
   }
 
-  void setOrdenAndSort(ColumnNamesType orden, bool sort) {
+  void setOrdenAndSort(ColumnsCategoriaType orden, bool sort) {
     state = state.copyWith(
       filtros: state.filtros.copyWith(
         ordenamiento: orden,

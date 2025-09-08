@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/error/s_q_l_exception.dart';
 import 'package:lavanderia/features/catalogos/categorias/data/db/categoria_servicio.dart';
-import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/entities/filtros/filtros_categoria.dart';
 
 import '../../../../../../core/database/app_database.dart';
 
@@ -17,7 +17,7 @@ class CategoriaServicioDao extends DatabaseAccessor<AppDatabase> with _$Categori
     return await query.get();
   }
 
-  Stream<List<CategoriaServicioEntry>> watchAll(FiltrosBase filtros) {
+  Stream<List<CategoriaServicioEntry>> watchAll(FiltrosCategoria filtros) {
     final query = select(categoriaServicio);
 
     if (filtros.estatus != EstatusType.todos) {
@@ -42,27 +42,27 @@ class CategoriaServicioDao extends DatabaseAccessor<AppDatabase> with _$Categori
 
     query.orderBy([
       // if (filtros.estatus == EstatusType.todos && filtros.ordenamiento == null) ...orderAll,
-      if (filtros.ordenamiento == ColumnNamesType.id)
+      if (filtros.ordenamiento == ColumnsCategoriaType.id)
         (tbl) => OrderingTerm(
           expression: tbl.id,
           mode: mode,
         ),
-      if (filtros.ordenamiento == ColumnNamesType.nombre)
+      if (filtros.ordenamiento == ColumnsCategoriaType.nombre)
         (tbl) => OrderingTerm(
           expression: tbl.nombre,
           mode: mode,
         ),
-      if (filtros.ordenamiento == ColumnNamesType.estatus)
+      if (filtros.ordenamiento == ColumnsCategoriaType.estatus)
         (tbl) => OrderingTerm(
           expression: tbl.estatus,
           mode: mode,
         ),
-      if (filtros.ordenamiento == ColumnNamesType.fechaCreacion)
+      if (filtros.ordenamiento == ColumnsCategoriaType.fechaCreacion)
         (tbl) => OrderingTerm(
           expression: tbl.fechaCreacion,
           mode: mode,
         ),
-      if (filtros.ordenamiento == ColumnNamesType.fechaEliminacion)
+      if (filtros.ordenamiento == ColumnsCategoriaType.fechaEliminacion)
         (tbl) => OrderingTerm(
           expression: tbl.fechaEliminacion,
           mode: mode,

@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:lavanderia/features/catalogos/categorias/data/datasources/categoria_servicio_read_data_source.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
+import 'package:lavanderia/features/catalogos/categorias/domain/entities/filtros/filtros_categoria.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/extensions/categoria_servicio_ext.dart';
-import 'package:lavanderia/features/catalogos/entities/filtros_base.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/repositories/categoria_servicio_read_repository.dart';
 
 @LazySingleton(as: CategoriaServicioReadRepository)
@@ -24,11 +24,11 @@ class CategoriaServicioReadRepositoryImpl implements CategoriaServicioReadReposi
   }
 
   @override
-  Stream<List<CategoriaServicioEntity>> watchAllCategoriasServicios(FiltrosBase filtros) {
+  Stream<List<CategoriaServicioEntity>> watchAllCategoriasServicios(FiltrosCategoria filtros) {
     final stream = dataSource.watchAllCategorias(filtros);
     final mappedStream = stream.map(
-          (categorias) => categorias.map((e) => e.toEntity()).toList(),
-        );
+      (categorias) => categorias.map((e) => e.toEntity()).toList(),
+    );
     return mappedStream;
   }
 }

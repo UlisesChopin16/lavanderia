@@ -32,6 +32,8 @@ abstract class DatabaseModule {
   DireccionDao direccionDao(AppDatabase db) => db.direccionDao;
   @lazySingleton
   OrdenServicioDao ordenServicioDao(AppDatabase db) => db.ordenServicioDao;
+  @lazySingleton
+  OrdenHistoryDao ordenHistoryDao(AppDatabase db) => db.ordenHistoryDao;
 }
 
 class SharedPreferencesModule {

@@ -10,6 +10,7 @@ sealed class CategoriaServicioModel with _$CategoriaServicioModel {
     required String nombre,
     required String estatus,
     required DateTime fechaCreacion,
+    @Default(1) int diasEntrega,
     DateTime? fechaActualizacion,
     DateTime? fechaEliminacion,
   }) = _CategoriaServicioModel;

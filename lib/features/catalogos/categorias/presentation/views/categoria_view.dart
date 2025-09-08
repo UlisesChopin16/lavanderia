@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
-import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
-import 'package:lavanderia/features/catalogos/presentation/types/column_names_type.dart';
-import 'package:lavanderia/features/catalogos/presentation/widgets/filtro_orden.dart';
+import 'package:lavanderia/features/catalogos/categorias/presentation/dialogs/create_categoria.dart';
+import 'package:lavanderia/features/catalogos/categorias/presentation/types/columns_categoria_type.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
@@ -23,7 +22,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
   int index = 0;
 
   final listEstatus = EstatusType.values;
-  final listOrden = ColumnNamesType.values;
+  final listOrden = ColumnsCategoriaType.values;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +105,7 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
                           DataCell(Text(categoria.id.toString())),
                           DataCell(Text(categoria.nombre)),
                           DataCell(Text(categoria.estatus.value)),
+                          DataCell(Text(categoria.diasEntrega.toString())),
                           DataCell(Text(categoria.fechaCreacion.formatFullDate)),
                           DataCell(Text(categoria.fechaEliminacion.formatFullDate)),
                           DataCell(ActionsRow(categoria: categoria)),
@@ -124,33 +124,14 @@ class _CategoriaViewState extends ConsumerState<CategoriaView> {
   }
 
   void onAddCategoria() async {
-    final categoriaNotifier = ref.read(categoriaViewModelProvider.notifier);
-    // Acción al presionar el botón de agregar categoría
-    final nombre = await showNombreDialog();
-
-    if (nombre == null) return;
-    if (!mounted) return;
-
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de agregar la categoría "$nombre"?',
-    );
-
-    if (confirm == true) {
-      categoriaNotifier.createCategoria(nombre);
-    }
+    await showNombreDialog();
   }
 
   Future<String?> showNombreDialog() {
-    const title = 'Nueva categoría de ropa';
     return showDialog<String?>(
       context: context,
       builder: (context) {
-        return const NombreDialog(
-          title: title,
-          nombre: '',
-          label: 'Nombre de la categoría',
-          hintText: 'Ej: Lavandería, Planchado, Tintorería',
-        );
+        return const CreateCategoria();
       },
     );
   }

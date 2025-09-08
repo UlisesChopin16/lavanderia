@@ -229,6 +229,21 @@ class PreciosConceptosDao extends DatabaseAccessor<AppDatabase> with _$PreciosCo
     }
   }
 
+  Future<void> changeDiasPreciosByCategoria(CategoriaServicioEntry categoria) async {
+    final query = select(preciosConceptos);
+    query.where((tbl) => tbl.categoriaId.equals(categoria.id));
+    final rows = await query.get();
+
+    final now = DateTime.now();
+    for (var row in rows) {
+      final updated = row.copyWith(
+        diasEntrega: categoria.diasEntrega,
+        fechaActualizacion: Value(now),
+      );
+      await update(preciosConceptos).replace(updated);
+    }
+  }
+
   Future<void> deactivatePreciosBySize(int sizeId) async {
     final query = select(preciosConceptos);
     query.where((tbl) => tbl.sizeRopaId.equals(sizeId) & tbl.fechaEliminacion.isNull());

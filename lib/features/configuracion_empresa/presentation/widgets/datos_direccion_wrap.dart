@@ -99,7 +99,7 @@ class DatosDireccionWrap extends ConsumerWidget {
             LengthLimitingTextInputFormatter(5),
           ],
           onChanged: (value) => configuracionNotifier.setDireccion(
-            direccion.copyWith(codigoPostal: int.parse(value)),
+            direccion.copyWith(codigoPostal: int.tryParse(value) ?? 0),
           ),
         ),
       ],

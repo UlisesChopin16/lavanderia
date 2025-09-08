@@ -11,7 +11,7 @@ class OrdenServicio extends Table {
   TextColumn get metodoPago => text()();             // "Efectivo", "Tarjeta", "Transferencia"
   RealColumn get adelantoPago => real().nullable()();
   RealColumn get total => real()();
+  RealColumn get restante => real()();
+  DateTimeColumn get fechaCierre => dateTime()();
   DateTimeColumn get fechaCreacion => dateTime()();
-  DateTimeColumn get fechaActualizacion => dateTime().nullable()();
-  DateTimeColumn get fechaEliminacion => dateTime().nullable()();
 }

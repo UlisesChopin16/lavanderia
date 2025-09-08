@@ -36,32 +36,32 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
   }
 
   void initialize() => safeCall(
-        actionBefore: () async => state = state.copyWith(
-          isLoading: true,
-          errorMessage: '',
-        ),
-        actionAfter: () async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: '',
-        ),
-        actionOnError: (error, message) async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: message,
-        ),
-        action: () async {
-          final result = await _configuracionEmpresaRepo.getConfiguracionEmpresaById(1);
-          // result == null ? state = state.copyWith(isFirstTime: true) : state = state.copyWith(isFirstTime: false, configuracionEmpresa: result);
-          if (result == null) {
-            state = state.copyWith(isFirstTime: true);
-          } else {
-            state = state.copyWith(
-              isFirstTime: false,
-              blockUI: true,
-              configuracionEmpresa: result,
-            );
-          }
-        },
-      );
+    actionBefore: () async => state = state.copyWith(
+      isLoading: true,
+      errorMessage: '',
+    ),
+    actionAfter: () async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: '',
+    ),
+    actionOnError: (error, message) async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: message,
+    ),
+    action: () async {
+      final result = await _configuracionEmpresaRepo.getConfiguracionEmpresaById(1);
+      // result == null ? state = state.copyWith(isFirstTime: true) : state = state.copyWith(isFirstTime: false, configuracionEmpresa: result);
+      if (result == null) {
+        state = state.copyWith(isFirstTime: true);
+      } else {
+        state = state.copyWith(
+          isFirstTime: false,
+          blockUI: true,
+          configuracionEmpresa: result,
+        );
+      }
+    },
+  );
 
   void setNombre(String nombre) {
     state = state.copyWith(
@@ -106,42 +106,42 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
   }
 
   void setLogo() async => await safeCall(
-        actionBefore: () async => state = state.copyWith(
-          isLoading: true,
-          errorMessage: '',
-        ),
-        actionAfter: () async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: '',
-        ),
-        actionOnError: (error, message) async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: message,
-        ),
-        action: () async {
-          // Obtain only images files for the logo
-          FilePickerResult? result = await FilePicker.platform.pickFiles(
-            allowMultiple: false,
-            type: FileType.custom,
-            allowedExtensions: ['jpg', 'jpeg', 'png'],
-          );
-          if (result != null && result.files.isNotEmpty) {
-            final file = result.files.first;
-            final fileBytes = await file.xFile.readAsBytes();
-            final path = await FilesSystem.writeFile(
-              bytes: fileBytes,
-              extension: file.extension!,
-              pathBefore: state.configuracionEmpresa.logo,
-            );
-
-            state = state.copyWith(
-              configuracionEmpresa: state.configuracionEmpresa.copyWith(
-                logo: path,
-              ),
-            );
-          }
-        },
+    actionBefore: () async => state = state.copyWith(
+      isLoading: true,
+      errorMessage: '',
+    ),
+    actionAfter: () async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: '',
+    ),
+    actionOnError: (error, message) async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: message,
+    ),
+    action: () async {
+      // Obtain only images files for the logo
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png'],
       );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        final fileBytes = await file.xFile.readAsBytes();
+        final path = await FilesSystem.writeFile(
+          bytes: fileBytes,
+          extension: file.extension!,
+          pathBefore: state.configuracionEmpresa.logo,
+        );
+
+        state = state.copyWith(
+          configuracionEmpresa: state.configuracionEmpresa.copyWith(
+            logo: path,
+          ),
+        );
+      }
+    },
+  );
 
   void setPassword(String password) {
     state = state.copyWith(
@@ -177,9 +177,9 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
     if (entity.password.trim().isEmpty) {
       return 'La contraseña es obligatoria';
     }
-    if (entity.logo.trim().isEmpty) {
-      return 'El logo es obligatorio';
-    }
+    // if (entity.logo.trim().isEmpty) {
+    //   return 'El logo es obligatorio';
+    // }
     final direccion = entity.direccion;
     if (direccion.calle.trim().isEmpty) {
       return 'La calle es obligatoria';
@@ -204,51 +204,51 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
 
   void saveConfiguracionEmpresa({
     VoidCallback? onSuccess,
-  }) async =>
-      await safeCall(
-        actionBefore: () async => state = state.copyWith(
-          isLoading: true,
-          errorMessage: '',
-        ),
-        actionAfter: () async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: '',
-        ),
-        actionOnError: (error, message) async => state = state.copyWith(
-          isLoading: false,
-          errorMessage: message,
-        ),
-        action: () async {
-          final isFirstTime = state.isFirstTime;
-          final message = validateAll();
-          if (message.isNotEmpty) {
-            state = state.copyWith(errorMessage: message);
-            return;
-          }
+  }) async => await safeCall(
+    actionBefore: () async => state = state.copyWith(
+      isLoading: true,
+      errorMessage: '',
+    ),
+    actionAfter: () async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: '',
+    ),
+    actionOnError: (error, message) async => state = state.copyWith(
+      isLoading: false,
+      errorMessage: message,
+    ),
+    action: () async {
+      final isFirstTime = state.isFirstTime;
+      final message = validateAll();
+      if (message.isNotEmpty) {
+        state = state.copyWith(errorMessage: message);
+        return;
+      }
 
-          // Save the configuration
-          if (isFirstTime) {
-            // Call the save method for the first time
-            await _configuracionEmpresaRepo.createConfiguracionEmpresa(state.configuracionEmpresa);
-          } else {
-            // Call the edit method for subsequent saves
-            await _configuracionEmpresaRepo.updateConfiguracionEmpresa(state.configuracionEmpresa);
-          }
+      // Save the configuration
+      if (isFirstTime) {
+        // Call the save method for the first time
+        await _configuracionEmpresaRepo.createConfiguracionEmpresa(state.configuracionEmpresa);
+        state = state.copyWith(visiblePassword: false, isFirstTime: false);
+      } else {
+        // Call the edit method for subsequent saves
+        await _configuracionEmpresaRepo.updateConfiguracionEmpresa(state.configuracionEmpresa);
+      }
 
-          onSuccess?.call();
+      onSuccess?.call();
 
-          // final result = await _configuracionEmpresaRepo.saveConfiguracionEmpresa(state.configuracionEmpresa);
-          // result.fold(
-          //   (failure) => throw Exception(failure.message),
-          //   (data) {
-          //     state = state.copyWith(
-          //       isFirstTime: false,
-          //       configuracionEmpresa: data,
-          //     );
-          //   },
-          // );
-        },
-      );
+      // final result = await _configuracionEmpresaRepo.saveConfiguracionEmpresa(state.configuracionEmpresa);
+      // result.fold(
+      //   (failure) => throw Exception(failure.message),
+      //   (data) {
+      //     state = state.copyWith(
+      //       isFirstTime: false,
+      //       configuracionEmpresa: data,
+      //     );
+      //   },
+      // );
+    },
+  );
 
   void setBlockUI(bool blockUI) {
     state = state.copyWith(blockUI: blockUI, visiblePassword: !blockUI);

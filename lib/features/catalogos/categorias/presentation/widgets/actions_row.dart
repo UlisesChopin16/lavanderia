@@ -3,10 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
+import 'package:lavanderia/features/catalogos/categorias/presentation/dialogs/update_categoria.dart';
 import 'package:lavanderia/features/catalogos/categorias/presentation/views/view_model/categoria_view_model.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/dialogs/show_precios_dialog.dart';
-// import 'package:lavanderia/features/catalogos/categorias/conceptos/presentation/views/conceptos_view.dart';
-import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
 
@@ -74,15 +73,11 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
   }
 
   Future<String?> showNombreDialog() {
-    const title = 'Editar categoría de ropa';
     return showDialog<String?>(
       context: context,
       builder: (context) {
-        return NombreDialog(
-          title: title,
-          nombre: nombre,
-          label: 'Nombre de la categoría',
-          hintText: 'Ej: Lavandería, Planchado, Tintorería',
+        return UpdateCategoria(
+          categoria: categoria,
         );
       },
     );
@@ -99,21 +94,8 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
   }
 
   void onEditCategoria() async {
-    final categoriaRopaNotifier = ref.read(categoriaViewModelProvider.notifier);
     // Acción al presionar el botón de agregar tamaño
-    final nombre = await showNombreDialog();
-
-    if (nombre == null) return;
-    if (nombre.isEmpty) return;
-    if (!mounted) return;
-
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de editar esta categoría?',
-    );
-
-    if (confirm == true) {
-      categoriaRopaNotifier.updateCategoria(categoria.copyWith(nombre: nombre));
-    }
+    await showNombreDialog();
   }
 
   void onDeleteCategoria() async {

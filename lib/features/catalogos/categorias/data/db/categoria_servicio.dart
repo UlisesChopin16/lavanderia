@@ -5,6 +5,7 @@ class CategoriaServicio extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get nombre => text()();
   TextColumn get estatus => text()(); // Ej. "Activo", "Inactivo"
+  IntColumn get diasEntrega => integer()(); // Días de entrega para esta categoría
   DateTimeColumn get fechaCreacion => dateTime()();
   DateTimeColumn get fechaActualizacion => dateTime().nullable()();
   DateTimeColumn get fechaEliminacion => dateTime().nullable()();

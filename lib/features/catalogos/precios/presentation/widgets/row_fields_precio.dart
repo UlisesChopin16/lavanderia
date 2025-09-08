@@ -74,7 +74,10 @@ class RowFieldsPrecio extends ConsumerWidget {
                   categoriaValue: precio.categoria,
                   onCategoriaChanged: (value) {
                     onChangePrecio(
-                      precio.copyWith(categoria: value),
+                      precio.copyWith(
+                        categoria: value,
+                        diasEntrega: value.diasEntrega,
+                      ),
                     );
                   },
                 ),
