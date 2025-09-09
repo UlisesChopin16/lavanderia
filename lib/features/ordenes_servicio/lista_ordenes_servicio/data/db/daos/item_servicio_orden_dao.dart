@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/daos/daos.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/db/item_servicio_orden.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/item_servicio_orden.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_entry/item_con_precio_entry.dart';
 
 import '../../../../../../core/database/app_database.dart';
@@ -45,24 +45,26 @@ class ItemServicioOrdenDao extends DatabaseAccessor<AppDatabase> with _$ItemServ
   //   final updated = row.copyWith(fechaEliminacion: Value(now));
   //   return update(itemServicioOrden).replace(updated);
   // }
+
+  Future<List<ItemConPrecioEntry>> getItemsByOrden(int ordenId) async {
+    final query = queryJoined();
+    query.where(itemServicioOrden.ordenId.equals(ordenId));
+    final rows = await query.get();
+    return convertToDetalles(rows);
+  }
   
 
   Future<int> insertItem(ItemServicioOrdenCompanion row) async {
-
     final now = DateTime.now();
     final data = row.copyWith(
       fechaCreacion: Value(now),
-      fechaActualizacion: const Value(null),
     );
 
     return into(itemServicioOrden).insert(data);
   }
 
   Future<bool> updateItem(ItemServicioOrdenEntry row) async {
-
-    final now = DateTime.now();
-    final data = row.copyWith(fechaActualizacion: Value(now));
-    return update(itemServicioOrden).replace(data);
+    return update(itemServicioOrden).replace(row);
   }
 
   JoinedSelectStatement queryJoined() {

@@ -1,0 +1,26 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/features/catalogos/clientes/data/models/cliente_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_model/item_con_precio_model.dart';
+
+part 'orden_con_detalles_model.freezed.dart';
+part 'orden_con_detalles_model.g.dart';
+
+@freezed
+sealed class OrdenConDetallesModel with _$OrdenConDetallesModel {
+  const factory OrdenConDetallesModel({
+    required int id,
+    required ClienteModel cliente,
+    required String folio,
+    String? descripcion,
+    required double adelantoPago,
+    String? metodoPago,
+    required String estatus,
+    required double total,
+    required double restante,
+    required DateTime fechaCreacion,
+    DateTime? fechaCierre,
+    required List<ItemConPrecioModel> items
+  }) = _OrdenConDetallesModel;
+
+  factory OrdenConDetallesModel.fromJson(Map<String, dynamic> json) => _$OrdenConDetallesModelFromJson(json);
+}

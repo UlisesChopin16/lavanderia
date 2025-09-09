@@ -15,8 +15,6 @@ sealed class ItemConPrecioModel with _$ItemConPrecioModel {
     required bool estaEntregado,
     required DateTime fechaEntrega,
     required DateTime fechaCreacion,
-    DateTime? fechaActualizacion,
-    DateTime? fechaEliminacion,
   }) = _ItemConPrecioModel;
 
   factory ItemConPrecioModel.fromJson(Map<String, dynamic> json) =>

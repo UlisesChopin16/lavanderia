@@ -16,8 +16,6 @@ extension ItemConPrecioEntityX on ItemConPrecioEntity {
       fechaEntrega: fechaEntrega ?? DateTime.now(),
       importe: importe,
       fechaCreacion: fechaCreacion ?? DateTime.now(),
-      fechaActualizacion: fechaActualizacion ?? DateTime.now(),
-      fechaEliminacion: fechaEliminacion,
     );
   }
 }
@@ -33,8 +31,6 @@ extension ItemConPrecioModelX on ItemConPrecioModel {
       fechaEntrega: fechaEntrega,
       importe: importe,
       fechaCreacion: fechaCreacion,
-      fechaActualizacion: fechaActualizacion,
-      fechaEliminacion: fechaEliminacion,
     );
   }
 
@@ -48,22 +44,19 @@ extension ItemConPrecioModelX on ItemConPrecioModel {
       fechaEntrega: fechaEntrega,
       importe: importe,
       fechaCreacion: fechaCreacion,
-      fechaActualizacion: fechaActualizacion,
-      fechaEliminacion: fechaEliminacion,
     );
   }
 
-  ItemServicioOrdenCompanion toCompanion() {
+  ItemServicioOrdenCompanion toCompanion(int idOrden) {
     final now = DateTime.now();
     return ItemServicioOrdenCompanion.insert(
-      ordenId: ordenId,
+      ordenId: idOrden,
       precioConceptoId: precio.idPrecio,
       cantidad: cantidad,
       estaEntregado: Value(estaEntregado),
       importe: importe,
       fechaEntrega: fechaEntrega,
       fechaCreacion: now,
-      fechaActualizacion: Value(now),
     );
   }
 }
@@ -79,8 +72,6 @@ extension PreciosConceptosEntryX on ItemConPrecioEntry {
       estaEntregado: item.estaEntregado,
       fechaEntrega: item.fechaEntrega,
       fechaCreacion: item.fechaCreacion,
-      fechaActualizacion: item.fechaActualizacion,
-      fechaEliminacion: item.fechaEliminacion,
     );
   }
 }

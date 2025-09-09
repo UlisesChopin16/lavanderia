@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/features/catalogos/precios/data/db/precios_conceptos.dart';
-import '../../../lista_ordenes_servicio/data/db/orden_servicio.dart';
+import 'orden_servicio.dart';
 
 @DataClassName('ItemServicioOrdenEntry')
 class ItemServicioOrden extends Table {
@@ -12,6 +12,4 @@ class ItemServicioOrden extends Table {
   BoolColumn get estaEntregado => boolean().withDefault(const Constant(false))();
   DateTimeColumn get fechaEntrega => dateTime()();
   DateTimeColumn get fechaCreacion => dateTime()();
-  DateTimeColumn get fechaActualizacion => dateTime().nullable()();
-  DateTimeColumn get fechaEliminacion => dateTime().nullable()();
 }

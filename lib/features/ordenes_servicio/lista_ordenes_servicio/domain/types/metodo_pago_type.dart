@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MotodoPagoType {
+enum MetodoPagoType {
   efectivo(
     value: "Efectivo",
     icon: Icons.local_atm_rounded,
@@ -24,5 +24,12 @@ enum MotodoPagoType {
 
   final String value;
   final IconData icon;
-  const MotodoPagoType({required this.value, required this.icon});
+  const MetodoPagoType({required this.value, required this.icon});
+
+  static MetodoPagoType fromString(String value) {
+    return MetodoPagoType.values.firstWhere(
+      (element) => element.value == value,
+      orElse: () => MetodoPagoType.efectivo,
+    );
+  }
 }

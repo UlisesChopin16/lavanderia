@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'orden_servicio.dart';
+
 @DataClassName('OrdenHistoryEntry')
 class OrdenHistory extends Table {
   IntColumn get id => integer().autoIncrement()();  
