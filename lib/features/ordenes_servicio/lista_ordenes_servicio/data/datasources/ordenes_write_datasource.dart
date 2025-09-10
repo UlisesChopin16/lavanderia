@@ -2,8 +2,8 @@ import 'package:injectable/injectable.dart';
 import 'package:lavanderia/core/database/daos/daos.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/daos/daos.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_model/orden_con_detalles_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/item_con_precio_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/orden_con_detalles_ext.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/extensions/item_con_precio_ext.dart';
 
 @lazySingleton
 class OrdenesWriteDatasource {
@@ -25,6 +25,22 @@ class OrdenesWriteDatasource {
     for (final item in orden.items) {
       final itemWithOrdenId = item.toCompanion(ordenId.id);
       await itemServicioOrdenDao.insertItem(itemWithOrdenId);
+    }
+  }
+
+  Future<void> updateOrden(OrdenConDetallesModel orden) async {
+    final entry = orden.toEntry();
+    final companionHistory = orden.toHistoryCompanion(orden.id);
+    await ordenHistoryDao.insertOrden(companionHistory);
+    await ordenServicioDao.updateOrden(entry);
+    await updateItemsOrden(orden);
+  }
+
+  Future<void> updateItemsOrden(OrdenConDetallesModel orden) async {
+    final items = orden.items;
+    for (final item in items) {
+      final itemWithOrdenId = item.toEntry();
+      await itemServicioOrdenDao.updateItem(itemWithOrdenId);
     }
   }
 }

@@ -19,7 +19,8 @@ sealed class OrdenConDetallesModel with _$OrdenConDetallesModel {
     required double restante,
     required DateTime fechaCreacion,
     DateTime? fechaCierre,
-    required List<ItemConPrecioModel> items
+    @Default([]) List<ItemConPrecioModel> items
+    
   }) = _OrdenConDetallesModel;
 
   factory OrdenConDetallesModel.fromJson(Map<String, dynamic> json) => _$OrdenConDetallesModelFromJson(json);
