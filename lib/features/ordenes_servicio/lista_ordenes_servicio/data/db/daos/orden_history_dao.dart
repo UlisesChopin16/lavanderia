@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/orden_history.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_entry/orden_con_detalles_entry.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import '../../../../../../core/database/app_database.dart';
 
 part 'orden_history_dao.g.dart';
@@ -10,8 +11,9 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
   OrdenHistoryDao(super.db);
 
   // Future<List<OrdenHistoryEntry>> getAll() => select(ordenHistory).get();
-  Stream<List<OrdenConDetallesEntry>> watchAll() {
-    final query = queryJoined();
+  Stream<List<OrdenConDetallesEntry>> watchAll(FiltrosOrdenes filtros) {
+    final query = queryWithFilters(filtros);
+    // query.where()
     return query.watch().map((rows) => convertToDetalles(rows));
   }
 
@@ -31,25 +33,98 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
   // )..where((tbl) => tbl.clienteId.equals(clienteId))).get();
 
   Future<int> insertOrden(OrdenHistoryCompanion row) async {
-    final now = DateTime.now();
-
-    final data = row.copyWith(
-      fecha: Value(now),
-    );
-
-    return await into(ordenHistory).insert(data);
+    return await into(ordenHistory).insert(row);
   }
 
   JoinedSelectStatement queryJoined() {
     final query = select(ordenServicio).join([
       innerJoin(
         ordenHistory,
-        ordenHistory.ordenId.equalsExp(ordenServicio.id),
+        ordenHistory.ordenId.equalsExp(ordenServicio.id) & ordenHistory.fecha.equalsExp(ordenServicio.fechaActualizacion)
       ),
       innerJoin(
         cliente,
         cliente.id.equalsExp(ordenServicio.clienteId),
       )
+    ]);
+
+    return query;
+  }
+
+  JoinedSelectStatement queryWithFilters(FiltrosOrdenes filtros) {
+    final query = queryJoined();
+
+    // Apply filters
+    query.where(ordenServicio.estatus.equals(filtros.estatus.value));
+
+    if (filtros.busqueda.isNotEmpty) {
+      final busqueda = '%${filtros.busqueda.toLowerCase()}%';
+      query.where(ordenServicio.folio.lower().like(busqueda) | cliente.nombres.lower().like(busqueda) | cliente.apellidos.lower().like(busqueda));
+    }
+
+    if (filtros.metodoPago != null) {
+      query.where(ordenHistory.metodoPago.equals(filtros.metodoPago!.value));
+    }
+
+    if (filtros.fechas.isNotEmpty) {
+      final start = filtros.fechas[0];
+      final end = filtros.fechas.length > 1 ? filtros.fechas[1] : null;
+
+      if (start != null && end != null) {
+        // Filter between two dates
+        query.where(ordenServicio.fechaCreacion.isBetweenValues(start, end));
+      } else if (start != null) {
+        // Filter from start date onwards
+        query.where(ordenServicio.fechaCreacion.isBiggerOrEqualValue(start));
+      } else if (end != null) {
+        // Filter up to end date
+        query.where(ordenServicio.fechaCreacion.isSmallerOrEqualValue(end));
+      }
+    }
+
+    final mode = filtros.ascendente ? OrderingMode.asc : OrderingMode.desc;
+
+    query.orderBy([
+      if (filtros.ordenamiento == ColumnsOrdenesNames.id)
+        OrderingTerm(
+          expression: ordenServicio.id,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.estatus)
+        OrderingTerm(
+          expression: ordenServicio.estatus,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.fechaCierre)
+        OrderingTerm(
+          expression: ordenServicio.fechaCierre,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.fechaCreacion)
+        OrderingTerm(
+          expression: ordenServicio.fechaCreacion,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.folio)
+        OrderingTerm(
+          expression: ordenServicio.folio,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.metodoPago)
+        OrderingTerm(
+          expression: ordenHistory.metodoPago,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.restante)
+        OrderingTerm(
+          expression: ordenServicio.restante,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.total)
+        OrderingTerm(
+          expression: ordenServicio.total,
+          mode: mode,
+        ),
     ]);
 
     return query;

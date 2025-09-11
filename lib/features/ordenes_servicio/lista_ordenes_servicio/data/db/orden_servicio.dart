@@ -14,4 +14,5 @@ class OrdenServicio extends Table {
   RealColumn get restante => real()();
   DateTimeColumn get fechaCreacion => dateTime()();
   DateTimeColumn get fechaCierre => dateTime().nullable()();
+  DateTimeColumn get fechaActualizacion => dateTime().nullable()();
 }

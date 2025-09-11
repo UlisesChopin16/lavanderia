@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/app_database.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_entry/item_con_precio_entry.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_model/item_con_precio_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/item_con_precio_entry/item_con_precio_entry.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/item_con_precio_model/item_con_precio_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/extensions/precio_con_detalles_ext.dart';
 

@@ -3,7 +3,7 @@ import 'package:lavanderia/core/database/daos/daos.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/item_servicio_orden.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_entry/item_con_precio_entry.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/item_con_precio_entry/item_con_precio_entry.dart';
 
 import '../../../../../../core/database/app_database.dart';
 

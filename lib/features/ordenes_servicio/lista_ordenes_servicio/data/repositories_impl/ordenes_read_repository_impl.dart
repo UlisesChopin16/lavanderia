@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/datasources/ordenes_read_datasource.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/history_item/history_item_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/history_item_ext.dart';
@@ -26,8 +27,8 @@ class OrdenesReadRepositoryImpl implements OrdenesReadRepository {
   }
 
   @override
-  Stream<List<OrdenConDetallesEntity>> observeAll() {
-    final stream = _datasource.observeAll();
+  Stream<List<OrdenConDetallesEntity>> observeAll(FiltrosOrdenes filtros) {
+    final stream = _datasource.observeAll(filtros);
     return stream.map((ordenes) => ordenes.map((e) => e.toEntity()).toList());
   }
 }

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lavanderia/core/database/daos/daos.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/daos/daos.dart';
@@ -20,8 +21,11 @@ class OrdenesWriteDatasource {
   Future<void> insertOrdenWithItems(OrdenConDetallesModel orden) async {
     final companion = orden.toOrdenCompanion();
     final ordenId = await ordenServicioDao.insertOrden(companion);
+
     final companionHistory = orden.toHistoryCompanion(ordenId.id);
-    await ordenHistoryDao.insertOrden(companionHistory);
+    final data = companionHistory.copyWith(fecha: Value(ordenId.fechaActualizacion!));
+    await ordenHistoryDao.insertOrden(data);
+
     for (final item in orden.items) {
       final itemWithOrdenId = item.toCompanion(ordenId.id);
       await itemServicioOrdenDao.insertItem(itemWithOrdenId);
@@ -31,8 +35,10 @@ class OrdenesWriteDatasource {
   Future<void> updateOrden(OrdenConDetallesModel orden) async {
     final entry = orden.toEntry();
     final companionHistory = orden.toHistoryCompanion(orden.id);
-    await ordenHistoryDao.insertOrden(companionHistory);
-    await ordenServicioDao.updateOrden(entry);
+
+    final entryOrden = await ordenServicioDao.updateOrden(entry);
+    final data = companionHistory.copyWith(fecha: Value(entryOrden.fechaActualizacion!));
+    await ordenHistoryDao.insertOrden(data);
     await updateItemsOrden(orden);
   }
 

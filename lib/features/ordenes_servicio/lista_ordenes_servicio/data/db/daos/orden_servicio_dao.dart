@@ -28,6 +28,7 @@ class OrdenServicioDao extends DatabaseAccessor<AppDatabase> with _$OrdenServici
 
     final data = row.copyWith(
       fechaCreacion: Value(now),
+      fechaActualizacion: Value(now),
       folio: Value(folio),
     );
 
@@ -41,8 +42,16 @@ class OrdenServicioDao extends DatabaseAccessor<AppDatabase> with _$OrdenServici
     return entry;
   }
 
-  Future<bool> updateOrden(OrdenServicioEntry row) async {
-    return update(ordenServicio).replace(row);
+  Future<OrdenServicioEntry> updateOrden(OrdenServicioEntry row) async {
+    final now = DateTime.now();
+    final updated = row.copyWith(fechaActualizacion: Value(now));
+    await update(ordenServicio).replace(updated);
+
+    final entry = await getById(row.id);
+    if (entry == null) {
+      throw const SQLException(message: 'Error al actualizar la orden de servicio');
+    }
+    return entry;
   }
 
   // Future<bool> updateOrden(Insertable<OrdenServicioEntry> row) {

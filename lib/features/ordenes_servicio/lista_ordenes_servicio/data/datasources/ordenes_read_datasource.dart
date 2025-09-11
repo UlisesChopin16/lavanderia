@@ -4,10 +4,11 @@ import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/history_item/history_item_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_entry/orden_con_detalles_entry.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_model/orden_con_detalles_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/history_item_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/item_con_precio_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/orden_con_detalles_ext.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/data/models/items_servicio/item_con_precio_model/item_con_precio_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/item_con_precio_model/item_con_precio_model.dart';
 
 @lazySingleton
 class OrdenesReadDatasource {
@@ -21,8 +22,8 @@ class OrdenesReadDatasource {
     required this.itemServicioOrdenDao,
   });
 
-  Stream<List<OrdenConDetallesModel>> observeAll() {
-    final ordenesStream = ordenHistoryDao.watchAll();
+  Stream<List<OrdenConDetallesModel>> observeAll(FiltrosOrdenes filtros) {
+    final ordenesStream = ordenHistoryDao.watchAll(filtros);
     return convertToModel(ordenesStream);
   }
 

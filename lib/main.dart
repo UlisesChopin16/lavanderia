@@ -9,6 +9,8 @@ import 'package:lavanderia/features/presentation/views/view_model/home_view_mode
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_single_instance/flutter_single_instance.dart';
+// import 'package:lavanderia/shared/widgets/date_range_picker.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +103,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       theme: theme.toThemeData(isDark: false),
       darkTheme: theme.toThemeData(isDark: true),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [
+        Locale('es', 'ES'),
+      ],
       themeMode: themeMode,
       routerConfig: AppRoutes.router,
 
@@ -108,3 +114,16 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     );
   }
 }
+
+// class Main extends StatelessWidget {
+//   const Main({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Scaffold(
+//       body: Center(
+//         child: DateRangePicker(),
+//       ),
+//     );
+//   }
+// }

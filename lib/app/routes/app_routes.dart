@@ -38,6 +38,7 @@ class AppRoutes {
       path: home,
       name: 'Home',
       builder: (context, state) => const HomeView(),
+      // builder: (context, state) => const Main(),
     ),
     ..._tabRoutes,
   ];
