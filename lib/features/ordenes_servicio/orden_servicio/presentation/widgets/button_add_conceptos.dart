@@ -16,31 +16,28 @@ class ButtonAddConceptos extends ConsumerWidget {
     );
     return Align(
       alignment: Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: FilledButton(
-          onPressed: () async {
-            final result = await showDialog<List<ItemConPrecioEntity>>(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return SelectPriceDialog(itemsSelected: selectedItems);
-              },
-            );
-            if (result != null && result.isNotEmpty) {
-              ordenNotifier.setSelectedItems(result);
-            }
-          },
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              spacing: 5,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add),
-                Flexible(child: Text('Agregar conceptos')),
-              ],
-            ),
+      child: FilledButton(
+        onPressed: () async {
+          final result = await showDialog<List<ItemConPrecioEntity>>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return SelectPriceDialog(itemsSelected: selectedItems);
+            },
+          );
+          if (result != null && result.isNotEmpty) {
+            ordenNotifier.setSelectedItems(result);
+          }
+        },
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            spacing: 5,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.playlist_add_rounded),
+              Flexible(child: Text('Agregar conceptos')),
+            ],
           ),
         ),
       ),

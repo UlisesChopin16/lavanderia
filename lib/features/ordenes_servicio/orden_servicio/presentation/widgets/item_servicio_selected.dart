@@ -157,6 +157,7 @@ class ItemServicioSelected extends ConsumerWidget {
                     ),
                     ChangeCantidad(
                       cantidad: item.cantidad,
+                      unidad: item.unidad,
                       onChanged: (newCantidad) {
                         ordenNotifier.setCantidad(index, newCantidad);
                       },

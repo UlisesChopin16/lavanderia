@@ -13,9 +13,9 @@ class SearchCliente extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
 
-    final (clientes, clienteSeleccionado) = ref.watch(
+    final (clientes, clienteSeleccionado, hasCliente) = ref.watch(
       ordenServicioViewProvider.select(
-        (value) => (value.clientes, value.clienteSeleccionado),
+        (value) => (value.clientes, value.clienteSeleccionado, value.orden.hasCliente),
       ),
     );
 
@@ -27,7 +27,7 @@ class SearchCliente extends ConsumerWidget {
       children: [
         const _SearchBar(),
         // const SizedBox(height: 10),
-        if (clienteSeleccionado != null) ...[
+        if (hasCliente) ...[
           const SizedBox(height: 5),
           Card(
             elevation: 1,
@@ -38,7 +38,7 @@ class SearchCliente extends ConsumerWidget {
               action: IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  ordenNotifier.setClienteSeleccionado(null);
+                  ordenNotifier.setClienteSeleccionado(const ClienteEntity());
                 },
               ),
             ),
@@ -141,9 +141,9 @@ class _SearchBarState extends ConsumerState<_SearchBar> {
 
   void _addListener() {
     ref.listen(
-      ordenServicioViewProvider.select((value) => value.clienteSeleccionado),
+      ordenServicioViewProvider.select((value) => value.orden),
       (previous, next) {
-        if (next == null && previous != null) {
+        if (!next.hasCliente && previous!.hasCliente) {
           _controller.clear();
         }
       },

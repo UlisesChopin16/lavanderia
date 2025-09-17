@@ -121,6 +121,7 @@ class ItemServicioList extends ConsumerWidget {
                 child: ChangeCantidad(
                   cantidad: item.cantidad,
                   color: backgroundColor,
+                  unidad: item.unidad,
                   onChanged: (newCantidad) {
                     selectPriceNotifier.setCantidad(index, newCantidad);
                   },

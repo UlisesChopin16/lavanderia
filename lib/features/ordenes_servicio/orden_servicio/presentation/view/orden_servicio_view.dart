@@ -14,6 +14,7 @@ import 'package:mailer/mailer.dart';
 
 import '../widgets/button_add_conceptos.dart';
 import '../widgets/items_list_selected.dart';
+import '../widgets/select_metodo_pago.dart';
 
 class OrdenServicioView extends ConsumerStatefulWidget {
   const OrdenServicioView({super.key});
@@ -35,7 +36,6 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
 
   @override
   Widget build(BuildContext context) {
-    final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
     _addErrorListener();
     final (total, restante, isLoading) = ref.watch(
       ordenServicioViewProvider.select(
@@ -59,139 +59,11 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
                     runAlignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Card(
-                        child: SizedBox(
-                          width: 500,
-                          height: height,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SearchCliente(),
-                                const Divider(),
-                                const Gap(5),
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      spacing: 10,
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: [
-                                        const TextField(
-                                          maxLines: 3,
-                                          decoration: InputDecoration(
-                                            labelText: 'Notas',
-                                            hintText: 'Notas de la orden de servicio',
-                                            prefixIcon: Icon(Icons.note_alt_sharp),
-                                          ),
-                                        ),
-                                        const Gap(30),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: TextField(
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: [
-                                              // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
-                                            ],
-                                            decoration: InputDecoration(
-                                              labelText: 'Adelanto',
-                                              prefixIcon: const Icon(Icons.attach_money),
-                                              constraints: const BoxConstraints(maxWidth: 150),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(8.0),
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              ref
-                                                  .read(ordenServicioViewProvider.notifier)
-                                                  .setAdelanto(value);
-                                            },
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            'Total: $total',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            'Restante: ${restante.toStringAsFixed(2)}',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const Divider(),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: FilledButton(
-                                    onPressed: () async {
-                                      final cliente = ref
-                                          .read(ordenServicioViewProvider)
-                                          .clienteSeleccionado;
-                                      if (cliente == null) {
-                                        context.showErrorDialog(
-                                          'Selecciona un cliente para crear la orden de servicio.',
-                                        );
-                                        return;
-                                      }
-                                      ordenNotifier.setIsLoading(true);
-                                      // ENVIAR CORREO
-                                      await sendMail(cliente);
-                                      ordenNotifier.setIsLoading(false);
-                                      // Aquí iría la lógica para crear la orden de servicio
-                                      // context.showSuccessSnackBar('Orden de servicio creada para ${cliente.fullName}.');
-                                      // sendMail(cliente);
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                                      child: Row(
-                                        spacing: 5,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.save),
-                                          Flexible(child: Text('Crear orden')),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      CardConceptosInfo(
+                        height: height,
                       ),
-                      Card(
-                        child: SizedBox(
-                          width: 500,
-                          height: height,
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Text('Enviar correo de prueba'),
-                                // ElevatedButton(
-                                //   onPressed: sendMail,
-                                //   child: const Text('Enviar correo'),
-                                // ),
-                                Expanded(child: ItemsListSelected()),
-                                ButtonAddConceptos(),
-                              ],
-                            ),
-                          ),
-                        ),
+                      CardClientInfo(
+                        height: height,
                       ),
                     ],
                   ),
@@ -239,5 +111,180 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
         print('Problema: ${p.code}: ${p.msg}');
       }
     }
+  }
+}
+
+class CardConceptosInfo extends ConsumerWidget {
+  const CardConceptosInfo({
+    super.key,
+    required this.height,
+  });
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Card(
+      child: SizedBox(
+        width: 500,
+        height: height,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Text('Enviar correo de prueba'),
+              // ElevatedButton(
+              //   onPressed: sendMail,
+              //   child: const Text('Enviar correo'),
+              // ),
+              Expanded(child: ItemsListSelected()),
+              Divider(),
+              ButtonAddConceptos(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CardClientInfo extends ConsumerWidget {
+  const CardClientInfo({
+    super.key,
+    required this.height,
+  });
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
+    final (total, restante, metodoPago) = ref.watch(
+      ordenServicioViewProvider.select(
+        (state) => (state.total, state.restante, state.orden.metodoPago),
+      ),
+    );
+    return Card(
+      child: SizedBox(
+        width: 500,
+        height: height,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SearchCliente(),
+              const Divider(),
+              const Gap(5),
+              // const Spacer(),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  spacing: 10,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: SelectMetodoPago(
+                        metodoPago: metodoPago,
+                        onChange: (value) {
+                          ordenNotifier.setMetodoPago(value);
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
+                        ],
+                        decoration: InputDecoration(
+                          labelText: 'Adelanto',
+                          prefixIcon: const Icon(Icons.attach_money),
+                          constraints: const BoxConstraints(maxWidth: 150),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          ordenNotifier.setAdelanto(value);
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        'Total: \$${total.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        'Restante: \$${restante.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(5),
+              TextField(
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Notas',
+                  hintText: 'Notas de la orden de servicio',
+                  prefixIcon: Icon(Icons.note_alt_rounded),
+                ),
+                onChanged: ordenNotifier.setDescripcion,
+              ),
+              const Divider(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton(
+                  onPressed: () async {
+                    ordenNotifier.createOrden();
+                    // final hasCliente = ref.read(ordenServicioViewProvider).orden.hasCliente;
+                    // if (!hasCliente) {
+                    //   context.showErrorDialog(
+                    //     'Selecciona un cliente para crear la orden de servicio.',
+                    //   );
+                    //   return;
+                    // }
+                    // ordenNotifier.setIsLoading(true);
+                    // ENVIAR CORREO
+                    // await sendMail(cliente);
+                    // ordenNotifier.setIsLoading(false);
+                    // Aquí iría la lógica para crear la orden de servicio
+                    // context.showSuccessSnackBar('Orden de servicio creada para ${cliente.fullName}.');
+                    // sendMail(cliente);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.save),
+                        Flexible(child: Text('Crear orden')),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

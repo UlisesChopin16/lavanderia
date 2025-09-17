@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 
@@ -9,19 +8,19 @@ class SaveEditComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (isFirstTime) = ref.watch(
-      configuracionEmpresaViewModelProvider.select(
-        (value) => (value.isFirstTime),
-      ),
-    );
+    // final (isFirstTime) = ref.watch(
+    //   configuracionEmpresaViewModelProvider.select(
+    //     (value) => (value.isFirstTime),
+    //   ),
+    // );
 
-    final title = isFirstTime ? 'Guardar datos' : 'Editar datos';
-    final icon = isFirstTime ? Icons.save_rounded : FontAwesomeIcons.penToSquare;
+    const title = 'Guardar datos';
+    const icon = Icons.save_rounded;
 
     return FloatingActionButton.extended(
       onPressed: () => saveData(ref, context),
-      label: Text(title),
-      icon: Icon(icon),
+      label: const Text(title),
+      icon: const Icon(icon),
     );
   }
 

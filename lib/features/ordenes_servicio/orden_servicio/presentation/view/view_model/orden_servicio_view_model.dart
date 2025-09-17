@@ -3,10 +3,8 @@ import 'package:lavanderia/app/inject/injector.dart';
 // import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/core/extensions/string_ext.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
-import 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/usecases/obtain_all_clientes.dart';
-// import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/date_items/date_items_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'orden_servicio_view_model.freezed.dart';
@@ -21,25 +19,27 @@ sealed class OrdenServicioModel with _$OrdenServicioModel {
     @Default('') String errorMessage,
     @Default('') String successMessage,
     @Default([]) List<ClienteEntity> clientes,
-    @Default([]) List<ItemConPrecioEntity> selectedItems,
-    @Default(null) ClienteEntity? clienteSeleccionado,
     @Default('') String filtro,
-    @Default(0.0) double adelanto,
+    @Default(OrdenConDetallesEntity()) OrdenConDetallesEntity orden,
   }) = _OrdenServicioModel;
+
+  List<ItemConPrecioEntity> get selectedItems => orden.items;
+  ClienteEntity get clienteSeleccionado => orden.cliente;
 
   double get total {
     if (selectedItems.isEmpty) return 0.0;
+    if (orden.total != 0.0) return orden.total;
     return selectedItems.fold(0.0, (sum, item) => sum + item.importe);
   }
 
-  double get restante {
-    return total - (adelanto);
-  }
+  // double get total => orden.total;
+  double get restante => total - orden.adelantoPago;
 }
 
 @riverpod
 class OrdenServicioView extends _$OrdenServicioView {
   final _obtainClientsCase = instance<ObtainAllClientes>();
+  // final _createOrdenCase = instance<CreateOrden>();
 
   @override
   OrdenServicioModel build() {
@@ -92,8 +92,11 @@ class OrdenServicioView extends _$OrdenServicioView {
     return clientesFiltrados;
   }
 
-  void setClienteSeleccionado(ClienteEntity? cliente) {
-    state = state.copyWith(clienteSeleccionado: cliente);
+  void setClienteSeleccionado(ClienteEntity cliente) {
+    final orden = state.orden.copyWith(
+      cliente: cliente,
+    );
+    state = state.copyWith(orden: orden);
   }
 
   ClienteEntity? getCliente(String data) {
@@ -113,6 +116,7 @@ class OrdenServicioView extends _$OrdenServicioView {
   }
 
   void setSelectedItems(List<ItemConPrecioEntity> items) {
+    final orden = state.orden;
     final selectedItems = state.selectedItems;
     final allItems = [...items, ...selectedItems];
 
@@ -123,13 +127,32 @@ class OrdenServicioView extends _$OrdenServicioView {
       return dateA.compareTo(dateB);
     });
 
-    state = state.copyWith(selectedItems: allItems);
+    // final total = allItems.fold(0.0, (sum, item) => sum + item.importe);
+    // final restante = total - (state.orden.adelantoPago);
+
+    state = state.copyWith(
+      orden: orden.copyWith(
+        items: allItems,
+        // total: total,
+        // restante: restante,
+      ),
+    );
   }
 
   void removeSelectedItem(int index) {
-    final selectedItems = [...state.selectedItems];
+    final orden = state.orden;
+    List<ItemConPrecioEntity> selectedItems = [...state.selectedItems];
     selectedItems.removeAt(index);
-    state = state.copyWith(selectedItems: selectedItems);
+    // final total = selectedItems.fold(0.0, (sum, item) => sum + item.importe);
+    // final restante = total - (state.orden.adelantoPago);
+
+    state = state.copyWith(
+      orden: orden.copyWith(
+        items: selectedItems,
+        // total: total,
+        // restante: restante,
+      ),
+    );
   }
 
   void setCantidad(int index, double cantidad) {
@@ -140,8 +163,18 @@ class OrdenServicioView extends _$OrdenServicioView {
       cantidad: cantidad,
       importe: importe,
     );
+
     selectedItems[index] = updatedItem;
-    state = state.copyWith(selectedItems: selectedItems);
+    // final total = selectedItems.fold(0.0, (sum, item) => sum + item.importe);
+    // final restante = total - (state.orden.adelantoPago);
+
+    final orden = state.orden.copyWith(
+      items: selectedItems,
+      // total: total,
+      // restante: restante,
+    );
+
+    state = state.copyWith(orden: orden);
   }
 
   void setFechaEntrega(int index, DateTime date) {
@@ -149,16 +182,68 @@ class OrdenServicioView extends _$OrdenServicioView {
     final item = selectedItems[index];
     final updatedItem = item.copyWith(fechaEntrega: date);
     selectedItems[index] = updatedItem;
-    state = state.copyWith(selectedItems: selectedItems);
+
+    final orden = state.orden.copyWith(
+      items: selectedItems,
+    );
+    state = state.copyWith(orden: orden);
   }
 
   void setAdelanto(String value) {
     final adelanto = double.tryParse(value) ?? 0.0;
-    state = state.copyWith(adelanto: adelanto);
+    // final restante = state.restante - adelanto;
+
+    final orden = state.orden.copyWith(
+      // restante: restante,
+      adelantoPago: adelanto,
+    );
+
+    state = state.copyWith(orden: orden);
+  }
+
+  void setMetodoPago(MetodoPagoType? metodo) {
+    final orden = state.orden.copyWith(
+      metodoPago: metodo,
+    );
+
+    state = state.copyWith(orden: orden);
+  }
+
+  void setDescripcion(String descripcion) {
+    final orden = state.orden.copyWith(
+      descripcion: descripcion,
+    );
+    state = state.copyWith(orden: orden);
   }
 
   void setIsLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
+  }
+
+  void createOrden() async {
+    await safeCall(
+      actionBefore: () async => state = state.copyWith(
+        errorMessage: '',
+        successMessage: '',
+        isLoading: true,
+      ),
+      actionAfter: () async => state = state.copyWith(
+        isLoading: false,
+      ),
+      actionOnError: (error, message) async => state = state.copyWith(
+        errorMessage: message,
+        isLoading: false,
+      ),
+      action: () async {
+        state.orden.validate();
+        // final newOrderId = await _createOrdenCase.call(state.orden);
+        state = state.copyWith(
+          successMessage: 'Orden de servicio creada exitosamente.',
+          // orden: OrdenConDetallesEntity(id: newOrderId),
+        );
+      },
+    );
+
   }
 
   // void setSelectedItems(List<ItemConPrecioEntity> items) {

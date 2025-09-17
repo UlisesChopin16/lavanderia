@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
+import 'delete_button.dart';
 
 class DropdownMenuBase<T> extends StatelessWidget {
-  final List<DropdownMenuEntry<T>> items;
-  final T? value;
-  final TextEditingController controller;
-  final ValueChanged<T?> onChanged;
-  final Widget? leadingIcon;
-  final String? label;
-  final bool enableSearch;
-  final double? width;
-
   const DropdownMenuBase({
     super.key,
     required this.items,
     required this.onChanged,
     required this.controller,
+    this.showDelete = false,
+    this.onDelete,
     this.value,
     this.leadingIcon,
     this.label,
@@ -22,15 +16,35 @@ class DropdownMenuBase<T> extends StatelessWidget {
     this.width,
   });
 
+  final bool enableSearch;
+  final double? width;
+  final List<DropdownMenuEntry<T>> items;
+  final String? label;
+  final T? value;
+  final TextEditingController controller;
+  final ValueChanged<T?> onChanged;
+  final Widget? leadingIcon;
+
+  /// Replace the leading icon with a delete button
+  /// if [showDelete] is true providing an [onDelete] callback
+  final bool showDelete;
+  final VoidCallback? onDelete;
+
+  Widget? get leading {
+    if (showDelete) {
+      return DeleteButton(onPressed: onDelete);
+    }
+    return leadingIcon;
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return DropdownMenu<T>(
       width: width,
       enableSearch: enableSearch,
       requestFocusOnTap: enableSearch,
-      controller: controller,
-      leadingIcon: leadingIcon,
+      controller: controller, 
+      leadingIcon: leading,
       label: label != null ? Text(label!) : null,
       onSelected: onChanged,
       dropdownMenuEntries: _buildDropdownMenuEntries(context),

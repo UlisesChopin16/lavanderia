@@ -23,12 +23,12 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
   factory ItemConPrecioEntity.fromPrecio(PrecioConDetallesEntity precio) {
     DateTime fechaEntrega = DateTime.now();
 
-    if(precio.diasEntrega > 1) {
+    if (precio.diasEntrega > 1) {
       Printer.i('Dias de Entrega: ${precio.diasEntrega}');
       fechaEntrega = fechaEntrega.add(Duration(days: precio.diasEntrega));
     }
     Printer.i('Fecha Entrega: $fechaEntrega');
-    
+
     return ItemConPrecioEntity(
       precio: precio,
       cantidad: 1,
@@ -36,4 +36,6 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
       fechaEntrega: fechaEntrega,
     );
   }
+
+  UnitType get unidad => precio.tipoUnidad;
 }
