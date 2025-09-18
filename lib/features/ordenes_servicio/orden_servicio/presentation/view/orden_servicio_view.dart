@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
@@ -36,10 +37,13 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
 
   @override
   Widget build(BuildContext context) {
+    _addErrorOrderListener();
     _addErrorListener();
-    final (total, restante, isLoading) = ref.watch(
+    _addSuccessListener();
+
+    final (isLoading) = ref.watch(
       ordenServicioViewProvider.select(
-        (state) => (state.total, state.restante, state.isLoading),
+        (state) => (state.isLoading),
       ),
     );
 
@@ -79,6 +83,24 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
 
   void _addErrorListener() {
     ref.listen(clientesViewModelProvider.select((state) => state.errorMessage), (previous, next) {
+      // Acción al cambiar el estado del notifier
+      if (next.isNotEmpty) {
+        context.showErrorDialog(next);
+      }
+    });
+  }
+
+  void _addSuccessListener() {
+    ref.listen(ordenServicioViewProvider.select((state) => state.successMessage), (previous, next) {
+      // Acción al cambiar el estado del notifier
+      if (next.isNotEmpty) {
+        context.showSuccessDialog(next);
+      }
+    });
+  }
+
+  void _addErrorOrderListener() {
+    ref.listen(ordenServicioViewProvider.select((state) => state.errorMessage), (previous, next) {
       // Acción al cambiar el estado del notifier
       if (next.isNotEmpty) {
         context.showErrorDialog(next);
@@ -194,26 +216,7 @@ class CardClientInfo extends ConsumerWidget {
                         },
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
-                        ],
-                        decoration: InputDecoration(
-                          labelText: 'Adelanto',
-                          prefixIcon: const Icon(Icons.attach_money),
-                          constraints: const BoxConstraints(maxWidth: 150),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          ordenNotifier.setAdelanto(value);
-                        },
-                      ),
-                    ),
+                    const AdelantoComponent(),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -285,6 +288,52 @@ class CardClientInfo extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AdelantoComponent extends HookConsumerWidget {
+  const AdelantoComponent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController();
+    final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
+
+    _addListener(ref, controller);
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
+        ],
+        decoration: InputDecoration(
+          labelText: 'Adelanto',
+          prefixIcon: const Icon(Icons.attach_money),
+          constraints: const BoxConstraints(maxWidth: 150),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        onChanged: (value) {
+          ordenNotifier.setAdelanto(value);
+        },
+      ),
+    );
+  }
+
+  void _addListener(WidgetRef ref, TextEditingController controller) {
+    ref.listen(
+      ordenServicioViewProvider.select((state) => state.orden.adelantoPago),
+      (previous, next) {
+        if (next == 0.0 && previous! > 0.0) {
+          controller.clear();
+        }
+      },
     );
   }
 }

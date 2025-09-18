@@ -6,14 +6,25 @@ import 'package:lavanderia/features/catalogos/precios/presentation/views/view_mo
 import 'create_precios_fields/create_precios_fields.dart';
 
 class RowFieldsPrecio extends ConsumerWidget {
-  final PrecioConDetallesEntity precio;
-  final ValueChanged<PrecioConDetallesEntity> onChangePrecio;
-
   const RowFieldsPrecio({
     super.key,
     required this.precio,
     required this.onChangePrecio,
   });
+
+  final PrecioConDetallesEntity precio;
+  final ValueChanged<PrecioConDetallesEntity> onChangePrecio;
+
+  int get diasEntrega {
+    final diasEntrega = precio.diasEntrega;
+    final diasCategoria = precio.categoria.diasEntrega;
+
+    if (diasEntrega == 0) {
+      return diasCategoria;
+    }
+
+    return diasEntrega;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,7 +56,7 @@ class RowFieldsPrecio extends ConsumerWidget {
                 },
               ),
               DiasField(
-                dias: precio.diasEntrega.toString(),
+                dias: diasEntrega.toString(),
                 onDiasChanged: (value) {
                   onChangePrecio(
                     precio.copyWith(diasEntrega: int.parse(value.isEmpty ? '0' : value)),

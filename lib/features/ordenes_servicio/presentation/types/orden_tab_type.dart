@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/lista_ordenes_view.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/view/orden_servicio_view.dart';
 
 enum OrdenTabType {
@@ -13,7 +14,7 @@ enum OrdenTabType {
     title: 'Lista de órdenes',
     icon: FontAwesomeIcons.listUl,
     unselectedIcon: FontAwesomeIcons.list,
-    view: Scaffold(body: Center(child: Text('Vista para listar órdenes existentes'))),
+    view: ListaOrdenesView(),
   );
 
   final String title;

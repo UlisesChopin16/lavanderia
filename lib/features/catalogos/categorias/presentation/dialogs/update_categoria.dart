@@ -23,8 +23,8 @@ class UpdateCategoria extends ConsumerStatefulWidget {
 class _UpdateCategoriaState extends ConsumerState<UpdateCategoria> {
   late final categoriaBefore = widget.categoria;
   late CategoriaServicioEntity categoria = widget.categoria;
-  late final controller = TextEditingController(text: categoria.diasEntrega.toString());
-  late final controllerName = TextEditingController(text: categoria.nombre.normalizeSpaces());
+  // late final controller = TextEditingController(text: categoria.diasEntrega.toString());
+  // late final controllerName = TextEditingController(text: categoria.nombre.normalizeSpaces());
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _UpdateCategoriaState extends ConsumerState<UpdateCategoria> {
   @override
   Widget build(BuildContext context) {
     return BaseDialog(
-      title: 'Nueva categoría de ropa',
+      title: 'Editar categoría de ropa',
       onActionPressed: validateFields,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 16.0),
@@ -44,6 +44,7 @@ class _UpdateCategoriaState extends ConsumerState<UpdateCategoria> {
           children: [
             TextFormField(
               autofocus: true,
+              initialValue: categoria.nombre,
               textCapitalization: TextCapitalization.sentences,
               onEditingComplete: validateFields,
               onChanged: onChangeNombre,
@@ -55,8 +56,9 @@ class _UpdateCategoriaState extends ConsumerState<UpdateCategoria> {
             ),
             TextFormField(
               autofocus: true,
+              initialValue: categoria.diasEntrega.toString(),
               keyboardType: TextInputType.number,
-              controller: controller,
+              // controller: controller,
               onEditingComplete: validateFields,
               onChanged: onChangeDiasEntrega,
               inputFormatters: [
@@ -85,7 +87,6 @@ class _UpdateCategoriaState extends ConsumerState<UpdateCategoria> {
     setState(() {
       final days = dias.isEmpty ? '1' : dias;
       categoria = categoria.copyWith(diasEntrega: int.parse(days));
-      if (dias.isEmpty) controller.text = days;
     });
   }
 

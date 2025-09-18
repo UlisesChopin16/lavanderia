@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lavanderia/core/extensions/string_ext.dart';
 
-class DiasField extends StatelessWidget {
+class DiasField extends HookWidget {
   final String dias;
   final ValueChanged<String> onDiasChanged;
 
@@ -16,11 +17,14 @@ class DiasField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = useTextEditingController();
     final value = dias == '0' ? '' : dias;
+    controller.text = value;
+
     return SizedBox(
       width: width,
       child: TextFormField(
-        initialValue: value,
+        controller: controller,
         decoration: const InputDecoration(
           constraints: BoxConstraints(maxWidth: width),
           prefixIcon: Icon(Icons.calendar_today_rounded),

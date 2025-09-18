@@ -5,6 +5,7 @@ import 'package:lavanderia/core/extensions/string_ext.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/usecases/obtain_all_clientes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/usecases/usecases.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'orden_servicio_view_model.freezed.dart';
@@ -39,7 +40,7 @@ sealed class OrdenServicioModel with _$OrdenServicioModel {
 @riverpod
 class OrdenServicioView extends _$OrdenServicioView {
   final _obtainClientsCase = instance<ObtainAllClientes>();
-  // final _createOrdenCase = instance<CreateOrden>();
+  final _createOrdenCase = instance<CreateOrden>();
 
   @override
   OrdenServicioModel build() {
@@ -236,14 +237,24 @@ class OrdenServicioView extends _$OrdenServicioView {
       ),
       action: () async {
         state.orden.validate();
-        // final newOrderId = await _createOrdenCase.call(state.orden);
+        final total = state.total;
+        final restante = state.restante;
+        final newOrder = state.orden.copyWith(
+          total: total,
+          restante: restante,
+        );
+        
+        await _createOrdenCase.call(newOrder);
         state = state.copyWith(
           successMessage: 'Orden de servicio creada exitosamente.',
           // orden: OrdenConDetallesEntity(id: newOrderId),
         );
+
+        state = state.copyWith(
+          orden: const OrdenConDetallesEntity(),
+        );
       },
     );
-
   }
 
   // void setSelectedItems(List<ItemConPrecioEntity> items) {
