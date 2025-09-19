@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
+import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 
@@ -58,7 +59,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
           maxWidth: widget.width ?? 230,
         ),
         prefixIcon: const Icon(
-          Icons.calendar_month,
+          IconsManager.calendarRange,
         ),
       ),
       onTap: () async {

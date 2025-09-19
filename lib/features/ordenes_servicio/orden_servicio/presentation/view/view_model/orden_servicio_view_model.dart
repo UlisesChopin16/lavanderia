@@ -242,8 +242,9 @@ class OrdenServicioView extends _$OrdenServicioView {
         final newOrder = state.orden.copyWith(
           total: total,
           restante: restante,
+          metodoPago: state.orden.hasAdelanto ? state.orden.metodoPago : null,
         );
-        
+
         await _createOrdenCase.call(newOrder);
         state = state.copyWith(
           successMessage: 'Orden de servicio creada exitosamente.',

@@ -7,8 +7,8 @@ class IconsManager {
   static const unselectedEmpresaIcon = Icons.business_outlined;
 
   // Icons for order service view
-  static const selectedOrdenServicioIcon = FontAwesomeIcons.receipt;
-  static const unselectedOrdenServicioIcon = FontAwesomeIcons.receipt;
+  static const selectedOrdenServicioIcon = Icons.receipt_long;
+  static const unselectedOrdenServicioIcon = Icons.receipt_long_outlined;
 
   // Icons for general settings view
   static const selectedCatalogoIcon = Icons.menu_book_rounded;
@@ -35,6 +35,9 @@ class IconsManager {
 
   // static const clotheIcon = FontAwesomeIcons.shirt;
   static const clotheIcon = Icons.checkroom_rounded;
+
+  static const calendar = Icons.calendar_month;
+  static const calendarRange = Icons.date_range;
 
   static IconData getSortIcon(bool isAscending) {
     return isAscending ? orderAZ : orderZA;

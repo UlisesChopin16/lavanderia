@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lavanderia/core/utils/constants_manager.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/core/extensions/build_context_ext.dart';
+import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
-import 'package:mailer/mailer.dart';
 
 import '../widgets/widgets.dart';
 
@@ -52,7 +51,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                   haveFilters: filtros.haveFilters,
                   titleAddButton: 'Agregar tamaño de ropa',
                   onClearFilters: listaOrdenesNotifier.clearFilters,
-                  onAddButtonPressed: onAddSize,
+                  // onAddButtonPressed: onAddSize,
                   onSearchChanged: listaOrdenesNotifier.setNombre,
                   onSortChange: listaOrdenesNotifier.setSort,
                   filters: [
@@ -96,11 +95,15 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                       return DataRow(
                         cells: [
                           DataCell(Text(ordenServicio.id.toString())),
-                          DataCell(Text(ordenServicio.nombre)),
+                          DataCell(Text(ordenServicio.folio)),
+                          DataCell(Text(ordenServicio.cliente.fullName)),
                           DataCell(Text(ordenServicio.estatus.value)),
+                          DataCell(Text(ordenServicio.metodoPago?.value ?? 'N/A')),
+                          DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
+                          DataCell(Text(ordenServicio.total.toStringAsFixed(2))),
                           DataCell(Text(ordenServicio.fechaCreacion.formatFullDate)),
-                          DataCell(Text(ordenServicio.fechaEliminacion.formatFullDate)),
-                          DataCell(ActionsRow(size: size)),
+                          DataCell(Text(ordenServicio.fechaCierre.formatFullDate)),
+                          DataCell(ActionsRow(ordenServicio: ordenServicio)),
                         ],
                       );
                     },
@@ -115,40 +118,43 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
     );
   }
 
-  void onAddSize() async {
-    final listaOrdenesNotifier = ref.read(sizesViewModelProvider.notifier);
-    // Acción al presionar el botón de agregar tamaño
-    final nombre = await showNombreDialog();
+  // void onAddSize() async {
+  //   final listaOrdenesNotifier = ref.read(listaOrdenesViewModelProvider.notifier);
+  //   // Acción al presionar el botón de agregar tamaño
+  //   final nombre = await showNombreDialog();
 
-    if (nombre == null) return;
-    if (!mounted) return;
+  //   if (nombre == null) return;
+  //   if (!mounted) return;
 
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de agregar el tamaño "$nombre"?',
-    );
+  //   final confirm = await context.showWarningDialog(
+  //     message: '¿Estás seguro de agregar el tamaño "$nombre"?',
+  //   );
 
-    if (confirm == true) {
-      listaOrdenesNotifier.createSize(nombre);
-    }
-  }
+  //   if (confirm == true) {
+  //     listaOrdenesNotifier.createSize(nombre);
+  //   }
+  // }
 
-  Future<String?> showNombreDialog() {
-    const title = 'Nuevo tamaño de ropa';
-    return showDialog<String?>(
-      context: context,
-      builder: (context) {
-        return const NombreDialog(
-          title: title,
-          nombre: '',
-          label: 'Nombre del tamaño',
-          hintText: 'Ej: Chica, Mediana, Kingsize',
-        );
-      },
-    );
-  }
+  // Future<String?> showNombreDialog() {
+  //   const title = 'Nuevo tamaño de ropa';
+  //   return showDialog<String?>(
+  //     context: context,
+  //     builder: (context) {
+  //       return const NombreDialog(
+  //         title: title,
+  //         nombre: '',
+  //         label: 'Nombre del tamaño',
+  //         hintText: 'Ej: Chica, Mediana, Kingsize',
+  //       );
+  //     },
+  //   );
+  // }
 
   void _addErrorListener() {
-    ref.listen(sizesViewModelProvider.select((state) => state.errorMessage), (previous, next) {
+    ref.listen(listaOrdenesViewModelProvider.select((state) => state.errorMessage), (
+      previous,
+      next,
+    ) {
       // Acción al cambiar el estado del notifier
       if (next.isNotEmpty) {
         context.showErrorDialog(next);
@@ -157,7 +163,10 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
   }
 
   void _addSuccessListener() {
-    ref.listen(sizesViewModelProvider.select((state) => state.successMessage), (previous, next) {
+    ref.listen(listaOrdenesViewModelProvider.select((state) => state.successMessage), (
+      previous,
+      next,
+    ) {
       // Acción al cambiar el estado del notifier
       if (next.isNotEmpty) {
         context.showSuccessDialog(next);
@@ -175,7 +184,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
   //     ..text = 'Hola! Este es un correo enviado desde Flutter con SMTP.'
   //     // ..attachments.add(FileAttachment.);
   //     ..html = "<h1>Correo en HTML</h1><p>Enviado desde Flutter 🚀</p>";
-    
+
   //   try {
   //     final sendReport = await send(message, smtpServer);
   //     print('Correo enviado: ${sendReport.toString()}');

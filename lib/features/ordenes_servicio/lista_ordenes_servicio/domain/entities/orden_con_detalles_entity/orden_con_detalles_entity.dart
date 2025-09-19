@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/error/validate_exception.dart';
+import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
@@ -39,6 +40,9 @@ sealed class OrdenConDetallesEntity with _$OrdenConDetallesEntity {
   bool get hasMetodoPago => metodoPago != null;
   bool get isCerrada => estatus == EstatusOrdenType.cerrada;
 
+  String get title => 'Orden: $folio';
+  String get creacion => 'Creada: ${fechaCreacion.formatDate}';
+
   void validate() {
     final errors = <String>[];
 
@@ -51,11 +55,10 @@ sealed class OrdenConDetallesEntity with _$OrdenConDetallesEntity {
     if (hasAdelanto && !hasMetodoPago) {
       errors.add(' - Debe seleccionar un método de pago si hay un adelanto.');
     }
-    
+
     if (errors.isNotEmpty) {
       final unionError = errors.join('\n');
       throw ValidateException(message: unionError);
     }
-
   }
 }

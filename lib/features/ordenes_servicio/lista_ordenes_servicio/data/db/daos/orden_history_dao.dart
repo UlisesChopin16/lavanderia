@@ -58,8 +58,17 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
     query.where(ordenServicio.estatus.equals(filtros.estatus.value));
 
     if (filtros.busqueda.isNotEmpty) {
-      final busqueda = '%${filtros.busqueda.toLowerCase()}%';
-      query.where(ordenServicio.folio.lower().like(busqueda) | cliente.nombres.lower().like(busqueda) | cliente.apellidos.lower().like(busqueda));
+      final tokens = filtros.busqueda.toLowerCase().split(' ');
+
+      query.where(
+        tokens.map((t) =>
+          cliente.nombres.lower().like('%$t%') |
+          cliente.apellidos.lower().like('%$t%') |
+          ordenServicio.folio.lower().like('%$t%')
+        ).reduce((a, b) => a & b)
+      );
+      // final busqueda = '%${filtros.busqueda.toLowerCase()}%';
+      // query.where(ordenServicio.folio.lower().like(busqueda) | cliente.nombres.lower().like(busqueda) | cliente.apellidos.lower().like(busqueda));
     }
 
     if (filtros.metodoPago != null) {

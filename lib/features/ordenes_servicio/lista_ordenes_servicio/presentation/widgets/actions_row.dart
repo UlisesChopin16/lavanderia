@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lavanderia/core/extensions/build_context_ext.dart';
-import 'package:lavanderia/core/types/estatus_type.dart';
-import 'package:lavanderia/features/catalogos/precios/presentation/dialogs/show_precios_dialog.dart';
-import 'package:lavanderia/features/catalogos/presentation/dialogs/nombre_dialog.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
-import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
@@ -24,10 +18,10 @@ class ActionsRow extends ConsumerStatefulWidget {
 }
 
 class _ActionsRowState extends ConsumerState<ActionsRow> {
-  bool get isInactive => ordenServicio.isInactive;
+  bool get isCerrada => ordenServicio.isCerrada;
   bool get isSmall => widget.isSmall;
   OrdenConDetallesEntity get ordenServicio => widget.ordenServicio;
-  String get nombre => ordenServicio.nombre;
+  String get folio => ordenServicio.folio;
 
   @override
   Widget build(BuildContext context) {
@@ -39,104 +33,103 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       actions: [
         DataAction(
           // canPop: false,
-          callbackIndex: onShowConceptos,
+          callbackIndex: () {},
           icon: Icons.visibility,
           isNotEnabled: false,
           color: Colors.blue,
           tooltip: 'Ver conceptos de ropa',
         ),
-        if (!isInactive)
+        if (!isCerrada)
           DataAction(
             color: Colors.yellow,
-            callbackIndex: onEditSize,
+            callbackIndex: () {},
             icon: Icons.edit,
             isNotEnabled: blockUI,
             tooltip: 'Editar tamaño de ropa',
           ),
-        if (!isInactive)
+        if (!isCerrada)
           DataAction(
             color: Colors.red,
-            callbackIndex: onDeleteSize,
+            callbackIndex: () {},
             icon: Icons.delete,
             isNotEnabled: blockUI,
             tooltip: 'Eliminar tamaño de ropa',
           ),
-        if (size.estatus == EstatusType.inactivo)
-          DataAction(
-            color: Colors.green,
-            callbackIndex: onRestoreSize,
-            icon: Icons.restore,
-            isNotEnabled: blockUI,
-            tooltip: 'Activar tamaño de ropa',
-          ),
+        // if (size.estatus == EstatusType.inactivo)
+        //   DataAction(
+        //     color: Colors.green,
+        //     callbackIndex: onRestoreSize,
+        //     icon: Icons.restore,
+        //     isNotEnabled: blockUI,
+        //     tooltip: 'Activar tamaño de ropa',
+        //   ),
       ],
     );
   }
 
-  Future<String?> showNombreDialog() {
-    const title = 'Editar tamaño de ropa';
-    return showDialog<String?>(
-      context: context,
-      builder: (context) {
-        return NombreDialog(
-          title: title,
-          nombre: nombre,
-          label: 'Nombre del tamaño',
-          hintText: 'Ej: Chica, Mediana, Kingsize',
-        );
-      },
-    );
-  }
+  // Future<String?> showNombreDialog() {
+  //   const title = 'Editar tamaño de ropa';
+  //   return showDialog<String?>(
+  //     context: context,
+  //     builder: (context) {
+  //       return NombreDialog(
+  //         title: title,
+  //         nombre: nombre,
+  //         label: 'Nombre del tamaño',
+  //         hintText: 'Ej: Chica, Mediana, Kingsize',
+  //       );
+  //     },
+  //   );
+  // }
 
-  void onShowConceptos() async {
-    // Acción al presionar el botón de ver conceptos
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return ShowPreciosDialog(sizeRopa: size);
-      },
-    );
-  }
+  // void onShowConceptos() async {
+  //   // Acción al presionar el botón de ver conceptos
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return ShowPreciosDialog(sizeRopa: size);
+  //     },
+  //   );
+  // }
 
+  // void onEditSize() async {
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   // Acción al presionar el botón de agregar tamaño
+  //   final nombre = await showNombreDialog();
 
-  void onEditSize() async {
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    // Acción al presionar el botón de agregar tamaño
-    final nombre = await showNombreDialog();
+  //   if (nombre == null) return;
+  //   if (nombre.isEmpty) return;
+  //   if (!mounted) return;
 
-    if (nombre == null) return;
-    if (nombre.isEmpty) return;
-    if (!mounted) return;
+  //   final confirm = await context.showWarningDialog(
+  //     message: '¿Estás seguro de editar este tamaño?',
+  //   );
 
-    final confirm = await context.showWarningDialog(
-      message: '¿Estás seguro de editar este tamaño?',
-    );
+  //   if (confirm == true) {
+  //     sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
+  //   }
+  // }
 
-    if (confirm == true) {
-      sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
-    }
-  }
+  // void onDeleteSize() async {
+  //   final question = '¿Estás seguro de desactivar el tamaño "${size.nombre}"?';
+  //   const message =
+  //       'Al desactivarlo, ya no estará disponible para su uso y se desactivarán todos los conceptos relacionados con él.';
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   final response = await context.showWarningDialog(
+  //     message: '$question\n$message',
+  //   );
+  //   if (response == true) {
+  //     sizeRopaNotifier.desactivateSize(size);
+  //   }
+  // }
 
-  void onDeleteSize() async {
-    final question = '¿Estás seguro de desactivar el tamaño "${size.nombre}"?';
-    const message =
-        'Al desactivarlo, ya no estará disponible para su uso y se desactivarán todos los conceptos relacionados con él.';
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    final response = await context.showWarningDialog(
-      message: '$question\n$message',
-    );
-    if (response == true) {
-      sizeRopaNotifier.desactivateSize(size);
-    }
-  }
-
-  void onRestoreSize() async {
-    final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
-    final response = await context.showWarningDialog(
-      message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
-    );
-    if (response == true) {
-      sizeRopaNotifier.activateSize(size);
-    }
-  }
+  // void onRestoreSize() async {
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   final response = await context.showWarningDialog(
+  //     message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
+  //   );
+  //   if (response == true) {
+  //     sizeRopaNotifier.activateSize(size);
+  //   }
+  // }
 }

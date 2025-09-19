@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
+import 'package:lavanderia/core/utils/icons_manager.dart';
 
 class DatePickerComponent extends StatefulWidget {
   final DateTime? currentDate;
@@ -56,7 +57,7 @@ class _DatePickerComponentState extends State<DatePickerComponent> {
           maxWidth: widget.width ?? 160,
         ),
         prefixIcon: const Icon(
-          Icons.calendar_month,
+          IconsManager.calendar,
         ),
       ),
       onTap: () async {

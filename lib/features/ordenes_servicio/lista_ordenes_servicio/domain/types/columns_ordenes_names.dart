@@ -1,6 +1,7 @@
 enum ColumnsOrdenesNames {
   id(title: 'ID'),
   folio(title: 'Folio'),
+  cliente(title: 'Cliente'),
   estatus(title: 'Estatus'),
   metodoPago(title: 'Método de Pago'),
   restante(title: 'Restante'),
