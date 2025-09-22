@@ -21,7 +21,7 @@ extension HistoryItemModelExt on HistoryItemModel {
       id: id,
       ordenId: ordenId,
       monto: monto,
-      metodoPago: MetodoPagoType.fromString(metodoPago),
+      metodoPago: metodoPago.isNotEmpty ? MetodoPagoType.fromString(metodoPago) : null,
       fecha: fecha,
     );
   }

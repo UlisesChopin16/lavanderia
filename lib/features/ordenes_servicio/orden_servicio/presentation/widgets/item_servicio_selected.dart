@@ -134,7 +134,7 @@ class ItemServicioSelected extends ConsumerWidget {
               spacing: 10,
               runSpacing: 10,
               alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.start,
               runAlignment: WrapAlignment.end,
               textDirection: isSmall ? TextDirection.rtl : TextDirection.ltr,
               children: [
@@ -146,21 +146,22 @@ class ItemServicioSelected extends ConsumerWidget {
                   changeDate: (value) => ordenNotifier.setFechaEntrega(index, value!),
                 ),
                 Column(
-                  spacing: 5,
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      '\$${item.importe.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     ChangeCantidad(
                       cantidad: item.cantidad,
                       unidad: item.unidad,
                       onChanged: (newCantidad) {
                         ordenNotifier.setCantidad(index, newCantidad);
                       },
+                    ),
+                    Text(
+                      'Total: \$${item.importe.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

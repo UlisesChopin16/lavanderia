@@ -5,6 +5,8 @@ part 'history_item_entity.freezed.dart';
 
 @freezed
 sealed class HistoryItemEntity with _$HistoryItemEntity {
+  const HistoryItemEntity._();
+
   const factory HistoryItemEntity({
     @Default(-1) int id,
     @Default(-1) int ordenId,
@@ -12,4 +14,6 @@ sealed class HistoryItemEntity with _$HistoryItemEntity {
     @Default(null) MetodoPagoType? metodoPago, // "Efectivo", "Tarjeta", "Transferencia"
     @Default(null) DateTime? fecha,
   }) = _HistoryItemEntity;
+
+  String get metodoPagoString => 'Metodo: ${metodoPago?.value ?? 'N/A'}';
 }

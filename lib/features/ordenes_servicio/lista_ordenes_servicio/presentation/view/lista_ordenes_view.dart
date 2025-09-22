@@ -4,6 +4,7 @@ import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
+import 'package:lavanderia/shared/widgets/date_range_picker.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 import '../widgets/widgets.dart';
@@ -37,7 +38,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
 
     return Center(
       child: SizedBox(
-        width: 1000,
+        width: 1500,
         child: SingleChildScrollView(
           child: Card(
             margin: const EdgeInsets.all(24),
@@ -50,20 +51,18 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                   sortColumnIndex: filtros.ordenamiento.index,
                   haveFilters: filtros.haveFilters,
                   titleAddButton: 'Agregar tamaño de ropa',
-                  onClearFilters: listaOrdenesNotifier.clearFilters,
+                  onClearFilters: listaOrdenesNotifier.clearFiltros,
                   // onAddButtonPressed: onAddSize,
                   onSearchChanged: listaOrdenesNotifier.setNombre,
                   onSortChange: listaOrdenesNotifier.setSort,
                   filters: [
-                    // for (var estatus in listEstatus)
-                    //   FilterChip(
-                    //     label: Text(estatus.value),
-                    //     selected: filtros.estatus == estatus,
-                    //     onSelected: (isSelected) {
-                    //       // Acción al seleccionar/deseleccionar el filtro
-                    //       listaOrdenesNotifier.setEstatus(estatus);
-                    //     },
-                    //   ),
+                    DateRangePicker(
+                      selectedDates: filtros.fechas,
+                      changeDate: listaOrdenesNotifier.setFechas,
+                      labelText: 'Fechas de creación',
+                      showDelete: !filtros.fechasAreEquals,
+                      onDelete: listaOrdenesNotifier.clearFechas,
+                    ),
                     FiltroOrden(
                       ordenamiento: filtros.ordenamiento,
                       ascendente: filtros.ascendente,
@@ -98,9 +97,9 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                           DataCell(Text(ordenServicio.folio)),
                           DataCell(Text(ordenServicio.cliente.fullName)),
                           DataCell(Text(ordenServicio.estatus.value)),
-                          DataCell(Text(ordenServicio.metodoPago?.value ?? 'N/A')),
-                          DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
                           DataCell(Text(ordenServicio.total.toStringAsFixed(2))),
+                          DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
+                          DataCell(Text(ordenServicio.metodoPago?.value ?? 'N/A')),
                           DataCell(Text(ordenServicio.fechaCreacion.formatFullDate)),
                           DataCell(Text(ordenServicio.fechaCierre.formatFullDate)),
                           DataCell(ActionsRow(ordenServicio: ordenServicio)),
@@ -117,38 +116,6 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
       ),
     );
   }
-
-  // void onAddSize() async {
-  //   final listaOrdenesNotifier = ref.read(listaOrdenesViewModelProvider.notifier);
-  //   // Acción al presionar el botón de agregar tamaño
-  //   final nombre = await showNombreDialog();
-
-  //   if (nombre == null) return;
-  //   if (!mounted) return;
-
-  //   final confirm = await context.showWarningDialog(
-  //     message: '¿Estás seguro de agregar el tamaño "$nombre"?',
-  //   );
-
-  //   if (confirm == true) {
-  //     listaOrdenesNotifier.createSize(nombre);
-  //   }
-  // }
-
-  // Future<String?> showNombreDialog() {
-  //   const title = 'Nuevo tamaño de ropa';
-  //   return showDialog<String?>(
-  //     context: context,
-  //     builder: (context) {
-  //       return const NombreDialog(
-  //         title: title,
-  //         nombre: '',
-  //         label: 'Nombre del tamaño',
-  //         hintText: 'Ej: Chica, Mediana, Kingsize',
-  //       );
-  //     },
-  //   );
-  // }
 
   void _addErrorListener() {
     ref.listen(listaOrdenesViewModelProvider.select((state) => state.errorMessage), (

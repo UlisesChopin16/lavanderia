@@ -1,6 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
+import 'package:lavanderia/core/types/range_dates_types.dart';
+import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/history_item/history_item_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/usecases/usecases.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,14 +21,19 @@ sealed class ListaOrdenesModel with _$ListaOrdenesModel {
   }) = _ListaOrdenesModel;
 }
 
-
 @riverpod
 class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
   final _observeAll = instance<ObserveAllOrders>();
+  final _obtainHistory = instance<ObtainHistory>();
+  final rangeMonth = RangeDatesTypes.month.range;
 
   @override
   ListaOrdenesModel build() {
-    return const ListaOrdenesModel();
+    return ListaOrdenesModel(
+      filtros: FiltrosOrdenes(
+        fechas: rangeMonth,
+      ),
+    );
   }
 
   void setNombre(String nombre) {
@@ -38,8 +46,20 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
     state = state.copyWith(filtros: filtros);
   }
 
-  void clearFilters() {
-    state = state.copyWith(filtros: const FiltrosOrdenes());
+  void setFechas(List<DateTime?> fechas) {
+    state = state.copyWith(
+      filtros: state.filtros.copyWith(
+        fechas: fechas,
+      ),
+    );
+  }
+
+  void clearFechas() {
+    state = state.copyWith(
+      filtros: state.filtros.copyWith(
+        fechas: rangeMonth,
+      ),
+    );
   }
 
   void setSort(bool sort) {
@@ -59,8 +79,17 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
     );
   }
 
+  void clearFiltros() {
+    state = state.copyWith(filtros: FiltrosOrdenes(fechas: rangeMonth));
+  }
+
   Stream<List<OrdenConDetallesEntity>> observeOrders() {
     return _observeAll.call(state.filtros);
   }
 
+  Future<List<HistoryItemEntity>> obtainHistory(int idOrden) async {
+    final history = await _obtainHistory.call(idOrden);
+    Printer.e('history length: $history');
+    return history;
+  }
 }

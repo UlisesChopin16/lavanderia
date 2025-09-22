@@ -2,11 +2,14 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
+import 'package:lavanderia/core/types/range_dates_types.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/shared/dialogs/base_dialog.dart';
+import 'package:lavanderia/shared/widgets/delete_button.dart';
 
 class DateRangePicker extends StatefulWidget {
+  final bool? showDelete;
   final List<DateTime?> selectedDates;
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -14,10 +17,10 @@ class DateRangePicker extends StatefulWidget {
   final VoidCallback? onDelete;
   final double? width;
   final String? labelText;
-  final bool showTodayButton;
 
   const DateRangePicker({
     super.key,
+    this.showDelete,
     this.changeDate,
     this.onDelete,
     this.selectedDates = const [],
@@ -25,7 +28,6 @@ class DateRangePicker extends StatefulWidget {
     this.lastDate,
     this.width,
     this.labelText,
-    this.showTodayButton = false,
   });
 
   @override
@@ -34,7 +36,23 @@ class DateRangePicker extends StatefulWidget {
 
 class _DateRangePickerState extends State<DateRangePicker> {
   final TextEditingController controller = TextEditingController();
-  late List<DateTime?> selectedDates = widget.selectedDates;
+  List<DateTime?> get selectedDates => widget.selectedDates;
+
+  Widget? get leading {
+    // Decide si debe mostrar el botón de borrar
+    final shouldShowDelete = widget.showDelete ?? selectedDates.isNotEmpty;
+
+    if (shouldShowDelete) {
+      return DeleteButton(
+        onPressed: () {
+          setState(controller.clear);
+          widget.onDelete?.call();
+        },
+      );
+    }
+
+    return const Icon(IconsManager.calendarRange);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +76,10 @@ class _DateRangePickerState extends State<DateRangePicker> {
           maxHeight: 40,
           maxWidth: widget.width ?? 230,
         ),
-        prefixIcon: const Icon(
-          IconsManager.calendarRange,
-        ),
+        // prefixIcon: const Icon(
+        //   IconsManager.calendarRange,
+        // ),
+        prefixIcon: leading,
       ),
       onTap: () async {
         FocusScope.of(context).unfocus();
@@ -71,21 +90,6 @@ class _DateRangePickerState extends State<DateRangePicker> {
           calculateLastDate,
         ) = calculateDates();
 
-        // var results = await showCalendarDatePicker2Dialog(
-        //   context: context,
-        //   config: CalendarDatePicker2WithActionButtonsConfig(
-        //     calendarType: CalendarDatePicker2Type.range,
-        //     firstDate: calculateFirstDate,
-        //     lastDate: calculateLastDate,
-        //     centerAlignModePicker: true,
-        //     selectedDayHighlightColor: Theme.of(context).colorScheme.primary,
-        //     closeDialogOnCancelTapped: true,
-        //     closeDialogOnOkTapped: true,
-        //   ),
-        //   dialogSize: const Size(325, 400),
-        //   value: selectedDates,
-        //   borderRadius: BorderRadius.circular(15),
-        // );
         await showDialog(
           // barrierDismissible: false,
           context: context,
@@ -95,29 +99,11 @@ class _DateRangePickerState extends State<DateRangePicker> {
               lastDate: calculateLastDate,
               selectedDates: selectedDates,
               changeDate: (dates) {
-                setState(() {
-                  selectedDates = dates;
-                });
                 widget.changeDate?.call(dates);
               },
             );
           },
         );
-
-        // await showDialog(
-        //   // barrierDismissible: false,
-        //   context: context,
-        //   builder: (context) {
-        //     return CalendarDialog(
-        //       currentDate: currentDate,
-        //       calculateFirstDate: calculateFirstDate,
-        //       calculateLastDate: calculateLastDate,
-        //       changeDate: (date) {
-        //         widget.changeDate(date);
-        //       },
-        //     );
-        //   },
-        // );
       },
     );
   }
@@ -181,6 +167,7 @@ class RangeDialog extends StatefulWidget {
 class _RangeDialogState extends State<RangeDialog> {
   late List<DateTime?> selectedDates = widget.selectedDates;
   ValueChanged<List<DateTime?>> get onChange => widget.changeDate!;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -193,26 +180,78 @@ class _RangeDialogState extends State<RangeDialog> {
       content: SizedBox(
         width: 325,
         // height: 400,
-        child: CalendarDatePicker2(
-          config: CalendarDatePicker2Config(
-            calendarType: CalendarDatePicker2Type.range,
-            rangeBidirectional: true,
-            firstDate: widget.firstDate,
-            lastDate: widget.lastDate,
-            centerAlignModePicker: true,
-            selectedDayHighlightColor: Theme.of(context).colorScheme.primary,
-            allowSameValueSelection: true,
-            // selectableDayPredicate: (day) => day,
-          ),
-          value: selectedDates,
-          onValueChanged: (dates) {
-            setState(() {
-              Printer.i(dates);
-              selectedDates = dates;
-            });
-          },
+        child: Column(
+          children: [
+            CalendarDatePicker2(
+              config: CalendarDatePicker2Config(
+                calendarType: CalendarDatePicker2Type.range,
+                rangeBidirectional: true,
+                firstDate: widget.firstDate,
+                lastDate: widget.lastDate,
+                centerAlignModePicker: true,
+                selectedDayHighlightColor: Theme.of(context).colorScheme.primary,
+                allowSameValueSelection: true,
+                // selectableDayPredicate: (day) => day,
+              ),
+              value: selectedDates,
+              onValueChanged: (dates) {
+                setState(() {
+                  Printer.i(dates);
+                  selectedDates = dates;
+                  selectedIndex = 0;
+                });
+              },
+            ),
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 10,
+              runSpacing: 10,
+
+              children: [
+                ...List.generate(RangeDatesTypes.values.length, (index) {
+                  final rangeType = RangeDatesTypes.values[index];
+                  final newIndex = index + 1;
+                  return SelectedTextButton(
+                    isSelected: selectedIndex == newIndex,
+                    text: rangeType.title,
+                    onPressed: () {
+                      setState(() {
+                        selectedDates = rangeType.range;
+                        selectedIndex = newIndex;
+                      });
+                    },
+                  );
+                }),
+              ],
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class SelectedTextButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final bool isSelected;
+  final String text;
+  const SelectedTextButton({
+    super.key,
+    required this.onPressed,
+    required this.isSelected,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: isSelected
+          ? TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            )
+          : null,
+      onPressed: onPressed,
+      child: Text(text),
     );
   }
 }

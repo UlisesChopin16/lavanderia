@@ -3,9 +3,9 @@ enum ColumnsOrdenesNames {
   folio(title: 'Folio'),
   cliente(title: 'Cliente'),
   estatus(title: 'Estatus'),
-  metodoPago(title: 'Método de Pago'),
-  restante(title: 'Restante'),
   total(title: 'Total'),
+  restante(title: 'Restante'),
+  metodoPago(title: 'Método de Pago'),
   fechaCreacion(title: 'Fecha de Creación'),
   fechaCierre(title: 'Fecha de Cierre');
 

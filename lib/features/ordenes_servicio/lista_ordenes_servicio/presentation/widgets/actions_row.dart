@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/dialogs/show_history.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
 
 class ActionsRow extends ConsumerStatefulWidget {
@@ -33,11 +34,11 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       actions: [
         DataAction(
           // canPop: false,
-          callbackIndex: () {},
-          icon: Icons.visibility,
+          callbackIndex: showHistoryOrder,
+          icon: Icons.history_rounded,
           isNotEnabled: false,
           color: Colors.blue,
-          tooltip: 'Ver conceptos de ropa',
+          tooltip: 'Ver historial de la orden',
         ),
         if (!isCerrada)
           DataAction(
@@ -67,20 +68,15 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
     );
   }
 
-  // Future<String?> showNombreDialog() {
-  //   const title = 'Editar tamaño de ropa';
-  //   return showDialog<String?>(
-  //     context: context,
-  //     builder: (context) {
-  //       return NombreDialog(
-  //         title: title,
-  //         nombre: nombre,
-  //         label: 'Nombre del tamaño',
-  //         hintText: 'Ej: Chica, Mediana, Kingsize',
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> showHistoryOrder() async {
+    // const title = 'Historial de la orden';
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return ShowHistory(orden: ordenServicio);
+      },
+    );
+  }
 
   // void onShowConceptos() async {
   //   // Acción al presionar el botón de ver conceptos

@@ -4,10 +4,11 @@ import 'package:go_router/go_router.dart';
 /// This dialog return a [Future] that resolves to a boolean value indicating the user's action.
 class BaseDialog extends StatelessWidget {
   final bool actionVisible;
+  final bool requestFocus;
+  final bool showCloseButton;
   final String title;
   final String closeText;
   final String actionText;
-  final bool requestFocus;
   final VoidCallback? onActionPressed;
   final Widget content;
   final Widget? icon;
@@ -17,6 +18,7 @@ class BaseDialog extends StatelessWidget {
     required this.title,
     required this.content,
     this.actionVisible = true,
+    this.showCloseButton = true,
     this.actionText = 'Aceptar',
     this.closeText = 'Cerrar',
     this.icon,
@@ -32,16 +34,17 @@ class BaseDialog extends StatelessWidget {
       title: Text(title),
       content: content,
       actions: [
-        TextButton(
-          autofocus: actionVisible ? false : requestFocus,
-          onPressed: () {
-            context.pop();
-          },
-          child: Text(
-            closeText,
-            style: labelLarge?.copyWith(color: Colors.redAccent),
+        if (showCloseButton)
+          TextButton(
+            autofocus: actionVisible ? false : requestFocus,
+            onPressed: () {
+              context.pop();
+            },
+            child: Text(
+              closeText,
+              style: labelLarge?.copyWith(color: Colors.redAccent),
+            ),
           ),
-        ),
         if (actionVisible)
           FilledButton(
             autofocus: requestFocus,

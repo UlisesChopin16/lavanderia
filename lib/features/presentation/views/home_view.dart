@@ -39,6 +39,7 @@ class HomeView extends HookConsumerWidget {
               minWidth: 100,
               leading: const SwitchUnlockUi(),
               trailing: const SwitchThemeMode(),
+              scrollable: true,
               destinations: [
                 for (var tab in tabs)
                   NavigationRailDestination(
@@ -52,7 +53,7 @@ class HomeView extends HookConsumerWidget {
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(
             child: tabs[index].route.view,
-          )
+          ),
         ],
       ),
     );

@@ -9,6 +9,7 @@ import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entit
 export 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
 export 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
+export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
 
 part 'orden_con_detalles_entity.freezed.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/services.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 
-class ChangeCantidad extends HookWidget {
+class ChangeCantidad extends StatefulWidget {
   const ChangeCantidad({
     super.key,
     required this.cantidad,
@@ -16,13 +16,26 @@ class ChangeCantidad extends HookWidget {
   final UnitType unidad;
   final Color? color;
 
-  bool get isKg => unidad == UnitType.kilo;
+  @override
+  State<ChangeCantidad> createState() => _ChangeCantidadState();
+}
+
+class _ChangeCantidadState extends State<ChangeCantidad> {
+  final controller = TextEditingController();
+  bool get isKg => widget.unidad == UnitType.kilo;
+  double get cantidad => widget.cantidad;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.text = isKg ? cantidad.toStringAsFixed(2) : cantidad.toStringAsFixed(0);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController();
-    final backgroundColor = color ?? Theme.of(context).colorScheme.surfaceContainer;
-    controller.text = isKg ? cantidad.toStringAsFixed(2) : cantidad.toStringAsFixed(0);
+    final backgroundColor = widget.color ?? Theme.of(context).colorScheme.surfaceContainer;
+    // controller.text = isKg ? cantidad.toStringAsFixed(2) : cantidad.toStringAsFixed(0);
+
     return Row(
       spacing: 5,
       mainAxisSize: MainAxisSize.min,
@@ -33,7 +46,12 @@ class ChangeCantidad extends HookWidget {
           child: InkWell(
             onTap: () {
               // Decrease quantity
-              if (onChanged != null) onChanged!(cantidad - 1);
+              final newCantidad = cantidad - 1;
+              if (widget.onChanged != null) widget.onChanged!(newCantidad);
+              controller.text = isKg
+                  ? (newCantidad).toStringAsFixed(2)
+                  : (newCantidad).toStringAsFixed(0);
+
             },
             child: Card(
               margin: EdgeInsets.zero,
@@ -47,12 +65,12 @@ class ChangeCantidad extends HookWidget {
           ),
         ),
         TextFormField(
-          readOnly: !isKg,
+          // readOnly: !isKg,
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 12),
 
           decoration: InputDecoration(
-            labelText: unidad.value,
+            labelText: widget.unidad.value,
             constraints: const BoxConstraints(maxWidth: 70, maxHeight: 30),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -72,19 +90,23 @@ class ChangeCantidad extends HookWidget {
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
-            // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
+            if (!isKg) FilteringTextInputFormatter.digitsOnly,
           ],
           onChanged: (value) {
             final newCantidad = double.tryParse(value) ?? 1.0;
-            if (onChanged != null && newCantidad > 0) {
-              onChanged!(newCantidad);
+            if (widget.onChanged != null && newCantidad > 0) {
+              widget.onChanged!(newCantidad);
             }
           },
         ),
         InkWell(
           onTap: () {
             // Increase quantity
-            if (onChanged != null) onChanged!(cantidad + 1);
+            final newCantidad = cantidad + 1;
+            if (widget.onChanged != null) widget.onChanged!(newCantidad);
+            controller.text = isKg
+                ? (newCantidad).toStringAsFixed(2)
+                : (newCantidad).toStringAsFixed(0);
           },
           child: Card(
             margin: EdgeInsets.zero,

@@ -239,9 +239,11 @@ class OrdenServicioView extends _$OrdenServicioView {
         state.orden.validate();
         final total = state.total;
         final restante = state.restante;
+        final estatus = restante == 0.0 ? EstatusOrdenType.pagado : EstatusOrdenType.enCurso;
         final newOrder = state.orden.copyWith(
           total: total,
           restante: restante,
+          estatus: estatus,
           metodoPago: state.orden.hasAdelanto ? state.orden.metodoPago : null,
         );
 

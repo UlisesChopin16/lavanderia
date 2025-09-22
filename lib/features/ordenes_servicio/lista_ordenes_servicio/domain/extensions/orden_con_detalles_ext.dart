@@ -5,7 +5,7 @@ import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_model/orden_con_detalles_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
+
 import 'item_con_precio_ext.dart';
 // import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
 // import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_model/precio_con_detalles_model.dart';
@@ -37,7 +37,9 @@ extension OrdenConDetallesModelX on OrdenConDetallesModel {
       id: id,
       folio: folio,
       cliente: cliente.toEntity(),
-      metodoPago: (metodoPago == null || metodoPago!.isEmpty) ? null : MetodoPagoType.fromString(metodoPago!),
+      metodoPago: (metodoPago == null || metodoPago!.isEmpty)
+          ? null
+          : MetodoPagoType.fromString(metodoPago!),
       descripcion: descripcion ?? '',
       adelantoPago: adelantoPago,
       total: total,

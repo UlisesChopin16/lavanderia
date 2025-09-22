@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';

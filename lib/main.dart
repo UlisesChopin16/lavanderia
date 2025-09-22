@@ -1,16 +1,17 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:lavanderia/shared/widgets/date_range_picker.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_single_instance/flutter_single_instance.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/app/routes/app_routes.dart';
 import 'package:lavanderia/app/theme/theme_app.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_single_instance/flutter_single_instance.dart';
-// import 'package:lavanderia/shared/widgets/date_range_picker.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,6 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await windowManager.ensureInitialized();
   final isFirstInstance = await FlutterSingleInstance().isFirstInstance();
-
   if (isFirstInstance) {
     runApp(const ProviderScope(child: MyApp()));
   } else {
@@ -34,7 +34,6 @@ Future<void> main() async {
 
     exit(0);
   }
-
 
   // runApp(const ProviderScope(child: MyApp()));
 }

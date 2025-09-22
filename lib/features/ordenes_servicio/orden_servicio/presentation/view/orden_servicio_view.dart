@@ -53,7 +53,10 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
           padding: const EdgeInsets.all(8.0),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final height = constraints.maxHeight - 20;
+              double height = constraints.maxHeight - 20;
+              if (height < 540) {
+                height = 540;
+              }
               return SingleChildScrollView(
                 child: Center(
                   child: Wrap(
@@ -201,54 +204,57 @@ class CardClientInfo extends ConsumerWidget {
               const Gap(5),
               // const Spacer(),
               Expanded(
-                flex: 2,
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SelectMetodoPago(
-                        metodoPago: metodoPago,
-                        onChange: (value) {
-                          ordenNotifier.setMetodoPago(value);
-                        },
-                      ),
-                    ),
-                    const AdelantoComponent(),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Total: \$${total.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: SelectMetodoPago(
+                            metodoPago: metodoPago,
+                            onChange: (value) {
+                              ordenNotifier.setMetodoPago(value);
+                            },
+                          ),
                         ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Restante: \$${restante.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        const AdelantoComponent(),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Total: \$${total.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Restante: \$${restante.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            labelText: 'Notas',
+                            hintText: 'Notas de la orden de servicio',
+                            prefixIcon: Icon(Icons.note_alt_rounded),
+                          ),
+                          onChanged: ordenNotifier.setDescripcion,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-              const Gap(5),
-              TextField(
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Notas',
-                  hintText: 'Notas de la orden de servicio',
-                  prefixIcon: Icon(Icons.note_alt_rounded),
-                ),
-                onChanged: ordenNotifier.setDescripcion,
               ),
               const Divider(),
               Align(
@@ -314,7 +320,7 @@ class AdelantoComponent extends HookConsumerWidget {
         decoration: InputDecoration(
           labelText: 'Adelanto',
           prefixIcon: const Icon(Icons.attach_money),
-          constraints: const BoxConstraints(maxWidth: 150),
+          constraints: const BoxConstraints(maxWidth: 200),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/orden_history.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_entry/orden_con_detalles_entry.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
+
 import '../../../../../../core/database/app_database.dart';
 
 part 'orden_history_dao.g.dart';
@@ -40,12 +41,13 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
     final query = select(ordenServicio).join([
       innerJoin(
         ordenHistory,
-        ordenHistory.ordenId.equalsExp(ordenServicio.id) & ordenHistory.fecha.equalsExp(ordenServicio.fechaActualizacion)
+        ordenHistory.ordenId.equalsExp(ordenServicio.id) &
+            ordenHistory.fecha.equalsExp(ordenServicio.fechaActualizacion),
       ),
       innerJoin(
         cliente,
         cliente.id.equalsExp(ordenServicio.clienteId),
-      )
+      ),
     ]);
 
     return query;
@@ -55,17 +57,22 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
     final query = queryJoined();
 
     // Apply filters
-    query.where(ordenServicio.estatus.equals(filtros.estatus.value));
+    if (filtros.estatus != EstatusOrdenType.todos) {
+      query.where(ordenServicio.estatus.equals(filtros.estatus.value));
+    }
 
     if (filtros.busqueda.isNotEmpty) {
       final tokens = filtros.busqueda.toLowerCase().split(' ');
 
       query.where(
-        tokens.map((t) =>
-          cliente.nombres.lower().like('%$t%') |
-          cliente.apellidos.lower().like('%$t%') |
-          ordenServicio.folio.lower().like('%$t%')
-        ).reduce((a, b) => a & b)
+        tokens
+            .map(
+              (t) =>
+                  cliente.nombres.lower().like('%$t%') |
+                  cliente.apellidos.lower().like('%$t%') |
+                  ordenServicio.folio.lower().like('%$t%'),
+            )
+            .reduce((a, b) => a & b),
       );
       // final busqueda = '%${filtros.busqueda.toLowerCase()}%';
       // query.where(ordenServicio.folio.lower().like(busqueda) | cliente.nombres.lower().like(busqueda) | cliente.apellidos.lower().like(busqueda));
@@ -76,18 +83,24 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
     }
 
     if (filtros.fechas.isNotEmpty) {
-      final start = filtros.fechas[0];
-      final end = filtros.fechas.length > 1 ? filtros.fechas[1] : null;
+      final filtrosLength = filtros.fechas.length;
+      final isMoreOne = filtrosLength > 1;
 
-      if (start != null && end != null) {
+      final start = filtros.fechas[0];
+      final end = isMoreOne ? filtros.fechas[1] : null;
+      final newEnd = end?.add(const Duration(days: 1)).subtract(const Duration(milliseconds: 1));
+
+      if (start != null && newEnd != null) {
         // Filter between two dates
-        query.where(ordenServicio.fechaCreacion.isBetweenValues(start, end));
+        query.where(
+          ordenServicio.fechaCreacion.isBetweenValues(start, newEnd),
+        );
       } else if (start != null) {
         // Filter from start date onwards
         query.where(ordenServicio.fechaCreacion.isBiggerOrEqualValue(start));
-      } else if (end != null) {
+      } else if (newEnd != null) {
         // Filter up to end date
-        query.where(ordenServicio.fechaCreacion.isSmallerOrEqualValue(end));
+        query.where(ordenServicio.fechaCreacion.isSmallerOrEqualValue(newEnd));
       }
     }
 
@@ -102,6 +115,11 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
       if (filtros.ordenamiento == ColumnsOrdenesNames.estatus)
         OrderingTerm(
           expression: ordenServicio.estatus,
+          mode: mode,
+        ),
+      if (filtros.ordenamiento == ColumnsOrdenesNames.cliente)
+        OrderingTerm(
+          expression: cliente.nombres,
           mode: mode,
         ),
       if (filtros.ordenamiento == ColumnsOrdenesNames.fechaCierre)

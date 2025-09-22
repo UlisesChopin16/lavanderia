@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 enum EstatusOrdenType {
+  todos(
+    value: "Todos",
+    icon: Icons.list_rounded,
+  ),
   enCurso(
     value: "En curso",
     icon: Icons.pending_actions_rounded,
