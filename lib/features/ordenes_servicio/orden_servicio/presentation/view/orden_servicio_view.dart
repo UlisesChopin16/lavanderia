@@ -25,6 +25,8 @@ class OrdenServicioView extends ConsumerStatefulWidget {
 }
 
 class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
+  // final globalKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +113,36 @@ class _OrdenServicioViewState extends ConsumerState<OrdenServicioView> {
     });
   }
 
+  // Create an image from a widget
+  // ElevatedButton.icon(
+  //   onPressed: () async {
+  //     try {
+  //       RenderRepaintBoundary boundary =
+  //           globalKey.currentContext!.findRenderObject()
+  //               as RenderRepaintBoundary;
+
+  //       // 4K: ancho típico 3840px → depende de tu widget base
+  //       double pixelRatio = 8.0; // escala respecto a la pantalla
+
+  //       ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+  //       ByteData? byteData = await image.toByteData(
+  //         format: ui.ImageByteFormat.png,
+  //       );
+
+  //       Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+  //       // Guardar como archivo
+  //       final dir = await getApplicationDocumentsDirectory();
+  //       final file = File(p.join(dir.path, 'image4k.png'));
+  //       await file.writeAsBytes(pngBytes);
+  //     } on Exception catch (e, s) {
+  //       // TODO
+  //       Printer.e('e: $e s: $s');
+  //     }
+  //   },
+  //   icon: const Icon(Icons.refresh),
+  //   label: const Text('Nueva orden'),
+  // ),
   Future<void> sendMail(ClienteEntity cliente) async {
     final smtpServer = ConstantsManager.smtpServer;
     final mail = ConstantsManager.mailUsername;

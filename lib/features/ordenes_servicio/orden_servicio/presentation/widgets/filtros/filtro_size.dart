@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/core/utils/constants_manager.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/view_model/select_price_view_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/select_items/view_model/select_price_view_model.dart';
 import 'package:lavanderia/shared/widgets/dropdown_menu_base.dart';
 
 class FiltroSize extends HookConsumerWidget {

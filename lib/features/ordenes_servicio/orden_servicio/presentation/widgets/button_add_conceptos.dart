@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/select_price_dialog.dart';
+import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/select_items/select_price_dialog.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/view/view_model/orden_servicio_view_model.dart';
 
 class ButtonAddConceptos extends ConsumerWidget {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/view_model/select_price_view_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/select_items/view_model/select_price_view_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/widgets/item_servicio_list.dart';
 import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 import 'package:lavanderia/shared/widgets/button_clear_filters.dart';
 
-import '../widgets/filtros/filtros.dart';
+import '../../widgets/filtros/filtros.dart';
 
 class SelectPriceDialog extends ConsumerStatefulWidget {
   final List<ItemConPrecioEntity> itemsSelected;
