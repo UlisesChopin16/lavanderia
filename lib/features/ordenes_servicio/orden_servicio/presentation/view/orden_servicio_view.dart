@@ -293,7 +293,11 @@ class CardClientInfo extends ConsumerWidget {
                 alignment: Alignment.centerRight,
                 child: FilledButton(
                   onPressed: () async {
-                    ordenNotifier.createOrden();
+                    ordenNotifier.createOrden(
+                      onShow: (orden) {
+                        
+                      },
+                    );
                     // final hasCliente = ref.read(ordenServicioViewProvider).orden.hasCliente;
                     // if (!hasCliente) {
                     //   context.showErrorDialog(

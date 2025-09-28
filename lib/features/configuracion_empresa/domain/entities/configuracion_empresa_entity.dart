@@ -23,21 +23,22 @@ sealed class ConfiguracionEmpresaEntity with _$ConfiguracionEmpresaEntity {
   }) = _ConfiguracionEmpresaEntity;
 
   factory ConfiguracionEmpresaEntity.fromModel(
-          ConfiguracionEmpresaModel config, DireccionModel direccion) =>
-      ConfiguracionEmpresaEntity(
-        id: config.id,
-        nombre: config.nombre,
-        telefono: config.telefono,
-        correo: config.correo,
-        paginaWeb: config.paginaWeb,
-        logo: config.logo ?? '',
-        color: config.color,
-        password: config.password,
-        direccion: DireccionEntity.fromModel(direccion),
-        fechaCreacion: config.fechaCreacion,
-        fechaActualizacion: config.fechaActualizacion,
-        fechaEliminacion: config.fechaEliminacion,
-      );
+    ConfiguracionEmpresaModel config,
+    DireccionModel direccion,
+  ) => ConfiguracionEmpresaEntity(
+    id: config.id,
+    nombre: config.nombre,
+    telefono: config.telefono,
+    correo: config.correo,
+    paginaWeb: config.paginaWeb,
+    logo: config.logo ?? '',
+    color: config.color,
+    password: config.password,
+    direccion: DireccionEntity.fromModel(direccion),
+    fechaCreacion: config.fechaCreacion,
+    fechaActualizacion: config.fechaActualizacion,
+    fechaEliminacion: config.fechaEliminacion,
+  );
   // bool get isValid {
   //   return nombre.trim().isNotEmpty &&
   //       telefono.trim().isNotEmpty &&
@@ -84,17 +85,22 @@ sealed class DireccionEntity with _$DireccionEntity {
   }) = _DireccionEntity;
 
   factory DireccionEntity.fromModel(DireccionModel direccion) => DireccionEntity(
-        id: direccion.id,
-        empresaId: direccion.empresaId,
-        calle: direccion.calle,
-        numeroExterior: direccion.numeroExterior,
-        numeroInterior: direccion.numeroInterior ?? '',
-        colonia: direccion.colonia,
-        codigoPostal: direccion.codigoPostal,
-        ciudad: direccion.ciudad,
-        estado: direccion.estado,
-        fechaCreacion: direccion.fechaCreacion,
-        fechaActualizacion: direccion.fechaActualizacion,
-        fechaEliminacion: direccion.fechaEliminacion,
-      );
+    id: direccion.id,
+    empresaId: direccion.empresaId,
+    calle: direccion.calle,
+    numeroExterior: direccion.numeroExterior,
+    numeroInterior: direccion.numeroInterior ?? '',
+    colonia: direccion.colonia,
+    codigoPostal: direccion.codigoPostal,
+    ciudad: direccion.ciudad,
+    estado: direccion.estado,
+    fechaCreacion: direccion.fechaCreacion,
+    fechaActualizacion: direccion.fechaActualizacion,
+    fechaEliminacion: direccion.fechaEliminacion,
+  );
+
+  String get direccionCompleta {
+    final numeroInt = numeroInterior.trim().isNotEmpty ? ' Int. $numeroInterior,' : '';
+    return '$calle, No. $numeroExterior,$numeroInt $colonia, $ciudad, $estado, C.P. $codigoPostal';
+  }
 }

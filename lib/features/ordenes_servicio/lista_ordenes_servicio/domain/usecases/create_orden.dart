@@ -8,8 +8,7 @@ class CreateOrden {
 
   CreateOrden(this.repository);
 
-  Future<void> call(OrdenConDetallesEntity orden) async {
+  Future<OrdenConDetallesEntity> call(OrdenConDetallesEntity orden) async {
     return await repository.insertOrdenWithItems(orden);
   }
-
 }

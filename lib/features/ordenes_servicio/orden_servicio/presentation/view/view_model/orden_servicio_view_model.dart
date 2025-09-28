@@ -221,7 +221,7 @@ class OrdenServicioView extends _$OrdenServicioView {
     state = state.copyWith(isLoading: isLoading);
   }
 
-  void createOrden() async {
+  void createOrden({required void Function(OrdenConDetallesEntity orden) onShow}) async {
     await safeCall(
       actionBefore: () async => state = state.copyWith(
         errorMessage: '',
@@ -247,7 +247,10 @@ class OrdenServicioView extends _$OrdenServicioView {
           metodoPago: state.orden.hasAdelanto ? state.orden.metodoPago : null,
         );
 
-        await _createOrdenCase.call(newOrder);
+        final orden = await _createOrdenCase.call(newOrder);
+
+        onShow(orden);
+
         state = state.copyWith(
           successMessage: 'Orden de servicio creada exitosamente.',
           // orden: OrdenConDetallesEntity(id: newOrderId),

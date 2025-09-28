@@ -1,18 +1,19 @@
 enum UnitType {
-  pieza(value: 'Pieza', letters: 'Pz'),
-  kilo(value: 'Kg', letters: 'Kg'),
+  pieza(value: 'Pieza', plural: 'Piezas'),
+  // pieza(value: 'Juego', plural: 'Juegos'),
+  kilo(value: 'Kg', plural: 'Kgs'),
   // juego(value: 'Juego', le),
-  litro(value: 'Litro', letters: 'Li'),
-  metro(value: 'Metro', letters: 'M'),
-  gramo(value: 'Gramo', letters: 'Gr'),
-  miligramo(value: 'Miligramo', letters: 'Ml'),
-  mililitro(value: 'Mililitro', letters: 'Mg');
+  litro(value: 'Litro', plural: 'Litros'),
+  metro(value: 'Metro', plural: 'Metros'),
+  gramo(value: 'Gramo', plural: 'Gramos'),
+  miligramo(value: 'Miligramo', plural: 'Mililitros'),
+  mililitro(value: 'Mililitro', plural: 'Miligramos');
 
   // Agrega más tipos de unidad según sea necesario
   final String value;
-  final String letters;
+  final String plural;
 
-  const UnitType({required this.value, required this.letters});
+  const UnitType({required this.value, required this.plural});
 
   factory UnitType.fromString(String value) {
     return UnitType.values.firstWhere(

@@ -18,7 +18,7 @@ class OrdenesWriteDatasource {
     required this.itemServicioOrdenDao,
   });
 
-  Future<void> insertOrdenWithItems(OrdenConDetallesModel orden) async {
+  Future<OrdenConDetallesModel> insertOrdenWithItems(OrdenConDetallesModel orden) async {
     final companion = orden.toOrdenCompanion();
     final ordenId = await ordenServicioDao.insertOrden(companion);
 
@@ -30,6 +30,12 @@ class OrdenesWriteDatasource {
       final itemWithOrdenId = item.toCompanion(ordenId.id);
       await itemServicioOrdenDao.insertItem(itemWithOrdenId);
     }
+
+    return orden.copyWith(
+      folio: ordenId.folio,
+      id: ordenId.id,
+      fechaCreacion: ordenId.fechaCreacion,
+    );
   }
 
   Future<void> updateOrden(OrdenConDetallesModel orden) async {

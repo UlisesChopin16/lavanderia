@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/view/view_model/orden_servicio_view_model.dart';
 import 'package:lavanderia/shared/widgets/date_picker_component.dart';
 
 import 'change_cantidad.dart';
+import 'item_servicio.dart';
 
 class ItemServicioSelected extends ConsumerWidget {
+  final bool isEditable;
+  final bool showInCard;
   final ItemConPrecioEntity item;
   final int index;
   const ItemServicioSelected({
     super.key,
     required this.item,
     required this.index,
+    this.isEditable = true,
+    this.showInCard = true,
   });
 
   static const double sizeIcon = 16.0;
@@ -39,94 +43,11 @@ class ItemServicioSelected extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ListTile(
-            leading: const CircleAvatar(
-              child: Icon(IconsManager.clotheIcon),
-            ),
-            title: Text(item.precio.nombreConcepto),
-            subtitle: Wrap(
-              spacing: 15,
-              runSpacing: 10,
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runAlignment: WrapAlignment.start,
-              children: [
-                Column(
-                  spacing: 5,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      spacing: 10,
-                      crossAxisAlignment: crossAxis,
-                      mainAxisSize: minSize,
-                      children: [
-                        const Icon(IconsManager.selectedSizesIcon, size: sizeIcon),
-                        Flexible(
-                          child: Text(
-                            item.precio.size.nombre,
-                            style: const TextStyle(fontSize: textSize),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      spacing: 10,
-                      crossAxisAlignment: crossAxis,
-                      mainAxisSize: minSize,
-                      children: [
-                        const Icon(IconsManager.selectedCategoriasIcon, size: sizeIcon),
-                        Flexible(
-                          child: Text(
-                            item.precio.categoria.nombre,
-                            style: const TextStyle(fontSize: textSize),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  spacing: 5,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      spacing: 10,
-                      crossAxisAlignment: crossAxis,
-                      mainAxisSize: minSize,
-                      children: [
-                        const Icon(IconsManager.selectedPreciosIcon, size: sizeIcon),
-                        Flexible(
-                          child: Text(
-                            item.precio.importe.toStringAsFixed(2),
-                            style: const TextStyle(fontSize: textSize),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      spacing: 10,
-                      crossAxisAlignment: crossAxis,
-                      mainAxisSize: minSize,
-                      children: [
-                        const Icon(Icons.event, size: sizeIcon),
-                        Flexible(
-                          child: Text(
-                            item.precio.daysText,
-                            style: const TextStyle(fontSize: textSize),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                ordenNotifier.removeSelectedItem(index);
-              },
-            ),
+          ItemServicio(
+            item: item,
+            onDelete: () {
+              ordenNotifier.removeSelectedItem(index);
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),

@@ -2,9 +2,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/types/range_dates_types.dart';
 import 'package:lavanderia/core/utils/printer.dart';
+import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/history_item/history_item_entity.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/usecases/usecases.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -25,6 +25,7 @@ sealed class ListaOrdenesModel with _$ListaOrdenesModel {
 class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
   final _observeAll = instance<ObserveAllOrders>();
   final _obtainHistory = instance<ObtainHistory>();
+  final _obtainItems = instance<ObtainItems>();
   final rangeMonth = RangeDatesTypes.month.range;
 
   @override
@@ -91,5 +92,24 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
     final history = await _obtainHistory.call(idOrden);
     Printer.e('history length: $history');
     return history;
+  }
+
+  Future<List<ItemConPrecioEntity>> obtainItems(int idOrden) async {
+    List<ItemConPrecioEntity> items = [];
+    await safeCall(
+      actionBefore: () async => state = state.copyWith(isLoading: true),
+      actionAfter: () async => state = state.copyWith(isLoading: false),
+      actionOnError: (error, message) async => state = state.copyWith(
+        isLoading: false,
+        errorMessage: message,
+      ),
+      action: () async {
+        final orderItems = await _obtainItems.call(idOrden);
+
+        items = orderItems;
+      },
+    );
+
+    return items;
   }
 }
