@@ -26,3 +26,15 @@ extension HistoryItemModelExt on HistoryItemModel {
     );
   }
 }
+
+extension HistoryItemEntityExt on HistoryItemEntity {
+  HistoryItemModel toModel() {
+    return HistoryItemModel(
+      id: id,
+      ordenId: ordenId,
+      monto: monto,
+      metodoPago: metodoPago != null ? metodoPago!.value : '',
+      fecha: fecha ?? DateTime.now(),
+    );
+  }
+}

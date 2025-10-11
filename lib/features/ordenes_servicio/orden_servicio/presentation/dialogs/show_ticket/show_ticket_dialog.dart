@@ -118,7 +118,7 @@ class _ShowTicketDialogState extends ConsumerState<ShowTicketDialog> {
                               ),
                             ),
                             Text(
-                              orden.fechaCreacion.formatFullDate,
+                              orden.history.fecha.formatFullDate,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 14,
@@ -400,48 +400,47 @@ class _ShowTicketDialogState extends ConsumerState<ShowTicketDialog> {
                       // Redes Sociales
                       // Numero, correo, web
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           if (telefono.isNotEmpty)
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.phone,
-                                    size: 14,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.phone,
+                                  size: 14,
+                                  color: Colors.black,
+                                ),
+                                const Gap(5),
+                                Text(
+                                  telefono,
+                                  style: const TextStyle(
                                     color: Colors.black,
+                                    fontSize: 12,
                                   ),
-                                  const Gap(5),
-                                  Text(
-                                    telefono,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           if (email.isNotEmpty)
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.email,
-                                    size: 14,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.email,
+                                  size: 14,
+                                  color: Colors.black,
+                                ),
+                                const Gap(5),
+                                Text(
+                                  email,
+                                  style: const TextStyle(
                                     color: Colors.black,
+                                    fontSize: 12,
                                   ),
-                                  const Gap(5),
-                                  Text(
-                                    email,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                         ],
                       ),

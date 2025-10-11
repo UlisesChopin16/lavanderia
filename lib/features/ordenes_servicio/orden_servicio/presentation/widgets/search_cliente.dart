@@ -27,8 +27,8 @@ class SearchCliente extends ConsumerWidget {
       children: [
         const _SearchBar(),
         // const SizedBox(height: 10),
-        if (hasCliente) ...[
-          const SizedBox(height: 5),
+        const SizedBox(height: 5),
+        if (hasCliente)
           Card(
             elevation: 1,
             color: newColor,
@@ -42,8 +42,14 @@ class SearchCliente extends ConsumerWidget {
                 },
               ),
             ),
+          )
+        else
+          const SizedBox(
+            height: 100,
+            child: Center(
+              child: Text('Seleccione un cliente'),
+            ),
           ),
-        ],
       ],
     );
   }

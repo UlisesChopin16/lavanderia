@@ -34,7 +34,7 @@ sealed class OrdenServicioModel with _$OrdenServicioModel {
   }
 
   // double get total => orden.total;
-  double get restante => total - orden.adelantoPago;
+  double get restante => total - orden.history.monto;
 }
 
 @riverpod
@@ -194,20 +194,32 @@ class OrdenServicioView extends _$OrdenServicioView {
     final adelanto = double.tryParse(value) ?? 0.0;
     // final restante = state.restante - adelanto;
 
-    final orden = state.orden.copyWith(
-      // restante: restante,
-      adelantoPago: adelanto,
+    final orden = state.orden;
+    final history = orden.history;
+
+    final newOrden = orden.copyWith(
+      history: history.copyWith(
+        monto: adelanto,
+      ),
     );
 
-    state = state.copyWith(orden: orden);
+    state = state.copyWith(orden: newOrden);
   }
 
   void setMetodoPago(MetodoPagoType? metodo) {
-    final orden = state.orden.copyWith(
-      metodoPago: metodo,
+    // final orden = state.orden.copyWith(
+    //   metodoPago: metodo,
+    // );
+    final orden = state.orden;
+    final history = orden.history;
+
+    final newOrden = orden.copyWith(
+      history: history.copyWith(
+        metodoPago: metodo,
+      ),
     );
 
-    state = state.copyWith(orden: orden);
+    state = state.copyWith(orden: newOrden);
   }
 
   void setDescripcion(String descripcion) {
@@ -240,11 +252,14 @@ class OrdenServicioView extends _$OrdenServicioView {
         final total = state.total;
         final restante = state.restante;
         final estatus = restante == 0.0 ? EstatusOrdenType.pagado : EstatusOrdenType.enCurso;
+        final history = state.orden.history;
         final newOrder = state.orden.copyWith(
           total: total,
           restante: restante,
           estatus: estatus,
-          metodoPago: state.orden.hasAdelanto ? state.orden.metodoPago : null,
+          history: history.copyWith(
+            metodoPago: state.orden.hasAdelanto ? history.metodoPago : null,
+          )
         );
 
         final orden = await _createOrdenCase.call(newOrder);

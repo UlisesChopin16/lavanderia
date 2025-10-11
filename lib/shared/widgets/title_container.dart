@@ -16,7 +16,7 @@ class TitleContainer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: primaryColor.withOpacity(0.2),
+        color: primaryColor.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Row(

@@ -3,8 +3,8 @@ import 'package:lavanderia/core/database/app_database.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/extensions/cliente_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_entry/orden_con_detalles_entry.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/orden_con_detalles_model/orden_con_detalles_model.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/extensions/history_item_ext.dart';
 
 import 'item_con_precio_ext.dart';
 // import 'package:lavanderia/features/catalogos/precios/data/models/precio_con_detalles_entry/precio_con_detalles_entry.dart';
@@ -18,9 +18,8 @@ extension OrdenConDetallesEntityX on OrdenConDetallesEntity {
       id: id,
       folio: folio,
       cliente: cliente.toModel(),
-      metodoPago: metodoPago?.value,
+      itemHistory: history.toModel(),
       descripcion: descripcion,
-      adelantoPago: adelantoPago,
       total: total,
       restante: restante,
       estatus: estatus.value,
@@ -37,11 +36,12 @@ extension OrdenConDetallesModelX on OrdenConDetallesModel {
       id: id,
       folio: folio,
       cliente: cliente.toEntity(),
-      metodoPago: (metodoPago == null || metodoPago!.isEmpty)
-          ? null
-          : MetodoPagoType.fromString(metodoPago!),
+      // history: metodoPago: (metodoPago == null || metodoPago!.isEmpty)
+      //     ? null
+      //     : MetodoPagoType.fromString(metodoPago!),
       descripcion: descripcion ?? '',
-      adelantoPago: adelantoPago,
+      history: itemHistory.toEntity(),
+      // adelantoPago: adelantoPago,
       total: total,
       restante: restante,
       estatus: EstatusOrdenType.fromString(estatus),
@@ -83,8 +83,8 @@ extension OrdenConDetallesModelX on OrdenConDetallesModel {
     final now = DateTime.now();
     return OrdenHistoryCompanion.insert(
       ordenId: idOrden,
-      monto: adelantoPago,
-      metodoPago: metodoPago ?? '',
+      monto: itemHistory.monto,
+      metodoPago: itemHistory.metodoPago,
       fecha: now,
     );
   }
@@ -96,9 +96,10 @@ extension PreciosConceptosEntryX on OrdenConDetallesEntry {
       id: orden.id,
       folio: orden.folio,
       cliente: cliente.toModel(),
-      metodoPago: detalles.metodoPago,
+      // metodoPago: detalles.metodoPago,
       descripcion: orden.descripcion,
-      adelantoPago: detalles.monto,
+      // adelantoPago: detalles.monto,
+      itemHistory: detalles.toModel(),
       total: orden.total,
       restante: orden.restante,
       estatus: orden.estatus,

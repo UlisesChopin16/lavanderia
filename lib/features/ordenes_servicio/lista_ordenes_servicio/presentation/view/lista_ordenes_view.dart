@@ -27,90 +27,106 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
     _addErrorListener();
     _addSuccessListener();
     final listaOrdenesNotifier = ref.read(listaOrdenesViewModelProvider.notifier);
-    final filtros = ref.watch(
+    final (filtros, inicio, fin) = ref.watch(
       listaOrdenesViewModelProvider.select(
-        (value) => value.filtros,
+        (value) => (value.filtros, value.inicioItems, value.finItems),
       ),
     );
     // final blockUI = ref.watch(
     //   configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
     // );
 
-    return Center(
-      child: SizedBox(
-        width: 1500,
+    return Scaffold(
+      floatingActionButton: const RowPages(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: Center(
         child: SingleChildScrollView(
-          child: Card(
-            margin: const EdgeInsets.all(24),
-            child: StreamBuilder(
-              stream: listaOrdenesNotifier.observeOrders(),
-              builder: (context, asyncSnapshot) {
-                return TableCardInfo(
-                  showAddButton: false,
-                  ascending: filtros.ascendente,
-                  sortColumnIndex: filtros.ordenamiento.index,
-                  haveFilters: filtros.haveFilters,
-                  titleAddButton: 'Agregar tamaño de ropa',
-                  onClearFilters: listaOrdenesNotifier.clearFiltros,
-                  // onAddButtonPressed: onAddSize,
-                  onSearchChanged: listaOrdenesNotifier.setNombre,
-                  onSortChange: listaOrdenesNotifier.setSort,
-                  filters: [
-                    DateRangePicker(
-                      selectedDates: filtros.fechas,
-                      changeDate: listaOrdenesNotifier.setFechas,
-                      labelText: 'Fechas de creación',
-                      showDelete: !filtros.fechasAreEquals,
-                      onDelete: listaOrdenesNotifier.clearFechas,
-                    ),
-                    FiltroOrden(
-                      ordenamiento: filtros.ordenamiento,
-                      ascendente: filtros.ascendente,
-                      onOrdenamientoChanged: listaOrdenesNotifier.setOrden,
-                      onAscendenteChanged: listaOrdenesNotifier.setSort,
-                    ),
-                  ],
-                  columns: [
-                    ...List.generate(
-                      listOrden.length,
-                      (index) {
-                        final orden = listOrden[index];
-                        return DataColumn(
-                          label: Text(
-                            orden.title,
-                          ),
-                          onSort: (columnIndex, ascending) {
-                            listaOrdenesNotifier.setOrdenAndSort(orden, ascending);
-                            setState(() {});
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                margin: const EdgeInsets.all(24),
+                child: StreamBuilder(
+                  stream: listaOrdenesNotifier.observeOrders(),
+                  builder: (context, asyncSnapshot) {
+                    final data = asyncSnapshot.data ?? [];
+                    final subList = data.sublist(inicio, fin);
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      listaOrdenesNotifier.setTotalItems(data.length);
+                    });
+
+                    return TableCardInfo(
+                      showAddButton: false,
+                      ascending: filtros.ascendente,
+                      sortColumnIndex: filtros.ordenamiento.index,
+                      haveFilters: filtros.haveFilters,
+                      titleAddButton: 'Agregar tamaño de ropa',
+                      onClearFilters: listaOrdenesNotifier.clearFiltros,
+                      // onAddButtonPressed: onAddSize,
+                      onSearchChanged: listaOrdenesNotifier.setNombre,
+                      onSortChange: listaOrdenesNotifier.setSort,
+                      filters: [
+                        DateRangePicker(
+                          selectedDates: filtros.fechas,
+                          changeDate: listaOrdenesNotifier.setFechas,
+                          labelText: 'Fechas de creación',
+                          showDelete: filtros.fechas.isNotEmpty,
+                          onDelete: listaOrdenesNotifier.clearFechas,
+                        ),
+                        FiltroOrden(
+                          ordenamiento: filtros.ordenamiento,
+                          ascendente: filtros.ascendente,
+                          onOrdenamientoChanged: listaOrdenesNotifier.setOrden,
+                          onAscendenteChanged: listaOrdenesNotifier.setSort,
+                        ),
+                      ],
+                      columns: [
+                        ...List.generate(
+                          listOrden.length,
+                          (index) {
+                            final orden = listOrden[index];
+                            return DataColumn(
+                              label: Text(
+                                orden.title,
+                              ),
+                              onSort: (columnIndex, ascending) {
+                                listaOrdenesNotifier.setOrdenAndSort(orden, ascending);
+                                setState(() {});
+                              },
+                            );
                           },
-                        );
-                      },
-                    ),
-                  ],
-                  rows: List.generate(
-                    asyncSnapshot.data?.length ?? 0,
-                    (index) {
-                      final ordenServicio = asyncSnapshot.data![index];
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(ordenServicio.id.toString())),
-                          DataCell(Text(ordenServicio.folio)),
-                          DataCell(Text(ordenServicio.cliente.fullName)),
-                          DataCell(Text(ordenServicio.estatus.value)),
-                          DataCell(Text(ordenServicio.total.toStringAsFixed(2))),
-                          DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
-                          DataCell(Text(ordenServicio.metodoPago?.value ?? 'N/A')),
-                          DataCell(Text(ordenServicio.fechaCreacion.formatFullDate)),
-                          DataCell(Text(ordenServicio.fechaCierre.formatFullDate)),
-                          DataCell(ActionsRow(ordenServicio: ordenServicio)),
-                        ],
-                      );
-                    },
-                  ),
-                  smallView: SmallView(rows: asyncSnapshot.data ?? []),
-                );
-              },
-            ),
+                        ),
+                      ],
+                      rows: List.generate(
+                        subList.length,
+                        (index) {
+                          final newIndex = index + 1 + inicio;
+                          final ordenServicio = subList[index];
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(newIndex.toString())),
+                              DataCell(Text(ordenServicio.folio)),
+                              DataCell(Text(ordenServicio.cliente.fullName)),
+                              DataCell(Text(ordenServicio.estatus.value)),
+                              DataCell(Text(ordenServicio.total.toStringAsFixed(2))),
+                              DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
+                              DataCell(Text(ordenServicio.history.metodoPago?.value ?? 'N/A')),
+                              DataCell(Text(ordenServicio.fechaCreacion.formatFullDate)),
+                              DataCell(Text(ordenServicio.history.fecha.formatFullDate)),
+                              DataCell(Text(ordenServicio.fechaCierre.formatFullDate)),
+                              DataCell(ActionsRow(ordenServicio: ordenServicio)),
+                            ],
+                          );
+                        },
+                      ),
+                      smallView: SmallView(rows: subList),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 80),
+            ],
           ),
         ),
       ),

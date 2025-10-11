@@ -219,7 +219,7 @@ class CardClientInfo extends ConsumerWidget {
     final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
     final (total, restante, metodoPago) = ref.watch(
       ordenServicioViewProvider.select(
-        (state) => (state.total, state.restante, state.orden.metodoPago),
+        (state) => (state.total, state.restante, state.orden.history.metodoPago),
       ),
     );
     return Card(
@@ -370,7 +370,7 @@ class AdelantoComponent extends HookConsumerWidget {
 
   void _addListener(WidgetRef ref, TextEditingController controller) {
     ref.listen(
-      ordenServicioViewProvider.select((state) => state.orden.adelantoPago),
+      ordenServicioViewProvider.select((state) => state.orden.history.monto),
       (previous, next) {
         if (next == 0.0 && previous! > 0.0) {
           controller.clear();

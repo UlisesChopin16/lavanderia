@@ -2,8 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/core/error/validate_exception.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/history_item/history_item_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 
 export 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
@@ -22,8 +22,7 @@ sealed class OrdenConDetallesEntity with _$OrdenConDetallesEntity {
     @Default('') String folio,
     @Default(ClienteEntity()) ClienteEntity cliente,
     @Default('') String descripcion,
-    @Default(0.0) double adelantoPago,
-    @Default(null) MetodoPagoType? metodoPago,
+    @Default(HistoryItemEntity()) HistoryItemEntity history,
     @Default(EstatusOrdenType.enCurso) EstatusOrdenType estatus,
     @Default(0.0) double total,
     @Default(0.0) double restante,
@@ -37,8 +36,8 @@ sealed class OrdenConDetallesEntity with _$OrdenConDetallesEntity {
 
   bool get hasCliente => cliente.id != -1;
   bool get hasItems => items.isNotEmpty;
-  bool get hasAdelanto => adelantoPago > 0;
-  bool get hasMetodoPago => metodoPago != null;
+  bool get hasAdelanto => history.monto > 0;
+  bool get hasMetodoPago => history.metodoPago != null;
   bool get isCerrada => estatus == EstatusOrdenType.cerrada;
 
   String get title => 'Orden: $folio';

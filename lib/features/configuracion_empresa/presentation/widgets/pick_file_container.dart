@@ -99,8 +99,8 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
               width: width,
               child: logo.isEmpty
                   ? !childDesappear
-                      ? child
-                      : null
+                        ? child
+                        : null
                   : null,
             ),
             ClipRRect(
@@ -109,8 +109,8 @@ class _PickFileContainerState extends ConsumerState<PickFileContainer> {
                 opacity: isHovered ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
                 child: Container(
-                  color: Colors.black.withOpacity(
-                    0.8,
+                  color: Colors.black.withValues(
+                    alpha: 0.8,
                   ),
                   height: height,
                   width: width,
