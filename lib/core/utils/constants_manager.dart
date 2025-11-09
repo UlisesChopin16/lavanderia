@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mailer/smtp_server.dart';
 
@@ -12,14 +11,6 @@ class ConstantsManager {
   static const String maskTime = 'HH:mm';
   static const String maskDateTime = 'dd/MMM/yyyy HH:mm';
   static const String emptyValue = 'N/A';
-
-  static const SizesRopaEntity defaultSizeRopa = SizesRopaEntity(
-          id: -1,
-          nombre: "Sin tamaño",
-          fechaCreacion: null,
-          fechaActualizacion: null,
-          fechaEliminacion: null,
-        );
 
   static String formatDateTime(DateTime? dateTime) {
     if (dateTime == null) return emptyValue;

@@ -6,6 +6,7 @@ class OrdenHistory extends Table {
   IntColumn get id => integer().autoIncrement()();  
   IntColumn get ordenId => integer().references(OrdenServicio, #id)();  
   RealColumn get monto => real()();  
+  RealColumn get restante => real()();  
   TextColumn get metodoPago => text()(); // "Efectivo", "Tarjeta", "Transferencia"
   DateTimeColumn get fecha => dateTime()();  
 }

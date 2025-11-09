@@ -11,16 +11,6 @@ class PreciosChangeRepositoryImpl implements PreciosChangeRepository {
   const PreciosChangeRepositoryImpl(this.datasource);
 
   @override
-  Future<void> activatePreciosBySize(int sizeId) async {
-    await datasource.activatePreciosBySize(sizeId);
-  }
-
-  @override
-  Future<void> deactivatePreciosBySize(int sizeId) async {
-    await datasource.deactivatePreciosBySize(sizeId);
-  }
-
-  @override
   Future<void> activatePreciosByCategoria(int categoriaId) async {
     await datasource.activatePreciosByCategoria(categoriaId);
   }

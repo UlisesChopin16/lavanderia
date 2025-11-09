@@ -5,7 +5,7 @@ import 'package:lavanderia/core/database/tables/tables.dart';
 class PreciosConceptos extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get categoriaId => integer().references(CategoriaServicio, #id)();
-  IntColumn get sizeRopaId => integer().references(SizesRopa, #id)();
+  TextColumn get clotheSize => text()();
   TextColumn get nombreConcepto => text()();
   IntColumn get diasEntrega => integer()(); // Días de entrega para este item en esta categoría
   TextColumn get tipoUnidad => text()(); // Ej. "Kg" o "pieza"

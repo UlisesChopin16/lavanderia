@@ -57,7 +57,7 @@ class _EditPrecioDialogState extends ConsumerState<EditPrecioDialog> {
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
 
     final message =
-        '¿Estás seguro de editar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?';
+        '¿Estás seguro de editar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.description}"?';
     // final confirm = await context.showWarningDialog(
     //   message: message,
     // );

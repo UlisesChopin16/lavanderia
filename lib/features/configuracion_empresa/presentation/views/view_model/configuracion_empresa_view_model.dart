@@ -193,6 +193,11 @@ class ConfiguracionEmpresaViewModel extends _$ConfiguracionEmpresaViewModel {
     if (direccion.codigoPostal <= 0) {
       return 'El código postal es obligatorio';
     }
+    final cadenaPostal = direccion.codigoPostal.toString();
+    if (cadenaPostal.length != 5) {
+      return 'El código postal debe tener 5 dígitos';
+    }
+
     if (direccion.ciudad.trim().isEmpty) {
       return 'La ciudad es obligatoria';
     }

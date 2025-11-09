@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lavanderia/core/types/clothe_size_type.dart';
+import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
+import 'package:lavanderia/features/presentation/widgets/dropdown_clothe_sizes.dart';
 
 import 'create_precios_fields/create_precios_fields.dart';
 
@@ -18,6 +21,8 @@ class RowFieldsPrecio extends ConsumerWidget {
   int get diasEntrega {
     final diasEntrega = precio.diasEntrega;
     final diasCategoria = precio.categoria.diasEntrega;
+    Printer.i('Días de entrega del precio: $diasEntrega');
+    Printer.i('Días de entrega de la categoría: $diasCategoria');
 
     if (diasEntrega == 0) {
       return diasCategoria;
@@ -28,9 +33,9 @@ class RowFieldsPrecio extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (categoria, size) = ref.watch(
+    final (categoria) = ref.watch(
       preciosViewModelProvider.select(
-        (state) => (state.categoria, state.sizeRopa),
+        (state) => (state.categoria),
       ),
     );
 
@@ -92,14 +97,14 @@ class RowFieldsPrecio extends ConsumerWidget {
                     );
                   },
                 ),
-              if (size == null)
-                SelectSize(
-                  sizeRopa: precio.size,
+                DropdownClotheSizes(
+                  clotheSize: precio.size,
                   onSizeChanged: (value) {
                     onChangePrecio(
-                      precio.copyWith(size: value),
+                      precio.copyWith(size: value ?? ClotheSizeType.emptySize),
                     );
                   },
+                  showDelete: false,
                 ),
               SelectUnit(
                 unitType: precio.tipoUnidad,

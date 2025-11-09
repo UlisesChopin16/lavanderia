@@ -103,6 +103,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                         (index) {
                           final newIndex = index + 1 + inicio;
                           final ordenServicio = subList[index];
+                          final restante = ordenServicio.restante < 0 ? 0 : ordenServicio.restante;
                           return DataRow(
                             cells: [
                               DataCell(Text(newIndex.toString())),
@@ -110,7 +111,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                               DataCell(Text(ordenServicio.cliente.fullName)),
                               DataCell(Text(ordenServicio.estatus.value)),
                               DataCell(Text(ordenServicio.total.toStringAsFixed(2))),
-                              DataCell(Text(ordenServicio.restante.toStringAsFixed(2))),
+                              DataCell(Text(restante.toStringAsFixed(2))),
                               DataCell(Text(ordenServicio.history.metodoPago?.value ?? 'N/A')),
                               DataCell(Text(ordenServicio.fechaCreacion.formatFullDate)),
                               DataCell(Text(ordenServicio.history.fecha.formatFullDate)),

@@ -13,16 +13,6 @@ class PreciosReadRepositoryImpl implements PreciosReadRepository {
   const PreciosReadRepositoryImpl(this.datasource);
 
   @override
-  Stream<List<PrecioConDetallesEntity>> watchAllBySize({
-    required int sizeId,
-    required FiltrosPrecios filtros,
-  }) {
-    // Implementación de la lógica para observar todos los precios por tamaño
-    final data = datasource.watchAllBySize(sizeId: sizeId, filtros: filtros);
-    return convertToEntity(data);
-  }
-
-  @override
   Stream<List<PrecioConDetallesEntity>> watchAllByCategoria({
     required int categoriaId,
     required FiltrosPrecios filtros,

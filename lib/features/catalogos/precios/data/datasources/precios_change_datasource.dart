@@ -9,14 +9,6 @@ class PreciosChangeDatasource {
 
   PreciosChangeDatasource(this.preciosDao);
 
-  Future<void> activatePreciosBySize(int sizeId) async {
-    await preciosDao.activatePreciosBySize(sizeId);
-  }
-
-  Future<void> deactivatePreciosBySize(int sizeId) async {
-    await preciosDao.deactivatePreciosBySize(sizeId);
-  }
-
   Future<void> activatePreciosByCategoria(int categoriaId) async {
     await preciosDao.activatePreciosByCategoria(categoriaId);
   }

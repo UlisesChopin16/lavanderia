@@ -222,6 +222,12 @@ class CardClientInfo extends ConsumerWidget {
         (state) => (state.total, state.restante, state.orden.history.metodoPago),
       ),
     );
+
+    final newRestante = restante < 0 ? 0.0 : restante;
+    final cadenaRestante = newRestante.toStringAsFixed(2);
+
+    final cambio = (restante * -1).toStringAsFixed(2);
+
     return Card(
       child: SizedBox(
         width: 500,
@@ -267,10 +273,27 @@ class CardClientInfo extends ConsumerWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            'Restante: \$${restante.toStringAsFixed(2)}',
+                            'Restante: \$$cadenaRestante',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        AnimatedCrossFade(
+                          duration: const Duration(milliseconds: 300),
+                          crossFadeState: restante < 0
+                              ? CrossFadeState.showSecond
+                              : CrossFadeState.showFirst,
+                          firstChild: const SizedBox.shrink(),
+                          secondChild: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Cambio: \$$cambio',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -294,9 +317,7 @@ class CardClientInfo extends ConsumerWidget {
                 child: FilledButton(
                   onPressed: () async {
                     ordenNotifier.createOrden(
-                      onShow: (orden) {
-                        
-                      },
+                      onShow: (orden) {},
                     );
                     // final hasCliente = ref.read(ordenServicioViewProvider).orden.hasCliente;
                     // if (!hasCliente) {

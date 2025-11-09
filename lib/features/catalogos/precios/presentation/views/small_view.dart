@@ -38,7 +38,7 @@ class SmallView extends ConsumerWidget {
                     ),
                     trailing: blockUI ? null : ActionsRow(precio: row, isSmall: true),
                     title: Text(
-                      '${row.nombreConcepto} - ${row.size.nombre} - ${row.categoria.nombre}',
+                      '${row.nombreConcepto} - ${row.size.description} - ${row.categoria.nombre}',
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

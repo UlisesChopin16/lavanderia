@@ -15,17 +15,6 @@ class PreciosReadDatasource {
     return convertToModelList(precios);
   }
 
-  Stream<List<PrecioConDetallesModel>> watchAllBySize({
-    required int sizeId,
-    required FiltrosPrecios filtros,
-  }) {
-    final preciosStream = preciosDao.watchAllBySize(
-      sizeId: sizeId,
-      filtros: filtros,
-    );
-    return convertToModel(preciosStream);
-  }
-
   Stream<List<PrecioConDetallesModel>> watchAllByCategoria({
     required int categoriaId,
     required FiltrosPrecios filtros,

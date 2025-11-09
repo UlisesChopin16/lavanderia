@@ -85,6 +85,7 @@ extension OrdenConDetallesModelX on OrdenConDetallesModel {
       ordenId: idOrden,
       monto: itemHistory.monto,
       metodoPago: itemHistory.metodoPago,
+      restante: restante,
       fecha: now,
     );
   }

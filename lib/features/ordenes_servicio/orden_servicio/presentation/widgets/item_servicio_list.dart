@@ -49,18 +49,6 @@ class ItemServicioList extends ConsumerWidget {
                 const Divider(),
               ],
             ),
-            // ListTile(
-            //   leading: const Icon(IconsManager.selectedCategoriasIcon),
-            //   title: Text(item.precio.categoria.nombre),
-            // ),
-            // ListTile(
-            //   leading: const Icon(IconsManager.selectedSizesIcon),
-            //   title: Text(item.precio.size.nombre),
-            // ),
-            // ListTile(
-            //   leading: const Icon(IconsManager.selectedPreciosIcon),
-            //   title: Text(item.importe.toStringAsFixed(2)),
-            // ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -72,7 +60,7 @@ class ItemServicioList extends ConsumerWidget {
                       crossAxisAlignment: crossAxis,
                       children: [
                         const Icon(IconsManager.selectedSizesIcon, size: sizeIcon),
-                        Text(item.precio.size.nombre, style: const TextStyle(fontSize: textSize)),
+                        Text(item.precio.size.description, style: const TextStyle(fontSize: textSize)),
                       ],
                     ),
                     Row(

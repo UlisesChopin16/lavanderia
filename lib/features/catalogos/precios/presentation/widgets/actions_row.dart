@@ -76,7 +76,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
 
   void onDeleteConcepto() async {
     final question =
-        '¿Estás seguro de desactivar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?';
+        '¿Estás seguro de desactivar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.description}"?';
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
 
     final response = await context.showWarningDialog(message: question);
@@ -90,7 +90,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
     final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
     final response = await context.showWarningDialog(
       message:
-          '¿Estás seguro de activar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.nombre}"?',
+          '¿Estás seguro de activar el concepto "${precio.nombreConcepto}" de la categoría "${precio.categoria.nombre}" con el tamaño "${precio.size.description}"?',
     );
     if (response == true) {
       preciosNotifier.activatePrecio(precio);

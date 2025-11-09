@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/features/catalogos/categorias/presentation/views/view_model/categoria_view_model.dart';
 import 'package:lavanderia/features/catalogos/presentation/types/catalogos_tabs_type.dart';
 import 'package:lavanderia/features/catalogos/presentation/views/view_model/catalogos_view_model.dart';
-import 'package:lavanderia/features/catalogos/sizes/presentation/views/view_model/sizes_view_model.dart';
 
 class CatalogosView extends ConsumerStatefulWidget {
   const CatalogosView({super.key});
@@ -20,7 +19,6 @@ class _CatalogosViewState extends ConsumerState<CatalogosView> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(sizesViewModelProvider);
     ref.watch(categoriaViewModelProvider);
     final configuracionNotifier = ref.read(catalogosViewModelProvider.notifier);
     final currentTabIndex = ref.watch(

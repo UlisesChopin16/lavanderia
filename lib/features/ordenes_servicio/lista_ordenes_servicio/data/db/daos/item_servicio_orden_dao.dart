@@ -1,7 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:lavanderia/core/database/daos/daos.dart';
-import 'package:lavanderia/core/utils/constants_manager.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/db/item_servicio_orden.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/data/models/item_con_precio_entry/item_con_precio_entry.dart';
 
@@ -73,10 +71,6 @@ class ItemServicioOrdenDao extends DatabaseAccessor<AppDatabase> with _$ItemServ
         preciosConceptos,
         itemServicioOrden.precioConceptoId.equalsExp(preciosConceptos.id),
       ),
-      leftOuterJoin(
-        sizesRopa,
-        sizesRopa.id.equalsExp(preciosConceptos.sizeRopaId),
-      ),
       innerJoin(
         categoriaServicio,
         categoriaServicio.id.equalsExp(preciosConceptos.categoriaId),
@@ -92,7 +86,6 @@ class ItemServicioOrdenDao extends DatabaseAccessor<AppDatabase> with _$ItemServ
         row.readTable(itemServicioOrden),
         PrecioConDetallesEntry(
           row.readTable(preciosConceptos),
-          row.readTableOrNull(sizesRopa) ?? ConstantsManager.defaultSizeRopa.toModel().toEntry(),
           row.readTable(categoriaServicio),
         )
       );

@@ -1,12 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
+import 'package:lavanderia/core/types/clothe_size_type.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/usecases/obtain_all_categorias_servicios.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/filtros/filtros_precios.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/usecases/obtain_all_precios.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/usecases/obtain_all_sizes_ropa.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,7 +21,6 @@ sealed class SelectPriceModel with _$SelectPriceModel {
     @Default([]) List<ItemConPrecioEntity> items,
     @Default([]) List<ItemConPrecioEntity> filteredItems,
     @Default([]) List<CategoriaServicioEntity> categorias,
-    @Default([]) List<SizesRopaEntity> sizesRopa,
     @Default(FiltrosPrecios()) FiltrosPrecios filtros,
   }) = _SelectPriceModel;
 }
@@ -31,7 +29,6 @@ sealed class SelectPriceModel with _$SelectPriceModel {
 class SelectPriceViewModel extends _$SelectPriceViewModel {
   final _obtainAllPrecios = instance<ObtainAllPrecios>();
   final _obtainCategoriasCase = instance<ObtainAllCategoriasServicios>();
-  final _obtainSizesCase = instance<ObtainAllSizesRopa>();
 
   @override
   SelectPriceModel build() {
@@ -65,13 +62,11 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
         // );
 
         final categorias = await _obtainCategoriasCase.call();
-        final sizesRopa = await _obtainSizesCase.call();
 
         state = state.copyWith(
           items: filteredItems,
           filteredItems: filteredItems,
           categorias: categorias,
-          sizesRopa: sizesRopa,
         );
         // for (var i = 0; i < filteredItems.length; i++) {
         //   gridKey.currentState?.insertItem(i);
@@ -136,8 +131,8 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
     applyFilters();
   }
 
-  void setSizeRopa(SizesRopaEntity sizeRopa) {
-    state = state.copyWith(filtros: state.filtros.copyWith(sizeRopa: sizeRopa));
+  void setSizeRopa(ClotheSizeType clotheSize) {
+    state = state.copyWith(filtros: state.filtros.copyWith(clotheSize: clotheSize));
     applyFilters();
   }
 
@@ -158,9 +153,9 @@ class SelectPriceViewModel extends _$SelectPriceViewModel {
           .toList();
     }
 
-    if (filtros.sizeRopa?.nombre.isNotEmpty == true) {
+    if (filtros.clotheSize != null) {
       filteredItems = filteredItems
-          .where((item) => item.precio.size.id == filtros.sizeRopa?.id)
+          .where((item) => item.precio.size == filtros.clotheSize)
           .toList();
     }
 

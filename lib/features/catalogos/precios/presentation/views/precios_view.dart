@@ -5,8 +5,8 @@ import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/filtros/filtros_precios.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/views/view_model/precios_view_model.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/features/presentation/widgets/dropdown_clothe_sizes.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
 
 import '../dialogs/create_precio_dialog.dart';
@@ -16,13 +16,11 @@ import 'small_view.dart';
 
 class PreciosView extends ConsumerStatefulWidget {
   final CategoriaServicioEntity? categoria;
-  final SizesRopaEntity? sizeRopa;
   final bool showInCard;
   final bool? blockUI;
   const PreciosView({
     super.key,
     this.categoria,
-    this.sizeRopa,
     this.showInCard = true,
     this.blockUI,
   });
@@ -39,7 +37,6 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
   final listEstatus = EstatusType.values;
 
   CategoriaServicioEntity? get categoria => widget.categoria;
-  SizesRopaEntity? get sizeRopa => widget.sizeRopa;
 
   List<ColumnPreciosName> get columns {
     List<ColumnPreciosName> values = List.from(ColumnPreciosName.values);
@@ -47,10 +44,17 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
     if (categoria != null) {
       values.remove(ColumnPreciosName.categoria);
     }
-    if (sizeRopa != null) {
-      values.remove(ColumnPreciosName.sizeRopa);
-    }
     return values;
+  }
+
+  int get indexColumn {
+    final ordenamiento = ref.watch(
+      preciosViewModelProvider.select((state) => state.filtros.ordenamiento),
+    );
+    if (categoria != null) {
+      return columns.indexWhere((element) => element == ordenamiento);
+    }
+    return ordenamiento.index;
   }
 
   @override
@@ -60,10 +64,9 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       final preciosNotifier = ref.read(preciosViewModelProvider.notifier);
       // Acción a realizar después de que se haya construido el widget
       preciosNotifier.clearAll();
-      preciosNotifier.init(categoria, sizeRopa);
+      preciosNotifier.init(categoria);
 
       await preciosNotifier.getCategorias();
-      await preciosNotifier.getSizesRopa();
 
       setState(() {});
     });
@@ -90,7 +93,7 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
           showActions: !blockUI,
           showAddButton: !blockUI,
           ascending: filtros.ascendente,
-          sortColumnIndex: filtros.ordenamiento.index,
+          sortColumnIndex: indexColumn,
           haveFilters: filtros.haveFilters,
           titleAddButton: 'Agregar conceptos de ropa',
           onClearFilters: preciosNotifier.clearFilters,
@@ -109,7 +112,10 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
                 },
               ),
             if (categoria == null) FiltroCategoria(categoriaValue: filtros.categoria),
-            if (sizeRopa == null) FiltroSize(sizeRopaValue: filtros.sizeRopa),
+            DropdownClotheSizes(
+              clotheSize: filtros.clotheSize,
+              onSizeChanged: preciosNotifier.setSizeRopa,
+            ),
             FiltroOrden(
               ordenamiento: filtros.ordenamiento,
               ascendente: filtros.ascendente,
@@ -144,7 +150,7 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
                   DataCell(Text(precio.idPrecio.toString())),
                   DataCell(Text(precio.nombreConcepto)),
                   if (categoria == null) DataCell(Text(precio.categoria.nombre)),
-                  if (sizeRopa == null) DataCell(Text(precio.size.nombre)),
+                  DataCell(Text(precio.size.description)),
                   DataCell(Text(precio.tipoUnidad.value)),
                   DataCell(Text(precio.diasEntrega.toString())),
                   DataCell(Text('\$ ${precio.importe.toString()}')),
@@ -178,9 +184,9 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
   }
 
   void onAddConcepto() async {
-    final (categorias, sizes) = ref.watch(
+    final (categorias) = ref.watch(
       preciosViewModelProvider.select(
-        (state) => (state.categorias, state.sizesRopa),
+        (state) => (state.categorias),
       ),
     );
 
@@ -191,13 +197,6 @@ class _PreciosViewState extends ConsumerState<PreciosView> {
       );
       return;
     }
-
-    // if (sizes.isEmpty) {
-    //   context.showErrorDialog(
-    //     'No hay tamaños de ropa disponibles. Por favor, agrega un tamaño primero.',
-    //   );
-    //   return;
-    // }
 
     await showCreateDialog();
   }

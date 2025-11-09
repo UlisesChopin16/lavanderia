@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/core/types/clothe_size_type.dart';
 import 'package:lavanderia/features/catalogos/categorias/data/models/categoria_servicio_model.dart';
-import 'package:lavanderia/features/catalogos/sizes/data/models/sizes_ropa_model.dart';
 
 part 'precio_con_detalles_model.freezed.dart';
 part 'precio_con_detalles_model.g.dart';
@@ -10,7 +10,7 @@ sealed class PrecioConDetallesModel with _$PrecioConDetallesModel {
   const factory PrecioConDetallesModel({
     required int idPrecio,
     required String nombreConcepto,
-    required SizesRopaModel size,
+    @Default(ClotheSizeType.emptySize) ClotheSizeType size,
     required CategoriaServicioModel categoria,
     required int diasEntrega,
     required String tipoUnidad,

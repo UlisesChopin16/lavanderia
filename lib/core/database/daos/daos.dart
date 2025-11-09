@@ -3,7 +3,6 @@ export '../../../features/catalogos/categorias/data/db/daos/categoria_servicio_d
 export '../../../features/catalogos/clientes/data/db/daos/cliente_dao.dart';
 export '../../../features/configuracion_empresa/data/db/daos/configuracion_empresa_dao.dart';
 export '../../../features/configuracion_empresa/data/db/daos/direccion_dao.dart';
-export '../../../features/catalogos/sizes/data/db/daos/sizes_ropa_dao.dart';
 export '../../../features/ordenes_servicio/lista_ordenes_servicio/data/db/daos/item_servicio_orden_dao.dart';
 export '../../../features/ordenes_servicio/lista_ordenes_servicio/data/db/daos/orden_servicio_dao.dart';
 export '../../../features/ordenes_servicio/lista_ordenes_servicio/data/db/daos/orden_history_dao.dart';

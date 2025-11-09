@@ -54,7 +54,7 @@ class ItemServicio extends StatelessWidget {
                   if (!forTicket) const Icon(IconsManager.selectedSizesIcon, size: sizeIcon),
                   Flexible(
                     child: Text(
-                      item.precio.size.nombre,
+                      item.precio.size.description,
                       style: TextStyle(fontSize: textSize, color: colorTicket),
                     ),
                   ),

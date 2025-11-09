@@ -21,6 +21,25 @@ class _CreatePrecioDialogState extends ConsumerState<CreatePrecioDialog> {
   late PrecioConDetallesEntity precio = const PrecioConDetallesEntity();
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final categoria = ref.read(
+        preciosViewModelProvider.select((state) => state.categoria),
+      );
+      if (categoria != null) {
+        setState(() {
+          precio = precio.copyWith(
+            categoria: categoria,
+            diasEntrega: categoria.diasEntrega,
+          );
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(preciosViewModelProvider.select((state) => state.isLoading));
     return Stack(

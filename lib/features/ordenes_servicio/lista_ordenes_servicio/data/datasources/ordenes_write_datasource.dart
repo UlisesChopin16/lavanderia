@@ -23,7 +23,8 @@ class OrdenesWriteDatasource {
     final ordenId = await ordenServicioDao.insertOrden(companion);
 
     final companionHistory = orden.toHistoryCompanion(ordenId.id);
-    final data = companionHistory.copyWith(fecha: Value(ordenId.fechaActualizacion!));
+    final restante = orden.restante < 0 ? orden.total : orden.restante;
+    final data = companionHistory.copyWith(fecha: Value(ordenId.fechaActualizacion!), restante: Value(restante));
     await ordenHistoryDao.insertOrden(data);
 
     for (final item in orden.items) {

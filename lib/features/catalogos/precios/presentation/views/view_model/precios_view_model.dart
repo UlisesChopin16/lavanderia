@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/error/validate_exception.dart';
+import 'package:lavanderia/core/types/clothe_size_type.dart';
+import 'package:lavanderia/core/utils/printer.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/usecases/obtain_all_categorias_servicios.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/filtros/filtros_precios.dart';
 import 'package:lavanderia/features/catalogos/precios/domain/entities/precio_con_detalles_entity/precio_con_detalles_entity.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/usecases/obtain_all_sizes_ropa.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../domain/usecases/usecases.dart';
@@ -23,9 +23,7 @@ sealed class PreciosModel with _$PreciosModel {
     @Default('') String errorMessage,
     @Default('') String successMessage,
     @Default(null) CategoriaServicioEntity? categoria,
-    @Default(null) SizesRopaEntity? sizeRopa,
     @Default([]) List<CategoriaServicioEntity> categorias,
-    @Default([]) List<SizesRopaEntity> sizesRopa,
     @Default(FiltrosPrecios()) FiltrosPrecios filtros,
   }) = _PreciosModel;
 }
@@ -36,21 +34,18 @@ class PreciosViewModel extends _$PreciosViewModel {
   final _desactivateCase = instance<DesactivatePrecio>();
   final _updateCase = instance<UpdatePrecio>();
   final _observeCase = instance<ObservePrecios>();
-  final _observeBySizeCase = instance<ObservePreciosBySize>();
   final _observeByCategoriaCase = instance<ObservePreciosByCategoria>();
   final _verifyExistCase = instance<VerifyPrecioExist>();
   final _obtainCategoriasCase = instance<ObtainAllCategoriasServicios>();
-  final _obtainSizesCase = instance<ObtainAllSizesRopa>();
 
   @override
   PreciosModel build() {
     return const PreciosModel();
   }
 
-  void init(CategoriaServicioEntity? categoria, SizesRopaEntity? sizeRopa) {
+  void init(CategoriaServicioEntity? categoria) {
     state = state.copyWith(
       categoria: categoria,
-      sizeRopa: sizeRopa,
     );
   }
 
@@ -71,25 +66,6 @@ class PreciosViewModel extends _$PreciosViewModel {
       action: () async {
         final categorias = await _obtainCategoriasCase.call();
         state = state.copyWith(categorias: categorias);
-      },
-    );
-  }
-
-  Future<void> getSizesRopa() async {
-    await safeCall(
-      actionBefore: () async => state = state.copyWith(
-        isLoading: true,
-      ),
-      actionAfter: () async => state = state.copyWith(
-        isLoading: false,
-      ),
-      actionOnError: (error, message) async => state = state.copyWith(
-        errorMessage: message,
-        isLoading: false,
-      ),
-      action: () async {
-        final sizesRopa = await _obtainSizesCase.call();
-        state = state.copyWith(sizesRopa: sizesRopa);
       },
     );
   }
@@ -225,7 +201,6 @@ class PreciosViewModel extends _$PreciosViewModel {
     state = state.copyWith(
       filtros: const FiltrosPrecios(),
       categoria: null,
-      sizeRopa: null,
       errorMessage: '',
       successMessage: '',
       isLoading: false,
@@ -236,14 +211,9 @@ class PreciosViewModel extends _$PreciosViewModel {
     PrecioConDetallesEntity precioModificado = precio;
 
     final categoria = state.categoria;
-    final size = state.sizeRopa;
 
     if (categoria != null) {
       precioModificado = precio.copyWith(categoria: categoria);
-    }
-
-    if (size != null) {
-      precioModificado = precio.copyWith(size: size);
     }
 
     final validate = precioModificado.validate();
@@ -279,30 +249,25 @@ class PreciosViewModel extends _$PreciosViewModel {
     state = state.copyWith(filtros: state.filtros.copyWith(categoria: categoria));
   }
 
-  void setSizeRopa(SizesRopaEntity sizeRopa) {
-    state = state.copyWith(filtros: state.filtros.copyWith(sizeRopa: sizeRopa));
+  void setSizeRopa(ClotheSizeType? clotheSize) {
+    state = state.copyWith(filtros: state.filtros.copyWith(clotheSize: clotheSize));
   }
 
   void setOrdenAndSort(ColumnPreciosName orden, bool sort) {
+    Printer.i("filtros antes: ${state.filtros}");
     state = state.copyWith(
       filtros: state.filtros.copyWith(
         ordenamiento: orden,
         ascendente: sort,
       ),
     );
+    Printer.i("filtros despues: ${state.filtros}");
   }
 
   Stream<List<PrecioConDetallesEntity>> observePrecios() {
     if (state.categoria != null) {
       return _observeByCategoriaCase.call(
         categoriaId: state.categoria!.id,
-        filtros: state.filtros,
-      );
-    }
-
-    if (state.sizeRopa != null) {
-      return _observeBySizeCase.call(
-        sizeId: state.sizeRopa!.id,
         filtros: state.filtros,
       );
     }

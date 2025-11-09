@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/core/types/clothe_size_type.dart';
 import 'package:lavanderia/core/types/estatus_type.dart';
 import 'package:lavanderia/features/catalogos/categorias/domain/entities/categoria_servicio_entity.dart';
 import 'package:lavanderia/features/catalogos/precios/presentation/types/column_precios_name.dart';
-import 'package:lavanderia/features/catalogos/sizes/domain/entities/sizes_ropa/size_ropa_entity.dart';
 
 export 'package:lavanderia/core/types/estatus_type.dart';
 export 'package:lavanderia/features/catalogos/precios/presentation/types/column_precios_name.dart';
@@ -17,7 +17,7 @@ sealed class FiltrosPrecios with _$FiltrosPrecios {
     @Default(EstatusType.activo) EstatusType estatus,
     @Default(false) bool ascendente,
     @Default(CategoriaServicioEntity()) CategoriaServicioEntity categoria,
-    @Default(null) SizesRopaEntity? sizeRopa,
+    @Default(null) ClotheSizeType? clotheSize,
     @Default(ColumnPreciosName.fechaCreacion) ColumnPreciosName ordenamiento,
   }) = _FiltrosPrecios;
 
@@ -25,7 +25,7 @@ sealed class FiltrosPrecios with _$FiltrosPrecios {
     return nombre.isNotEmpty ||
         estatus != EstatusType.activo ||
         ordenamiento != ColumnPreciosName.fechaCreacion ||
-        sizeRopa != null ||
+        clotheSize != null ||
         categoria.id != -1;
   }
 }
