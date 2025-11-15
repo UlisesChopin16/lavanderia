@@ -9,6 +9,7 @@ sealed class HistoryItemModel with _$HistoryItemModel {
     required int id,
     required int ordenId,
     required double monto,
+    required double restante,
     required String metodoPago, // "Efectivo", "Tarjeta", "Transferencia"
     required DateTime fecha,
   }) = _HistoryItemModel;

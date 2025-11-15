@@ -57,7 +57,7 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
 
   @override
   ListaOrdenesModel build() {
-    return ListaOrdenesModel(
+    return const ListaOrdenesModel(
       // filtros: FiltrosOrdenes(
       //   fechas: rangeMonth,
       // ),
@@ -118,7 +118,7 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
   }
 
   void clearFiltros() {
-    state = state.copyWith(filtros: FiltrosOrdenes());
+    state = state.copyWith(filtros: const FiltrosOrdenes());
   }
 
   Stream<List<OrdenConDetallesEntity>> observeOrders() {
@@ -150,5 +150,4 @@ class ListaOrdenesViewModel extends _$ListaOrdenesViewModel {
 
     return items;
   }
-
 }

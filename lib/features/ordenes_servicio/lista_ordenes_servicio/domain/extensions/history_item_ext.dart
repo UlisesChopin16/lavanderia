@@ -10,6 +10,7 @@ extension OrdenHistoryEntryExt on OrdenHistoryEntry {
       ordenId: ordenId,
       monto: monto,
       metodoPago: metodoPago,
+      restante: restante,
       fecha: fecha,
     );
   }
@@ -22,6 +23,7 @@ extension HistoryItemModelExt on HistoryItemModel {
       ordenId: ordenId,
       monto: monto,
       metodoPago: metodoPago.isNotEmpty ? MetodoPagoType.fromString(metodoPago) : null,
+      restante: restante,
       fecha: fecha,
     );
   }
@@ -33,6 +35,7 @@ extension HistoryItemEntityExt on HistoryItemEntity {
       id: id,
       ordenId: ordenId,
       monto: monto,
+      restante: restante,
       metodoPago: metodoPago != null ? metodoPago!.value : '',
       fecha: fecha ?? DateTime.now(),
     );

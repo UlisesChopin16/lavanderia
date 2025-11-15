@@ -42,7 +42,7 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               Card(
                 margin: const EdgeInsets.all(24),

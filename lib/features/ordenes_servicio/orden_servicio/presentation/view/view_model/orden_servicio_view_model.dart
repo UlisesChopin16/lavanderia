@@ -4,7 +4,6 @@ import 'package:lavanderia/app/inject/injector.dart';
 import 'package:lavanderia/core/extensions/string_ext.dart';
 import 'package:lavanderia/core/utils/safe_call_ext.dart';
 import 'package:lavanderia/features/catalogos/clientes/domain/usecases/obtain_all_clientes.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/usecases/usecases.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

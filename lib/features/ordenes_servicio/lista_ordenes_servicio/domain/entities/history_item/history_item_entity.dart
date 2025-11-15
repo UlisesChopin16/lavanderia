@@ -11,6 +11,7 @@ sealed class HistoryItemEntity with _$HistoryItemEntity {
     @Default(-1) int id,
     @Default(-1) int ordenId,
     @Default(0.0) double monto,
+    @Default(0.0) double restante,
     @Default(null) MetodoPagoType? metodoPago, // "Efectivo", "Tarjeta", "Transferencia"
     @Default(null) DateTime? fecha,
   }) = _HistoryItemEntity;
