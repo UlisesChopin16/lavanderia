@@ -7,7 +7,6 @@ class RadioColors extends ConsumerWidget {
   const RadioColors({super.key, required this.width});
 
   List<Color> get colors {
-    const primaries = Colors.primaries;
     List<Color> colors = [];
     for (var i = 0; i < primaries.length; i++) {
       final colorP = primaries[i];
@@ -17,6 +16,19 @@ class RadioColors extends ConsumerWidget {
     }
     return colors;
   }
+
+  static const primaries = [
+    Colors.purple,
+    Colors.deepPurple,
+    Colors.indigo,
+    Colors.blue,
+    Colors.lightBlue,
+    Colors.cyan,
+    Colors.lime,
+    Colors.yellow,
+    Colors.amber,
+    // Colors.brown,
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,33 +40,6 @@ class RadioColors extends ConsumerWidget {
     );
     return SizedBox(
       width: width,
-      // child: Wrap(
-      //   children: colors.map(
-      //     (color) {
-      //       return RadioGroup(
-      //         groupValue: groupValue,
-      //         onChanged: (value) {
-      //           if (value == null) return;
-      //           configuracionNotifier.setColor(value);
-      //         },
-      //         child: Wrap(
-      //           children: [
-      //             Radio(
-      //               value: color,
-      //               activeColor: color,
-      //               fillColor: WidgetStatePropertyAll(
-      //                 color,
-      //               ),
-      //               overlayColor: WidgetStatePropertyAll(
-      //                 color.withValues(alpha:0.2),
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       );
-      //     },
-      //   ).toList(),
-      // ),
       child: RadioGroup(
         groupValue: groupValue,
         onChanged: (value) {

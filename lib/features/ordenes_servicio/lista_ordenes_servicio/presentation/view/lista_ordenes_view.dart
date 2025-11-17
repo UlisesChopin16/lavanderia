@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/core/extensions/build_context_ext.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/filtros/filtros_ordenes.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
 import 'package:lavanderia/shared/widgets/date_range_picker.dart';
 import 'package:lavanderia/shared/widgets/table_card_info.dart';
@@ -50,11 +51,16 @@ class _ListaOrdenesViewState extends ConsumerState<ListaOrdenesView> {
                   stream: listaOrdenesNotifier.observeOrders(),
                   builder: (context, asyncSnapshot) {
                     final data = asyncSnapshot.data ?? [];
-                    final subList = data.sublist(inicio, fin);
 
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       listaOrdenesNotifier.setTotalItems(data.length);
                     });
+                    
+                    List<OrdenConDetallesEntity> subList = [];
+                    if (data.isNotEmpty) {
+                      subList = data.sublist(inicio, fin);
+                    }
+
 
                     return TableCardInfo(
                       showAddButton: false,

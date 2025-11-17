@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
+import 'package:lavanderia/shared/widgets/animating_component.dart';
 
 class RowPages extends ConsumerStatefulWidget {
   const RowPages({super.key});
@@ -26,43 +27,50 @@ class _RowPagesState extends ConsumerState<RowPages> {
     final isZero = inicio == 0;
     final isLast = fin == totalItems;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.end,
-      spacing: 5,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-          decoration: BoxDecoration(
-            color: onPrimaryColor.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Text(
-            'Mostrando ${inicio + 1} - $fin de $totalItems',
-            style: TextStyle(fontSize: 12, color: primaryColor),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FloatingActionButton.small(
-              onPressed: isZero ? null : () {},
-              backgroundColor: primary,
-              foregroundColor: onPrimary,
-              child: const Icon(Icons.chevron_left_rounded),
+    // if (pages <= 1) {
+    //   return const SizedBox.shrink();
+    // }
+
+    return AnimatingComponent(
+      showComponent: totalItems > 0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        spacing: 5,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+            decoration: BoxDecoration(
+              color: onPrimaryColor.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(5),
             ),
-            const RowButtons(),
-            FloatingActionButton.small(
-              onPressed: isLast ? null : () {},
-              backgroundColor: primary,
-              foregroundColor: onPrimary,
-              child: const Icon(Icons.chevron_right_rounded),
+            child: Text(
+              'Mostrando ${inicio + 1} - $fin de $totalItems',
+              style: TextStyle(fontSize: 12, color: primaryColor),
             ),
-          ],
-        ),
-      ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FloatingActionButton.small(
+                onPressed: isZero ? null : () {},
+                backgroundColor: primary,
+                foregroundColor: onPrimary,
+                child: const Icon(Icons.chevron_left_rounded),
+              ),
+              const RowButtons(),
+              FloatingActionButton.small(
+                onPressed: isLast ? null : () {},
+                backgroundColor: primary,
+                foregroundColor: onPrimary,
+                child: const Icon(Icons.chevron_right_rounded),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

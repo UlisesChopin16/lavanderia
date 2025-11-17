@@ -226,8 +226,6 @@ class CardClientInfo extends ConsumerWidget {
     final newRestante = restante < 0 ? 0.0 : restante;
     final cadenaRestante = newRestante.toStringAsFixed(2);
 
-    final cambio = (restante * -1).toStringAsFixed(2);
-
     return Card(
       child: SizedBox(
         width: 500,
@@ -265,7 +263,7 @@ class CardClientInfo extends ConsumerWidget {
                           child: Text(
                             'Total: \$${total.toStringAsFixed(2)}',
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -275,25 +273,8 @@ class CardClientInfo extends ConsumerWidget {
                           child: Text(
                             'Restante: \$$cadenaRestante',
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        AnimatedCrossFade(
-                          duration: const Duration(milliseconds: 300),
-                          crossFadeState: restante < 0
-                              ? CrossFadeState.showSecond
-                              : CrossFadeState.showFirst,
-                          firstChild: const SizedBox.shrink(),
-                          secondChild: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              'Cambio: \$$cambio',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ),
                         ),
@@ -362,29 +343,42 @@ class AdelantoComponent extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController();
+    final total = ref.watch(
+      ordenServicioViewProvider.select((state) => state.total),
+    );
+    final controller = useTextEditingController(text: '0.00');
     final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
 
     _addListener(ref, controller);
     return Align(
       alignment: Alignment.centerRight,
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-          // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
-        ],
-        decoration: InputDecoration(
-          labelText: 'Adelanto',
-          prefixIcon: const Icon(Icons.attach_money),
-          constraints: const BoxConstraints(maxWidth: 200),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+      child: Column(
+        crossAxisAlignment: .end,
+        spacing: 5,
+        children: [
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              // FilteringTextInputFormatter.deny(RegExp(r'^[^\d.]+$')),
+            ],
+            decoration: InputDecoration(
+              labelText: 'Adelanto',
+              prefixIcon: const Icon(Icons.attach_money),
+              constraints: const BoxConstraints(maxWidth: 200),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onChanged: (value) {
+              ordenNotifier.setAdelanto(value);
+            },
           ),
-        ),
-        onChanged: (value) {
-          ordenNotifier.setAdelanto(value);
-        },
+          TextButton(
+            onPressed: () => ordenNotifier.setAdelanto('$total'),
+            child: const Text('Adelantar todo'),
+          ),
+        ],
       ),
     );
   }
@@ -393,8 +387,16 @@ class AdelantoComponent extends HookConsumerWidget {
     ref.listen(
       ordenServicioViewProvider.select((state) => state.orden.history.monto),
       (previous, next) {
+        final text = next.toStringAsFixed(2);
         if (next == 0.0 && previous! > 0.0) {
-          controller.clear();
+          controller.text = text;
+        } else {
+          if (controller.text != text) {
+            controller.text = text;
+            // controller.selection = TextSelection.fromPosition(
+            //   TextPosition(offset: controller.text.length - 3),
+            // );
+          }
         }
       },
     );

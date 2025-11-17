@@ -32,6 +32,7 @@ sealed class ListaOrdenesModel with _$ListaOrdenesModel {
   }
 
   int get inicioItems {
+    if (totalItems == 0) return 0;
     final inicio = (currentPage - 1) * perPage;
     if (inicio >= totalItems) {
       return totalItems;
@@ -40,6 +41,7 @@ sealed class ListaOrdenesModel with _$ListaOrdenesModel {
   }
 
   int get finItems {
+    if (totalItems == 0) return 0;
     final fin = inicioItems + perPage;
     if (fin > totalItems) {
       return totalItems;

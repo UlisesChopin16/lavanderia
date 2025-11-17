@@ -93,10 +93,9 @@ class OrdenServicioView extends _$OrdenServicioView {
   }
 
   void setClienteSeleccionado(ClienteEntity cliente) {
-    final orden = state.orden.copyWith(
+    state = state.copyWith.orden(
       cliente: cliente,
     );
-    state = state.copyWith(orden: orden);
   }
 
   ClienteEntity? getCliente(String data) {
@@ -116,7 +115,6 @@ class OrdenServicioView extends _$OrdenServicioView {
   }
 
   void setSelectedItems(List<ItemConPrecioEntity> items) {
-    final orden = state.orden;
     final selectedItems = state.selectedItems;
     final allItems = [...items, ...selectedItems];
 
@@ -127,31 +125,17 @@ class OrdenServicioView extends _$OrdenServicioView {
       return dateA.compareTo(dateB);
     });
 
-    // final total = allItems.fold(0.0, (sum, item) => sum + item.importe);
-    // final restante = total - (state.orden.adelantoPago);
-
-    state = state.copyWith(
-      orden: orden.copyWith(
-        items: allItems,
-        // total: total,
-        // restante: restante,
-      ),
+    state = state.copyWith.orden(
+      items: allItems,
     );
   }
 
   void removeSelectedItem(int index) {
-    final orden = state.orden;
     List<ItemConPrecioEntity> selectedItems = [...state.selectedItems];
     selectedItems.removeAt(index);
-    // final total = selectedItems.fold(0.0, (sum, item) => sum + item.importe);
-    // final restante = total - (state.orden.adelantoPago);
-
-    state = state.copyWith(
-      orden: orden.copyWith(
-        items: selectedItems,
-        // total: total,
-        // restante: restante,
-      ),
+    
+    state = state.copyWith.orden(
+      items: selectedItems,
     );
   }
 
@@ -165,16 +149,10 @@ class OrdenServicioView extends _$OrdenServicioView {
     );
 
     selectedItems[index] = updatedItem;
-    // final total = selectedItems.fold(0.0, (sum, item) => sum + item.importe);
-    // final restante = total - (state.orden.adelantoPago);
 
-    final orden = state.orden.copyWith(
+    state = state.copyWith.orden(
       items: selectedItems,
-      // total: total,
-      // restante: restante,
     );
-
-    state = state.copyWith(orden: orden);
   }
 
   void setFechaEntrega(int index, DateTime date) {
@@ -183,49 +161,29 @@ class OrdenServicioView extends _$OrdenServicioView {
     final updatedItem = item.copyWith(fechaEntrega: date);
     selectedItems[index] = updatedItem;
 
-    final orden = state.orden.copyWith(
+    state = state.copyWith.orden(
       items: selectedItems,
     );
-    state = state.copyWith(orden: orden);
   }
 
   void setAdelanto(String value) {
     final adelanto = double.tryParse(value) ?? 0.0;
-    // final restante = state.restante - adelanto;
 
-    final orden = state.orden;
-    final history = orden.history;
-
-    final newOrden = orden.copyWith(
-      history: history.copyWith(
-        monto: adelanto,
-      ),
+    state = state.copyWith.orden.history(
+      monto: adelanto,
     );
-
-    state = state.copyWith(orden: newOrden);
   }
 
   void setMetodoPago(MetodoPagoType? metodo) {
-    // final orden = state.orden.copyWith(
-    //   metodoPago: metodo,
-    // );
-    final orden = state.orden;
-    final history = orden.history;
-
-    final newOrden = orden.copyWith(
-      history: history.copyWith(
-        metodoPago: metodo,
-      ),
+    state = state.copyWith.orden.history(
+      metodoPago: metodo,
     );
-
-    state = state.copyWith(orden: newOrden);
   }
 
   void setDescripcion(String descripcion) {
-    final orden = state.orden.copyWith(
-      descripcion: descripcion,
+    state = state.copyWith.orden(
+      descripcion: descripcion.trim(),
     );
-    state = state.copyWith(orden: orden);
   }
 
   void setIsLoading(bool isLoading) {
@@ -249,15 +207,17 @@ class OrdenServicioView extends _$OrdenServicioView {
       action: () async {
         state.orden.validate();
         final total = state.total;
-        final restante = state.restante;
+        final restante = state.restante < 0.0 ? 0.0 : state.restante;
         final estatus = restante == 0.0 ? EstatusOrdenType.pagado : EstatusOrdenType.enCurso;
         final history = state.orden.history;
+        final adelanto = history.monto;
         final newOrder = state.orden.copyWith(
           total: total,
           restante: restante,
           estatus: estatus,
           history: history.copyWith(
             metodoPago: state.orden.hasAdelanto ? history.metodoPago : null,
+            monto: adelanto > total ? total : adelanto,
           )
         );
 

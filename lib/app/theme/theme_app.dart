@@ -49,6 +49,7 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
           : colorScheme.surfaceContainerLow,
     );
     return ThemeData(
+      fontFamily: 'Poppins',
       useMaterial3: true,
       extensions: [
         this,
