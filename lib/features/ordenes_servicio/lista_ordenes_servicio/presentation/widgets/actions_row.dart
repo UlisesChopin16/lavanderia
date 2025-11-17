@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/dialogs/show_history/show_history.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
@@ -22,16 +21,16 @@ class ActionsRow extends ConsumerStatefulWidget {
 }
 
 class _ActionsRowState extends ConsumerState<ActionsRow> {
-  bool get isCerrada => ordenServicio.isCerrada;
+  bool get isClosed => ordenServicio.isClosed;
+  bool get isPaid => ordenServicio.isPaid;
+  bool get inProgress => ordenServicio.inProgress;
+
   bool get isSmall => widget.isSmall;
   OrdenConDetallesEntity get ordenServicio => widget.ordenServicio;
   String get folio => ordenServicio.folio;
 
   @override
   Widget build(BuildContext context) {
-    final blockUI = ref.watch(
-      configuracionEmpresaViewModelProvider.select((value) => value.blockUI),
-    );
     return ActionsButtons(
       isSmall: isSmall,
       actions: [
@@ -43,22 +42,29 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
           color: Colors.blue,
           tooltip: 'Ver historial de la orden',
         ),
-        if (!isCerrada)
-          DataAction(
-            color: Colors.yellow,
-            callbackIndex: showTicket,
-            icon: IconsManager.selectedOrdenServicioIcon,
-            isNotEnabled: false,
-            tooltip: 'Ver ticket de la orden',
-          ),
-        if (!isCerrada)
-          DataAction(
-            color: Colors.red,
-            callbackIndex: () {},
-            icon: Icons.delete,
-            isNotEnabled: blockUI,
-            tooltip: 'Eliminar tamaño de ropa',
-          ),
+        // Esta acción puede entregar los items, adelantar pagos y/o ver resumen.
+        DataAction(
+          color: ordenServicio.estatus.color,
+          callbackIndex: () {},
+          icon: Icons.assignment_turned_in_rounded,
+          isNotEnabled: false,
+          tooltip: 'Ver orden',
+        ),
+        DataAction(
+          color: Colors.yellow,
+          callbackIndex: showTicket,
+          icon: IconsManager.selectedOrdenServicioIcon,
+          isNotEnabled: false,
+          tooltip: 'Ver ticket de la orden',
+        ),
+        // if (!isCerrada)
+        //   DataAction(
+        //     color: Colors.red,
+        //     callbackIndex: () {},
+        //     icon: Icons.delete,
+        //     isNotEnabled: blockUI,
+        //     tooltip: 'Eliminar tamaño de ropa',
+        //   ),
         // if (size.estatus == EstatusType.inactivo)
         //   DataAction(
         //     color: Colors.green,
@@ -88,7 +94,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
     final newOrden = ordenServicio.copyWith(items: getItems);
 
     if (!mounted) return;
-    
+
     await showDialog<void>(
       context: context,
       builder: (context) {

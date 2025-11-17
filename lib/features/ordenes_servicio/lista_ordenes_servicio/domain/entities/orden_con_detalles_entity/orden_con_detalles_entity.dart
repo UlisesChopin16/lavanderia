@@ -6,11 +6,11 @@ import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/doma
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 
-export 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
-export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
 export 'package:lavanderia/features/catalogos/clientes/domain/entities/cliente_entity.dart';
-export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
 export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/history_item/history_item_entity.dart';
+export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/estatus_orden_type.dart';
+export 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/types/metodo_pago_type.dart';
+export 'package:lavanderia/features/ordenes_servicio/orden_servicio/domain/entities/items_servicio/item_con_precio_entity.dart';
 
 part 'orden_con_detalles_entity.freezed.dart';
 
@@ -39,7 +39,9 @@ sealed class OrdenConDetallesEntity with _$OrdenConDetallesEntity {
   bool get hasItems => items.isNotEmpty;
   bool get hasAdelanto => history.monto > 0;
   bool get hasMetodoPago => history.metodoPago != null;
-  bool get isCerrada => estatus == EstatusOrdenType.cerrada;
+  bool get isClosed => estatus == EstatusOrdenType.cerrada;
+  bool get inProgress => estatus == EstatusOrdenType.enCurso;
+  bool get isPaid => estatus == EstatusOrdenType.pagado;
 
   String get title => 'Orden: $folio';
   String get creacion => 'Creada: ${fechaCreacion.formatDate}';

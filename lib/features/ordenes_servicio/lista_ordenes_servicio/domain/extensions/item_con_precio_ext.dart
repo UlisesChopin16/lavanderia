@@ -16,6 +16,7 @@ extension ItemConPrecioEntityX on ItemConPrecioEntity {
       fechaEntrega: fechaEntrega ?? DateTime.now(),
       importe: importe,
       fechaCreacion: fechaCreacion ?? DateTime.now(),
+      fechaEntegado: fechaEntegado,
     );
   }
 }
@@ -31,6 +32,7 @@ extension ItemConPrecioModelX on ItemConPrecioModel {
       fechaEntrega: fechaEntrega,
       importe: importe,
       fechaCreacion: fechaCreacion,
+      fechaEntegado: fechaEntegado,
     );
   }
 
@@ -44,6 +46,7 @@ extension ItemConPrecioModelX on ItemConPrecioModel {
       fechaEntrega: fechaEntrega,
       importe: importe,
       fechaCreacion: fechaCreacion,
+      fechaEntegado: fechaEntegado,
     );
   }
 
@@ -57,6 +60,7 @@ extension ItemConPrecioModelX on ItemConPrecioModel {
       importe: importe,
       fechaEntrega: fechaEntrega,
       fechaCreacion: now,
+      fechaEntegado: Value(fechaEntegado),
     );
   }
 }
@@ -72,6 +76,7 @@ extension PreciosConceptosEntryX on ItemConPrecioEntry {
       estaEntregado: item.estaEntregado,
       fechaEntrega: item.fechaEntrega,
       fechaCreacion: item.fechaCreacion,
+      fechaEntegado: item.fechaEntegado,
     );
   }
 }

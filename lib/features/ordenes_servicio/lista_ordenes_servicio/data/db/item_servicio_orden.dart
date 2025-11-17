@@ -12,4 +12,5 @@ class ItemServicioOrden extends Table {
   BoolColumn get estaEntregado => boolean().withDefault(const Constant(false))();
   DateTimeColumn get fechaEntrega => dateTime()();
   DateTimeColumn get fechaCreacion => dateTime()();
+  DateTimeColumn get fechaEntegado => dateTime().nullable()();
 }

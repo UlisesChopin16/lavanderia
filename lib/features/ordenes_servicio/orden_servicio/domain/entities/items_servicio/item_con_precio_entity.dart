@@ -18,6 +18,7 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
     @Default(false) bool isSelected,
     @Default(null) DateTime? fechaEntrega,
     @Default(null) DateTime? fechaCreacion,
+    @Default(null) DateTime? fechaEntegado,
   }) = _ItemConPrecioEntity;
 
   factory ItemConPrecioEntity.fromPrecio(PrecioConDetallesEntity precio) {

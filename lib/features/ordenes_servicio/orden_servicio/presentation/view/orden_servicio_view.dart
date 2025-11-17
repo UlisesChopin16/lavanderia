@@ -248,15 +248,7 @@ class CardClientInfo extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: SelectMetodoPago(
-                            metodoPago: metodoPago,
-                            onChange: (value) {
-                              ordenNotifier.setMetodoPago(value);
-                            },
-                          ),
-                        ),
+                        
                         const AdelantoComponent(),
                         Align(
                           alignment: Alignment.centerRight,
@@ -343,8 +335,8 @@ class AdelantoComponent extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final total = ref.watch(
-      ordenServicioViewProvider.select((state) => state.total),
+    final (total, metodoPago) = ref.watch(
+      ordenServicioViewProvider.select((state) => (state.total, state.orden.history.metodoPago)),
     );
     final controller = useTextEditingController(text: '0.00');
     final ordenNotifier = ref.read(ordenServicioViewProvider.notifier);
@@ -356,6 +348,15 @@ class AdelantoComponent extends HookConsumerWidget {
         crossAxisAlignment: .end,
         spacing: 5,
         children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: SelectMetodoPago(
+              metodoPago: metodoPago,
+              onChange: (value) {
+                ordenNotifier.setMetodoPago(value);
+              },
+            ),
+          ),
           TextField(
             controller: controller,
             keyboardType: TextInputType.number,
@@ -388,15 +389,12 @@ class AdelantoComponent extends HookConsumerWidget {
       ordenServicioViewProvider.select((state) => state.orden.history.monto),
       (previous, next) {
         final text = next.toStringAsFixed(2);
-        if (next == 0.0 && previous! > 0.0) {
+        
+        if (controller.text != text) {
           controller.text = text;
-        } else {
-          if (controller.text != text) {
-            controller.text = text;
-            // controller.selection = TextSelection.fromPosition(
-            //   TextPosition(offset: controller.text.length - 3),
-            // );
-          }
+          // controller.selection = TextSelection.fromPosition(
+          //   TextPosition(offset: controller.text.length - 3),
+          // );
         }
       },
     );
