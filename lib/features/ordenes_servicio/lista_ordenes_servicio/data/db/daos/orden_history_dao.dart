@@ -33,8 +33,12 @@ class OrdenHistoryDao extends DatabaseAccessor<AppDatabase> with _$OrdenHistoryD
   //   ordenHistory,
   // )..where((tbl) => tbl.clienteId.equals(clienteId))).get();
 
-  Future<int> insertOrden(OrdenHistoryCompanion row) async {
+  Future<int> insertHistory(OrdenHistoryCompanion row) async {
     return await into(ordenHistory).insert(row);
+  }
+  
+  Future<bool> updateHistory(OrdenHistoryEntry row) async {
+    return await update(ordenHistory).replace(row);
   }
 
   JoinedSelectStatement queryJoined() {

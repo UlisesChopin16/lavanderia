@@ -24,7 +24,7 @@ class OrdenesWriteDatasource {
 
     final companionHistory = orden.toHistoryCompanion(ordenId.id);
     final data = companionHistory.copyWith(fecha: Value(ordenId.fechaActualizacion!));
-    await ordenHistoryDao.insertOrden(data);
+    await ordenHistoryDao.insertHistory(data);
 
     for (final item in orden.items) {
       final itemWithOrdenId = item.toCompanion(ordenId.id);
@@ -41,11 +41,17 @@ class OrdenesWriteDatasource {
   Future<void> updateOrden(OrdenConDetallesModel orden) async {
     final entry = orden.toEntry();
     final companionHistory = orden.toHistoryCompanion(orden.id);
+    final entryHistory = orden.toHistoryEntry(orden.id);
 
     final entryOrden = await ordenServicioDao.updateOrden(entry);
     final data = companionHistory.copyWith(fecha: Value(entryOrden.fechaActualizacion!));
-    await ordenHistoryDao.insertOrden(data);
-    await updateItemsOrden(orden);
+    final dataEntry = entryHistory.copyWith(fecha: entryOrden.fechaActualizacion!);
+
+    if (entryHistory.monto > 0) {
+      await ordenHistoryDao.insertHistory(data);
+      return;
+    }
+    await ordenHistoryDao.updateHistory(dataEntry);
   }
 
   Future<void> updateItemsOrden(OrdenConDetallesModel orden) async {

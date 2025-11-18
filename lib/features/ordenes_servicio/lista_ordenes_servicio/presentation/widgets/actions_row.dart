@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/utils/icons_manager.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/dialogs/show_history/show_history.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/dialogs/update_order/update_order_dialog.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/view/view_model/lista_ordenes_view_model.dart';
 import 'package:lavanderia/features/ordenes_servicio/orden_servicio/presentation/dialogs/show_ticket/show_ticket_dialog.dart';
 import 'package:lavanderia/shared/widgets/actions_button.dart';
@@ -45,7 +46,7 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
         // Esta acción puede entregar los items, adelantar pagos y/o ver resumen.
         DataAction(
           color: ordenServicio.estatus.color,
-          callbackIndex: () {},
+          callbackIndex: showOrder,
           icon: Icons.assignment_turned_in_rounded,
           isNotEnabled: false,
           tooltip: 'Ver orden',
@@ -83,6 +84,16 @@ class _ActionsRowState extends ConsumerState<ActionsRow> {
       context: context,
       builder: (context) {
         return ShowHistory(orden: ordenServicio);
+      },
+    );
+  }
+
+  Future<void> showOrder() async {
+    // const title = 'Historial de la orden';
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return UpdateOrderDialog(orden: ordenServicio);
       },
     );
   }

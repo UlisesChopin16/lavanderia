@@ -38,5 +38,8 @@ sealed class ItemConPrecioEntity with _$ItemConPrecioEntity {
     );
   }
 
+  bool get canDeliver => fechaEntrega?.isAfter(DateTime.now()) == false;
+  bool get wasDelivered => fechaEntegado != null;
+
   UnitType get unidad => precio.tipoUnidad;
 }

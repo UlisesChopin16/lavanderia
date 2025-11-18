@@ -89,6 +89,17 @@ extension OrdenConDetallesModelX on OrdenConDetallesModel {
       fecha: now,
     );
   }
+  OrdenHistoryEntry toHistoryEntry(int idOrden) {
+    final now = DateTime.now();
+    return OrdenHistoryEntry(
+      id: itemHistory.id,
+      ordenId: idOrden,
+      monto: itemHistory.monto,
+      metodoPago: itemHistory.metodoPago,
+      restante: restante,
+      fecha: now,
+    );
+  }
 }
 
 extension PreciosConceptosEntryX on OrdenConDetallesEntry {

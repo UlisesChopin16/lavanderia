@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/core/extensions/date_time_ext.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/entities/orden_con_detalles_entity/orden_con_detalles_entity.dart';
 import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/dialogs/show_history/view_model/show_history_view_model.dart';
+import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/presentation/widgets/estatus_container.dart';
 import 'package:lavanderia/shared/dialogs/base_dialog.dart';
 import 'package:lavanderia/shared/widgets/animating_loading.dart';
 
@@ -196,30 +197,7 @@ class DataInfo extends ConsumerWidget {
               children: [
                 const Expanded(child: SizedBox()),
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: estatus.color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Row(
-                      spacing: 5,
-                      crossAxisAlignment: .center,
-                      mainAxisAlignment: .center,
-                      mainAxisSize: .min,
-                      children: [
-                        Icon(estatus.icon, color: estatus.color, size: 20),
-                        Text(
-                          estatus.value,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: estatus.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: EstatusContainer(estatus: estatus)
                 ),
                 const Expanded(child: SizedBox()),
               ],
