@@ -1,0 +1,52 @@
+import 'package:lavanderia/datasource/local/configuracion_empresa/configuracion_empresa_datasource.dart';
+import 'package:lavanderia/models/data/configuracion_empresa/configuracion_empresa_entity.dart';
+import 'package:lavanderia/extensions/configuracion_empresa_ext.dart';
+import 'package:injectable/injectable.dart';
+import 'package:lavanderia/repository/configuracion_empresa/configuracion_empresa_repository.dart';
+
+
+/// Implementation of the ConfiguracionEmpresaRepository that interacts with the datasource.
+/// This class provides methods to create, retrieve, and update configuration data for a company.
+@LazySingleton(as: ConfiguracionEmpresaRepository)
+class ConfiguracionEmpresaRepoImpl implements ConfiguracionEmpresaRepository {
+  final ConfiguracionEmpresaDatasource datasource;
+  const ConfiguracionEmpresaRepoImpl({required this.datasource});
+
+  @override
+  Future<void> createConfiguracionEmpresa(ConfiguracionEmpresaEntity entity) async {
+    // Convert the entity to a model and call the datasource method
+    final model = entity.toModel();
+    final companion = model.toCompanion();
+    final direccionModelo = entity.toModelDireccion();
+
+    final idEmpresa = await datasource.saveConfiguracionEmpresa(companion);
+    final companionDireccion = direccionModelo.copyWith(empresaId: idEmpresa).toCompanion();
+    await datasource.saveDireccion(companionDireccion);
+    // return await datasource.createConfiguracionEmpresa(entity.toModel());
+  }
+
+  @override
+  Future<ConfiguracionEmpresaEntity?> getConfiguracionEmpresaById(int id) async {
+    final empresaModel = await datasource.getConfiguracionEmpresaById(id);
+    final direccionModel = await datasource.getDireccionById(id);
+
+    if (empresaModel != null && direccionModel != null) {
+      return ConfiguracionEmpresaEntity.fromModel(empresaModel, direccionModel);
+      // return entry.toEntity(direccionEntry.toModel());
+    }
+    return null;
+  }
+
+  @override
+  Future<void> updateConfiguracionEmpresa(ConfiguracionEmpresaEntity entry) async {
+    // Convert the entity to a model and call the datasource method
+    final model = entry.toModel();
+    final direccionModel = entry.toModelDireccion();
+
+    await datasource.updateConfiguracionEmpresa(model.toEntry());
+    await datasource.updateDireccion(direccionModel.toEntry());
+    // return await datasource.updateConfiguracionEmpresa(entry.toModel());
+    
+  }
+  
+}

@@ -1,0 +1,167 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lavanderia/utils/icons_manager.dart';
+import 'package:lavanderia/models/data/ordenes/orden_con_detalles_entity.dart';
+import 'package:lavanderia/ui/views/lista_ordenes/dialogs/show_history/show_history.dart';
+import 'package:lavanderia/ui/views/lista_ordenes/dialogs/update_order/update_order_dialog.dart';
+import 'package:lavanderia/ui/views/lista_ordenes/view_model/lista_ordenes_view_model.dart';
+import 'package:lavanderia/ui/views/orden_servicio/dialogs/show_ticket/show_ticket_dialog.dart';
+import 'package:lavanderia/ui/shared/widgets/actions_button.dart';
+
+class ActionsRow extends ConsumerStatefulWidget {
+  final OrdenConDetallesEntity ordenServicio;
+  final bool isSmall;
+  const ActionsRow({
+    super.key,
+    required this.ordenServicio,
+    this.isSmall = false,
+  });
+
+  @override
+  ConsumerState<ActionsRow> createState() => _ActionsRowState();
+}
+
+class _ActionsRowState extends ConsumerState<ActionsRow> {
+  bool get isClosed => ordenServicio.isClosed;
+  bool get isPaid => ordenServicio.isPaid;
+  bool get inProgress => ordenServicio.inProgress;
+
+  bool get isSmall => widget.isSmall;
+  OrdenConDetallesEntity get ordenServicio => widget.ordenServicio;
+  String get folio => ordenServicio.folio;
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionsButtons(
+      isSmall: isSmall,
+      actions: [
+        DataAction(
+          // canPop: false,
+          callbackIndex: showHistoryOrder,
+          icon: Icons.history_rounded,
+          isNotEnabled: false,
+          color: Colors.blue,
+          tooltip: 'Ver historial de la orden',
+        ),
+        // Esta acción puede entregar los items, adelantar pagos y/o ver resumen.
+        DataAction(
+          color: ordenServicio.estatus.color,
+          callbackIndex: showOrder,
+          icon: Icons.assignment_turned_in_rounded,
+          isNotEnabled: false,
+          tooltip: 'Ver orden',
+        ),
+        DataAction(
+          color: Colors.yellow,
+          callbackIndex: showTicket,
+          icon: IconsManager.selectedOrdenServicioIcon,
+          isNotEnabled: false,
+          tooltip: 'Ver ticket de la orden',
+        ),
+        // if (!isCerrada)
+        //   DataAction(
+        //     color: Colors.red,
+        //     callbackIndex: () {},
+        //     icon: Icons.delete,
+        //     isNotEnabled: blockUI,
+        //     tooltip: 'Eliminar tamaño de ropa',
+        //   ),
+        // if (size.estatus == EstatusType.inactivo)
+        //   DataAction(
+        //     color: Colors.green,
+        //     callbackIndex: onRestoreSize,
+        //     icon: Icons.restore,
+        //     isNotEnabled: blockUI,
+        //     tooltip: 'Activar tamaño de ropa',
+        //   ),
+      ],
+    );
+  }
+
+  Future<void> showHistoryOrder() async {
+    // const title = 'Historial de la orden';
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return ShowHistory(orden: ordenServicio);
+      },
+    );
+  }
+
+  Future<void> showOrder() async {
+    // const title = 'Historial de la orden';
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return UpdateOrderDialog(orden: ordenServicio);
+      },
+    );
+  }
+
+  Future<void> showTicket() async {
+    // const title = 'Historial de la orden';
+    final listOrdenNotifier = ref.read(listaOrdenesViewModelProvider.notifier);
+    final getItems = await listOrdenNotifier.obtainItems(ordenServicio.id);
+    final newOrden = ordenServicio.copyWith(items: getItems);
+
+    if (!mounted) return;
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return ShowTicketDialog(orden: newOrden);
+      },
+    );
+  }
+
+  // void onShowConceptos() async {
+  //   // Acción al presionar el botón de ver conceptos
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return ShowPreciosDialog(sizeRopa: size);
+  //     },
+  //   );
+  // }
+
+  // void onEditSize() async {
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   // Acción al presionar el botón de agregar tamaño
+  //   final nombre = await showNombreDialog();
+
+  //   if (nombre == null) return;
+  //   if (nombre.isEmpty) return;
+  //   if (!mounted) return;
+
+  //   final confirm = await context.showWarningDialog(
+  //     message: '¿Estás seguro de editar este tamaño?',
+  //   );
+
+  //   if (confirm == true) {
+  //     sizeRopaNotifier.updateSize(size.copyWith(nombre: nombre));
+  //   }
+  // }
+
+  // void onDeleteSize() async {
+  //   final question = '¿Estás seguro de desactivar el tamaño "${size.nombre}"?';
+  //   const message =
+  //       'Al desactivarlo, ya no estará disponible para su uso y se desactivarán todos los conceptos relacionados con él.';
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   final response = await context.showWarningDialog(
+  //     message: '$question\n$message',
+  //   );
+  //   if (response == true) {
+  //     sizeRopaNotifier.desactivateSize(size);
+  //   }
+  // }
+
+  // void onRestoreSize() async {
+  //   final sizeRopaNotifier = ref.read(sizesViewModelProvider.notifier);
+  //   final response = await context.showWarningDialog(
+  //     message: '¿Estás seguro de activar el tamaño "${size.nombre}"?',
+  //   );
+  //   if (response == true) {
+  //     sizeRopaNotifier.activateSize(size);
+  //   }
+  // }
+}

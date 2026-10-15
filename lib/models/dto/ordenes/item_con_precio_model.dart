@@ -1,0 +1,23 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lavanderia/models/dto/precios/precio_con_detalles_model.dart';
+
+part 'item_con_precio_model.freezed.dart';
+part 'item_con_precio_model.g.dart';
+
+@freezed
+sealed class ItemConPrecioModel with _$ItemConPrecioModel {
+  const factory ItemConPrecioModel({
+    required int id,
+    required int ordenId,
+    required PrecioConDetallesModel precio,
+    required double cantidad,
+    required double importe,
+    required bool estaEntregado,
+    required DateTime fechaEntrega,
+    required DateTime fechaCreacion,
+    required DateTime? fechaEntegado,
+  }) = _ItemConPrecioModel;
+
+  factory ItemConPrecioModel.fromJson(Map<String, dynamic> json) =>
+      _$ItemConPrecioModelFromJson(json);
+}

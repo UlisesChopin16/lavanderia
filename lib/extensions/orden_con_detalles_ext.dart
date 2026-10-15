@@ -1,0 +1,123 @@
+import 'package:drift/drift.dart';
+import 'package:lavanderia/data/local/app_database.dart';
+import 'package:lavanderia/extensions/cliente_ext.dart';
+import 'package:lavanderia/data/local/ordenes/orden_con_detalles_entry.dart';
+import 'package:lavanderia/models/dto/ordenes/orden_con_detalles_model.dart';
+import 'package:lavanderia/models/data/ordenes/orden_con_detalles_entity.dart';
+import 'package:lavanderia/extensions/history_item_ext.dart';
+
+import 'item_con_precio_ext.dart';
+// import 'package:lavanderia/data/local/precios/precio_con_detalles_entry.dart';
+// import 'package:lavanderia/models/dto/precios/precio_con_detalles_model.dart';
+// import 'package:lavanderia/models/data/precios/precio_con_detalles_entity.dart';
+// import 'package:lavanderia/features/catalogos/sizes/domain/extensions/sizes_ropa_ext.dart';
+
+extension OrdenConDetallesEntityX on OrdenConDetallesEntity {
+  OrdenConDetallesModel toModel() {
+    return OrdenConDetallesModel(
+      id: id,
+      folio: folio,
+      cliente: cliente.toModel(),
+      itemHistory: history.toModel(),
+      descripcion: descripcion,
+      total: total,
+      restante: restante,
+      estatus: estatus.value,
+      fechaCierre: fechaCierre,
+      fechaCreacion: fechaCreacion ?? DateTime.now(),
+      items: items.map((e) => e.toModel()).toList(),
+    );
+  }
+}
+
+extension OrdenConDetallesModelX on OrdenConDetallesModel {
+  OrdenConDetallesEntity toEntity() {
+    return OrdenConDetallesEntity(
+      id: id,
+      folio: folio,
+      cliente: cliente.toEntity(),
+      // history: metodoPago: (metodoPago == null || metodoPago!.isEmpty)
+      //     ? null
+      //     : MetodoPagoType.fromString(metodoPago!),
+      descripcion: descripcion ?? '',
+      history: itemHistory.toEntity(),
+      // adelantoPago: adelantoPago,
+      total: total,
+      restante: restante,
+      estatus: EstatusOrdenType.fromString(estatus),
+      fechaCierre: fechaCierre,
+      fechaCreacion: fechaCreacion,
+      items: items.map((e) => e.toEntity()).toList(),
+    );
+  }
+
+  OrdenServicioEntry toEntry() {
+    return OrdenServicioEntry(
+      id: id,
+      clienteId: cliente.id,
+      folio: folio,
+      descripcion: descripcion,
+      estatus: estatus,
+      total: total,
+      restante: restante,
+      fechaCreacion: fechaCreacion,
+      fechaCierre: fechaCierre,
+    );
+  }
+
+  OrdenServicioCompanion toOrdenCompanion() {
+    final now = DateTime.now();
+    return OrdenServicioCompanion.insert(
+      clienteId: cliente.id,
+      folio: folio,
+      descripcion: Value(descripcion),
+      estatus: estatus,
+      total: total,
+      restante: restante,
+      fechaCreacion: now,
+      fechaCierre: Value(fechaCierre),
+    );
+  }
+
+  OrdenHistoryCompanion toHistoryCompanion(int idOrden) {
+    final now = DateTime.now();
+    return OrdenHistoryCompanion.insert(
+      ordenId: idOrden,
+      monto: itemHistory.monto,
+      metodoPago: itemHistory.metodoPago,
+      restante: restante,
+      fecha: now,
+    );
+  }
+  OrdenHistoryEntry toHistoryEntry(int idOrden) {
+    final now = DateTime.now();
+    return OrdenHistoryEntry(
+      id: itemHistory.id,
+      ordenId: idOrden,
+      monto: itemHistory.monto,
+      metodoPago: itemHistory.metodoPago,
+      restante: restante,
+      fecha: now,
+    );
+  }
+}
+
+extension PreciosConceptosEntryX on OrdenConDetallesEntry {
+  OrdenConDetallesModel toModel() {
+    return OrdenConDetallesModel(
+      id: orden.id,
+      folio: orden.folio,
+      cliente: cliente.toModel(),
+      // metodoPago: detalles.metodoPago,
+      descripcion: orden.descripcion,
+      // adelantoPago: detalles.monto,
+      itemHistory: detalles.toModel(),
+      total: orden.total,
+      restante: orden.restante,
+      estatus: orden.estatus,
+      fechaCierre: orden.fechaCierre,
+      fechaCreacion: orden.fechaCreacion,
+      items: [],
+    );
+  }
+}

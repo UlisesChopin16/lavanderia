@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lavanderia/core/utils/printer.dart';
-import 'package:lavanderia/features/ordenes_servicio/lista_ordenes_servicio/domain/usecases/obtain_items.dart';
+import 'package:lavanderia/services/printer.dart';
+import 'package:lavanderia/models/data/ordenes/item_con_precio_entity.dart';
 
 void main() {
   group('Prueba de listas', () {

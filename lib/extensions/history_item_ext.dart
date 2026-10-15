@@ -1,0 +1,43 @@
+import 'package:lavanderia/data/local/app_database.dart';
+import 'package:lavanderia/models/dto/ordenes/history_item_model.dart';
+import 'package:lavanderia/models/data/ordenes/history_item_entity.dart';
+import 'package:lavanderia/types/metodo_pago_type.dart';
+
+extension OrdenHistoryEntryExt on OrdenHistoryEntry {
+  HistoryItemModel toModel() {
+    return HistoryItemModel(
+      id: id,
+      ordenId: ordenId,
+      monto: monto,
+      metodoPago: metodoPago,
+      restante: restante,
+      fecha: fecha,
+    );
+  }
+}
+
+extension HistoryItemModelExt on HistoryItemModel {
+  HistoryItemEntity toEntity() {
+    return HistoryItemEntity(
+      id: id,
+      ordenId: ordenId,
+      monto: monto,
+      metodoPago: metodoPago.isNotEmpty ? MetodoPagoType.fromString(metodoPago) : null,
+      restante: restante,
+      fecha: fecha,
+    );
+  }
+}
+
+extension HistoryItemEntityExt on HistoryItemEntity {
+  HistoryItemModel toModel() {
+    return HistoryItemModel(
+      id: id,
+      ordenId: ordenId,
+      monto: monto,
+      restante: restante,
+      metodoPago: metodoPago != null ? metodoPago!.value : '',
+      fecha: fecha ?? DateTime.now(),
+    );
+  }
+}

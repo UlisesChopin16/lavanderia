@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lavanderia/models/data/precios/precio_con_detalles_entity.dart';
+
+class ChangeCantidad extends StatefulWidget {
+  const ChangeCantidad({
+    super.key,
+    required this.cantidad,
+    required this.unidad,
+    this.onChanged,
+    this.color,
+  });
+
+  final double cantidad;
+  final ValueChanged<double>? onChanged;
+  final UnitType unidad;
+  final Color? color;
+
+  @override
+  State<ChangeCantidad> createState() => _ChangeCantidadState();
+}
+
+class _ChangeCantidadState extends State<ChangeCantidad> {
+  final controller = TextEditingController();
+  bool get isKg => widget.unidad == UnitType.kilo;
+  double get cantidad => widget.cantidad;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.text = isKg ? cantidad.toStringAsFixed(2) : cantidad.toStringAsFixed(0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = widget.color ?? Theme.of(context).colorScheme.surfaceContainer;
+    // controller.text = isKg ? cantidad.toStringAsFixed(2) : cantidad.toStringAsFixed(0);
+
+    return Row(
+      spacing: 5,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Visibility(
+          visible: cantidad > 1,
+          child: InkWell(
+            onTap: () {
+              // Decrease quantity
+              final newCantidad = cantidad - 1;
+              if (widget.onChanged != null) widget.onChanged!(newCantidad);
+              controller.text = isKg
+                  ? (newCantidad).toStringAsFixed(2)
+                  : (newCantidad).toStringAsFixed(0);
+
+            },
+            child: Card(
+              margin: EdgeInsets.zero,
+              // shape: const CircleBorder(),
+              color: backgroundColor,
+              child: const Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Icon(Icons.remove),
+              ),
+            ),
+          ),
+        ),
+        TextFormField(
+          // readOnly: !isKg,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12),
+
+          decoration: InputDecoration(
+            labelText: widget.unidad.value,
+            constraints: const BoxConstraints(maxWidth: 70, maxHeight: 30),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            // prefixIcon: SizedBox(
+            //   width: 10,
+            //   child: Text(unidad.letters),
+            // ),
+            contentPadding: const EdgeInsets.only(
+              top: 10,
+              bottom: 8,
+              left: 12,
+              right: 12,
+              // vertical: 8.0, horizontal: 12.0
+            ),
+          ),
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [
+            if (!isKg) FilteringTextInputFormatter.digitsOnly,
+          ],
+          onChanged: (value) {
+            final newCantidad = double.tryParse(value) ?? 1.0;
+            if (widget.onChanged != null && newCantidad > 0) {
+              widget.onChanged!(newCantidad);
+            }
+          },
+        ),
+        InkWell(
+          onTap: () {
+            // Increase quantity
+            final newCantidad = cantidad + 1;
+            if (widget.onChanged != null) widget.onChanged!(newCantidad);
+            controller.text = isKg
+                ? (newCantidad).toStringAsFixed(2)
+                : (newCantidad).toStringAsFixed(0);
+          },
+          child: Card(
+            margin: EdgeInsets.zero,
+            // shape: const CircleBorder(),
+            color: backgroundColor,
+            child: const Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Icon(Icons.add),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

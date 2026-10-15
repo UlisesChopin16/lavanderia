@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:lavanderia/shared/widgets/date_range_picker.dart';
+// import 'package:lavanderia/ui/shared/widgets/date_range_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:lavanderia/app/inject/injector.dart';
-import 'package:lavanderia/app/routes/app_routes.dart';
-import 'package:lavanderia/app/theme/theme_app.dart';
-import 'package:lavanderia/features/configuracion_empresa/presentation/views/view_model/configuracion_empresa_view_model.dart';
-import 'package:lavanderia/features/presentation/views/view_model/home_view_model.dart';
+import 'package:lavanderia/inject/injector.dart';
+import 'package:lavanderia/services/printer.dart';
+import 'package:lavanderia/ui/routes/app_routes.dart';
+import 'package:lavanderia/theme/theme_app.dart';
+import 'package:lavanderia/ui/views/configuracion_empresa/view_model/configuracion_empresa_view_model.dart';
+import 'package:lavanderia/ui/views/home/view_model/home_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +25,12 @@ Future<void> main() async {
   if (isFirstInstance) {
     runApp(const ProviderScope(child: MyApp()));
   } else {
-    print("App is already running");
+    Printer.i("App is already running");
 
     final err = await FlutterSingleInstance().focus();
 
     if (err != null) {
-      print("Error focusing running instance: $err");
+      Printer.e("Error focusing running instance: $err");
     }
 
     exit(0);
