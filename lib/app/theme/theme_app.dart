@@ -151,14 +151,15 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
   }
 
   static DynamicScheme _scheme(bool isDark, Color colorData) {
-    final base = CorePalette.of(colorData.toARGB32());
-    final primary = base.primary;
-    final secondary = base.secondary;
-    final tertiary = base.tertiary;
-    final neutral = base.neutral;
-    final neutralVariant = base.neutralVariant;
-    // final tertiary = CorePalette.of(secondaryColor.toARGB32()).primary;
-    // final neutral = CorePalette.of(neutralColor.toARGB32()).neutral;
+    final primaryHct = Hct.fromInt(colorData.toARGB32());
+    final secondaryHct = Hct.fromInt(colorData.toARGB32());
+    final neutralHct = Hct.fromInt(colorData.toARGB32());
+
+    final primary = TonalPalette.fromHct(primaryHct);
+    final secondary = TonalPalette.fromHct(secondaryHct);
+    final tertiary = TonalPalette.fromHct(secondaryHct);
+    final neutral = TonalPalette.fromHct(neutralHct);
+    final neutralVariant = TonalPalette.fromHct(neutralHct);
 
     return DynamicScheme(
       isDark: isDark,
@@ -167,9 +168,10 @@ class ThemeApp extends ThemeExtension<ThemeApp> {
       secondaryPalette: secondary,
       tertiaryPalette: tertiary,
       neutralVariantPalette: neutralVariant,
-      sourceColorArgb: colorData.toARGB32(),
+      sourceColorHct: Hct.fromInt(colorData.toARGB32()),
       variant: Variant.vibrant,
     );
+
   }
 
   static ({InputDecoration inputDecoration, TextStyle style}) disableInputsProfile({
