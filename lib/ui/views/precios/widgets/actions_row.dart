@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/extensions/build_context_ext.dart';
 import 'package:lavanderia/models/data/precios/precio_con_detalles_entity.dart';

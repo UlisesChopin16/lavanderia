@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:lavanderia/utils/assets/assets.gen.dart';
 import 'package:lavanderia/ui/shared/dialogs/animated_image_dialog.dart';
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:lavanderia/ui/shared/dialogs/error_dialog.dart';
 import 'package:lavanderia/ui/shared/dialogs/success_dialog.dart';
 import 'package:lavanderia/ui/shared/dialogs/warning_dialog.dart';

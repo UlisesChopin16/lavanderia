@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/ui/views/lista_ordenes/view_model/lista_ordenes_view_model.dart';
 import 'package:lavanderia/ui/shared/widgets/animating_component.dart';

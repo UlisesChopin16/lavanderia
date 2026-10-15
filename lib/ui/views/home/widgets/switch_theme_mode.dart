@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/extensions/theme_mode_ext.dart';
 import 'package:lavanderia/ui/views/home/view_model/home_view_model.dart';

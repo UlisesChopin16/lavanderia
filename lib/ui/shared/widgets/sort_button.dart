@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:lavanderia/utils/icons_manager.dart';
 
 class SortButton extends StatelessWidget {

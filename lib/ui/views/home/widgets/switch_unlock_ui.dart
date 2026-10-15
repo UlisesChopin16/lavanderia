@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/ui/views/configuracion_empresa/view_model/configuracion_empresa_view_model.dart';
 import 'package:lavanderia/ui/views/home/dialogs/verify_password_dialog.dart';

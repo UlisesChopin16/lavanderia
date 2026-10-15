@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lavanderia/models/data/categorias/categoria_servicio_entity.dart';
 import 'package:lavanderia/ui/views/precios/precios_view.dart';

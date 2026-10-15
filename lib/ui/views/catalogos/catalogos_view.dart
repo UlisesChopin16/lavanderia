@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lavanderia/ui/views/categorias/view_model/categoria_view_model.dart';
 import 'package:lavanderia/types/catalogos_tabs_type.dart';

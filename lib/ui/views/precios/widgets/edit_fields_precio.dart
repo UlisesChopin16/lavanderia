@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lavanderia/types/clothe_size_type.dart';
 import 'package:lavanderia/models/data/precios/precio_con_detalles_entity.dart';

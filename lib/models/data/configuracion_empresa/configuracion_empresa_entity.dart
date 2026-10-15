@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lavanderia/models/dto/configuracion_empresa/configuracion_empresa_model.dart';
 
